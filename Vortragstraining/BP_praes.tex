@@ -1,15 +1,19 @@
 \documentclass[accentcolor=tud9d,colorbacktitle,inverttitle,landscape,german,presentation,t]{tudbeamer}
 \usepackage{ngerman}
+\usepackage{graphicx}
 
 \begin{document}
 
-\title{Instant Message Whispering \\via Covert Channels}
-
-\author{BLUB}
-
-\date{\today}
+	% Titel
+	\title{Instant Message Whispering \\via Covert Channels}
+	\subtitle{Martin Oehler}
+	
+ 	% Fußzeile
+	\author{Martin Oehler}
+	\date{\today}
 
 \begin{titleframe}
+	\includegraphics[scale=.5]{Bilder/InstantMessenger.jpg}
 \end{titleframe}
 
 \begin{frame}
@@ -27,7 +31,11 @@
 		\item[Covert Channels:] Versteckt den Kanal
 	\end{description}
 	
-	\end{frame}
+	\begin{center}
+	\includegraphics[scale=.3]{Bilder/Firewall.jpg}
+	\end{center}
+	
+\end{frame}
 
 \begin{frame}
 
@@ -39,6 +47,9 @@
 		\item Konkrete Covert Channels als Plugin
 		\item Ver"offentlichung als Open Source
 	\end{itemize}
+	\begin{center}
+	\includegraphics[scale=0.25]{Bilder/framework-puzzle.png}
+	\end{center}
 
 \end{frame}
 
@@ -47,24 +58,30 @@
 	\frametitle{QS-Ziele}
 	\begin{itemize}
 		\item Modularit"at \\
-		\only<2>{Modulares Design des Framework mit festen Modulschnittstellen. }
+		\only<2>{Modulares Design des Framework mit festen Modulschnittstellen}
 		\item Zuverl"assigkeit \\
-		\only<3>{testdriven developement als}
+		\only<3>{Testdriven Developement als Entwicklungsmodell}
 		\item Testbarkeit	\\
-		\only<4>{}
+		\only<4>{Separation of concerns }
 	\end{itemize}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Zeitmanagement}
-
-30 Story Points pro Iteration, 80h, 2.7 h/sp
+	\frametitle{Zeitsumme}
+	\textbf{Gesamtsumme: 8 Stunden}
+	\begin{center}
+		\includegraphics[scale=0.5]{Bilder/zeitsummen.png} \newline
+	\end{center}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Zeitsumme}
+\frametitle{Zeitmanagement}
+	\begin{center}
+		\includegraphics[scale=.5]{Bilder/iteration.png}
+	\end{center}
+
 \end{frame}
 
 \begin{frame}
