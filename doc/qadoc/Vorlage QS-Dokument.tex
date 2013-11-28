@@ -1,0 +1,58 @@
+\documentclass[colorback,accentcolor=tud2a,12pt,paper=a4]{tudreport}
+
+\usepackage{ngerman}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{helvet}
+\usepackage{parcolumns}
+
+\newcommand{\titlerow}[2]{
+	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
+		\colchunk[1]{#1:} 
+		\colchunk[2]{#2}
+	\end{parcolumns}
+	\vspace{0.2cm}
+}
+
+\title{Instant Message Whispering via Covert Channels}
+\subtitle{Qualitätssicherungsdokument}
+\subsubtitle{
+	\titlerow{Gruppe NR}{
+		Jan Simon Bunten <mail@xyz.de>\\
+		Simon Kadel <mail@xyz.de>\\
+		Martin Sven Oehler <mail@xyz.de>\\
+		Arne Sven Stühlmeier <mail@xyz.de>}
+	\titlerow{Teamleiter}{Philipp Plöhn <mail@xyz.de>}
+	\titlerow{Auftraggeber}{
+		Titel Carlos Garcia <carlos.garcia@cased.de>\\
+		FG Telekooperation\\
+		FB 20 - Informatik}
+	\titlerow{Abgabedatum}{15.2.2014}}
+\institution{Bachelor-Praktikum WS 2013/2014\\Fachbereich Informatik}
+
+\begin{document}
+
+	\maketitle
+	\tableofcontents 
+	
+	\chapter{Einleitung}
+		Kurze Projektbeschreibung
+	
+	\chapter{Qualitäsziele}
+	\section{Modularität} ist kein auf den Folien genanntes QS-Ziel. Stattdessen vllt. Benutzbarkeit? Maßnahme wäre dann u.a. Modularität, aber auch noch mehr.
+	\section{Verlässlichkeit}
+        \section{Testbarkeit}
+    		Aus derl Verlässlichkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vorallem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concern). Das erreichen wir, indem wir während der Entwicklung alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
+    		
+    		Es ist sehr schwierig, Testbarkeit durch irgendwelche Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, dass dieses Qualitätsmerkmal mit bedenkt. Ähnlich wie die Modularität muss es beim Entwurf mit bedacht werden und während der Entwicklung stets überprüft werden.
+    		
+    		Die einfachste Möglichkeit die Testbarkeit zu überprüfen ist es, Tests zu schreiben und dabei festzustellen, wie gut das möglich ist. Wir werden während der Entwicklung frühzeitig anfangen, System- und Integrationstests zu schreiben und zu automatisieren. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder garnicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten.
+	        
+	
+\appendix	
+	\chapter{Anhang}
+		(Am Ende des Projekts nachzureichen)\\
+		Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
+		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+	
+\end{document}
