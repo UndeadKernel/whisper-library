@@ -54,18 +54,18 @@ Maßnahmen zum Aufdecken von Covert Channels zu entwickeln.
 	\chapter{Qualitäsziele}
 
 	\section{Zuverlässigkeit}
-		Der Benutzer eine Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und das tut, was in der Dokumentation festgehalten ist. Deshalb ist Zuverlässigkeit ist für eine Bibliothek unbedingt notwendig.
+		Der Benutzer einer Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und macht, was in der Dokumentation festgehalten ist. Deshalb ist Zuverlässigkeit für eine Bibliothek unbedingt notwendig.
 		
 		Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens 2 Tests. Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM- Servers eingetragen.
 		
-		Außerdem führen wir Code Reviews durch. Nach Abschluss eines Use Cases wird der Code von einem an diesem Use Case unbeteiligten Teammitglied mit Hilfe des Tools ... überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
+		Außerdem führen wir Code Reviews durch. Nach Abschluss eines Use Cases wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
 		
         \section{Testbarkeit}
-    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vorallem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concern). Das erreichen wir, indem wir während der Entwicklung alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
+    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vorallem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
     		
-    		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, dass dieses Qualitätsmerkmal mit bedenkt.Es muss beim Entwurf mit bedacht werden und während der Entwicklung stets überprüft werden.
+    		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
     		
-    		Die einfachste Möglichkeit die Testbarkeit zu überprüfen ist es, Tests zu schreiben und dabei festzustellen, wie gut das möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder garnicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten.
+    		Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten.
 	        
 	
 \appendix	
