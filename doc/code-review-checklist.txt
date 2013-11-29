@@ -1,0 +1,18 @@
+Funktion
+Ist das Programm lauffähig?
+Werden alle Tests erfüllt?
+Ist der Programmfluss korrekt? (Endlosschleifen, ..)
+Deckt die Lösung (nur) die Aufgabe ab? (separation of concerns)
+
+
+Lösungsweg
+Ist der Code effizient? (überflüssige Abfragen/Variablen/Schleifen)
+Ist das Programmdesign gut gewählt? (globale Variablen, Redundanz, Methoden)
+
+Dokumentation
+Sind die Kommentare ausreichen und verständlich?
+Ist die Dokumentation einheitlich?
+
+Präsentation
+Ist der Code strukturiert? (Einrückung, eine Anweisung pro Zeile)
+Ist die Benennung der Methoden sinnvoll?
