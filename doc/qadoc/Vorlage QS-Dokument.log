@@ -1,7 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.4.26)  29 NOV 2013 09:03
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.4.29)  29 NOV 2013 10:54
 entering extended mode
-**C:/BPRep/doc/qadoc/Vorlage*QS-Dokument.tex
-("C:/BPRep/doc/qadoc/Vorlage QS-Dokument.tex"
+**C:/Users/Martin/Documents/Studium/Bachelorpraktikum/repository/scm-ssi-studen
+t-whisper-library/doc/qadoc/Vorlage*QS-Dokument.tex
+
+("C:/Users/Martin/Documents/Studium/Bachelorpraktikum/repository/scm-ssi-studen
+t-whisper-library/doc/qadoc/Vorlage QS-Dokument.tex"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -32,24 +35,23 @@ Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 Class tudreport Info: Option `paper=a4report' selected. on input line 142.
 Class tudreport Info: Option `paper=a4report' selected. on input line 144.
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrreprt.cls
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\scrreprt.cls"
 Document Class: scrreprt 2012/07/29 v3.11b KOMA-Script document class (report)
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrkbase.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\scrkbase.sty"
 Package: scrkbase 2012/07/29 v3.11b KOMA-Script package (KOMA-Script-dependent 
 basics and keyval usage)
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrbase.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\scrbase.sty"
 Package: scrbase 2012/07/29 v3.11b KOMA-Script package (KOMA-Script-independent
  basics and keyval usage)
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrlfile.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\scrlfile.sty"
 Package: scrlfile 2012/06/15 v3.12 KOMA-Script package (loading files)
 
 Package scrlfile, 2012/06/15 v3.12 KOMA-Script package (loading files)
                   Copyright (C) Markus Kohm
 
-)))
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\tocbasic.sty
+))) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\tocbasic.sty"
 Package: tocbasic 2012/04/04 v3.10b KOMA-Script package (handling toc-files)
 )
 Package tocbasic Info: omitting babel extension for `toc'
@@ -65,12 +67,11 @@ Class scrreprt Info: File `scrsize11pt.clo' used instead of
 (scrreprt)           file `scrsize11.clo' to setup font sizes on input line 136
 7.
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrsize11pt.cl
-o
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\scrsize11pt.clo"
 File: scrsize11pt.clo 2012/07/29 v3.11b KOMA-Script font size class option (11p
 t)
 )
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\typearea.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\koma-script\typearea.sty"
 Package: typearea 2012/07/29 v3.11b KOMA-Script package (type area)
 
 Package typearea, 2012/07/29 v3.11b KOMA-Script package (type area)
@@ -130,7 +131,7 @@ LaTeX Info: Redefining \addtolength on input line 77.
 Package: tudcolours 2009/03/12 1.9 Clemens von Loewenich's and Joe Werner's TUD
 -Design package
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\xcolor\xcolor.sty"
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
@@ -270,21 +271,21 @@ Package: fix-cm 2006/09/13 v1.1m fixes to LaTeX
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding TS1 on input line 42.
 ))
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mathdesign.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mathdesign.sty"
 Package: mathdesign 2013/02/01 v2.25 Math Design Project
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdbch.cfg
-)
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdbch.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\mdbch.cfg")
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\mdbch.sty"
 Package: mdbch 2013/02/01 v2.25 bitstream bitstream charter + mdbch (Math Desig
 n Project)
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdfont.def
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdfont.def"
 File: mdfont.def 2013/02/01 v2.25 (Math Design Project)
 )
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdsffont.def
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdsffont.def"
 File: mdsffont.def 2013/02/01 v2.25 (Math Design Project)
 )
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdttfont.def
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdttfont.def"
 File: mdttfont.def 2013/02/01 v2.25 (Math Design Project)
 )
 \symmdcal=\mathgroup4
@@ -340,8 +341,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathcal' in version `normal'
 LaTeX Font Info:    Try loading font information for T1+mdbch on input line 185
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\t1mdbch.f
-d
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\t1mdbch.fd"
 File: t1mdbch.fd 2013/02/01 Fontinst v1.933 font definitions for T1/mdbch.
 )
 LaTeX Font Info:    Redeclaring math accent \widetilde on input line 448.
@@ -356,7 +356,8 @@ LaTeX Font Info:    Overwriting symbol font `mathdesignB' in version `bold'
 LaTeX Font Info:    Redeclaring math accent \widetilde on input line 531.
 LaTeX Font Info:    Redeclaring math accent \widehat on input line 532.
 \rulethickness=\skip50
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\fontenc.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\fontenc.sty"
 Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1enc.def"
@@ -401,7 +402,7 @@ Package graphics Info: Driver file: pdftex.def on input line 91.
 \Gin@req@height=\dimen105
 \Gin@req@width=\dimen106
 )
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\eso-pic\eso-pic.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\eso-pic\eso-pic.sty"
 Package: eso-pic 2010/10/06 v2.0c eso-pic (RN)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\atbegshi.sty"
@@ -467,7 +468,7 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.cfg")))
 \TUD@footparindent=\skip77
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\fancyhdr\fancyhdr.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.sty"
 \fancy@headwidth=\skip78
 \f@ncyO@elh=\skip79
 \f@ncyO@erh=\skip80
@@ -482,7 +483,7 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 Package: tudheading 2009/12/31 1.17 Clemens von Loewenich's and Joe Werner's TU
 D-Design package
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\titlesec\titlesec.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\titlesec\titlesec.sty"
 Package: titlesec 2011/12/15 v2.10.0 Sectioning titles
 \ttl@box=\box28
 \beforetitleunit=\skip87
@@ -511,7 +512,7 @@ File: tudheading.def 2009/07/14
 \TUD@subsecind=\skip97
 \TUD@subsubsecind=\skip98
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\titlesec\block.tss
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\titlesec\block.tss"
 File: block.tss 2011/12/15
 ))
 ("C:\Program Files\tuddesign\tex\latex\tuddesign\base\tudredef.sty"
@@ -525,7 +526,7 @@ s TUD-Design package
 \TUD@sponsorlogo=\box30
 \TUD@titleskip=\skip99
 ))
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\german\ngerman.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\german\ngerman.sty"
 v2.5e 1998-07-08
 Package: ngerman 1998/07/08 v2.5e Support for writing german texts (br)
 \grmnU@D=\dimen120
@@ -547,17 +548,18 @@ File: latin1.def 2008/03/30 v1.1d Input encoding file
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\helvet.sty"
 Package: helvet 2005/04/12 PSNFSS-v9.2a (WaS) 
 )
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\sauerj\parcolumns.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\sauerj\parcolumns.sty"
 Package: parcolumns 2004/11/25 v1.2 Typeset multiple parallel columns
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\sauerj\processkv.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\sauerj\processkv.sty"
 Package: processkv 2004/08/09 v1.0.1 process key=value lists
 )
 \pc@columnctr=\count100
 \pc@columncount=\count101
 \pc@everypar=\toks21
 )
-("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.aux")
+("C:\Users\Martin\Documents\Studium\Bachelorpraktikum\repository\scm-ssi-studen
+t-whisper-library\doc\qadoc\Vorlage QS-Dokument.aux")
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
 LaTeX Font Info:    ... okay on input line 33.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
@@ -575,14 +577,14 @@ LaTeX Font Info:    ... okay on input line 33.
 LaTeX Font Info:    Checking defaults for MDA/cmr/m/n on input line 33.
 LaTeX Font Info:    Try loading font information for MDA+cmr on input line 33.
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdacmr.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdacmr.fd"
 File: mdacmr.fd 
 )
 LaTeX Font Info:    ... okay on input line 33.
 LaTeX Font Info:    Checking defaults for MDB/cmr/m/n on input line 33.
 LaTeX Font Info:    Try loading font information for MDB+cmr on input line 33.
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbcmr.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbcmr.fd"
 File: mdbcmr.fd 
 )
 LaTeX Font Info:    ... okay on input line 33.
@@ -590,7 +592,7 @@ LaTeX Font Info:    Try loading font information for T1+5ch on input line 33.
 
 ("C:\Program Files\tuddesign\tex\latex\tex-tudfonts\softmake\charter\t15ch.fd"
 File: t15ch.fd 2008/06/23 Fontinst v1.927 font definitions for T1/5ch.
-) (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
+) ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count102
 \scratchdimen=\dimen121
@@ -668,51 +670,43 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 31.78784pt on input line 36.
 LaTeX Font Info:    Try loading font information for OT1+mdbch on input line 36
 .
-
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\ot1mdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\ot1mdbch.fd"
 File: ot1mdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OT1/mdbch.
 )
 LaTeX Font Info:    Try loading font information for OML+mdbch on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omlmdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\omlmdbch.fd"
 File: omlmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OML/mdbch.
 )
 LaTeX Font Info:    Try loading font information for OMS+mdbch on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omsmdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\omsmdbch.fd"
 File: omsmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OMS/mdbch.
 )
 LaTeX Font Info:    Try loading font information for OMX+mdbch on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omxmdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\omxmdbch.fd"
 File: omxmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OMX/mdbch.
 )
 LaTeX Font Info:    Try loading font information for MDA+mdbch on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdamdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\mdamdbch.fd"
 File: mdamdbch.fd 2013/02/01 Fontinst v1.933 font definitions for MDA/mdbch.
 )
 LaTeX Font Info:    Try loading font information for MDB+mdbch on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdbmdbch.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdbch\mdbmdbch.fd"
 File: mdbmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for MDB/mdbch.
 )
 LaTeX Font Info:    Try loading font information for OML+mdput on input line 36
 .
 
-(C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdput\omlmdput.
-fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathdesign\mdput\omlmdput.fd"
 File: omlmdput.fd 2013/02/01 Fontinst v1.933 font definitions for OML/mdput.
 )
 LaTeX Font Info:    Font shape `T1/phv/mb/n' in size <12.6> not available
@@ -742,7 +736,8 @@ ine 36.
 Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 36.
 Package parcolumns Info: Width of column 2 calculated as 388.41792pt on input l
 ine 36.
- <tud_logo.pdf, id=1, 157.58875pt x 63.23625pt>
+
+<tud_logo.pdf, id=1, 157.58875pt x 63.23625pt>
 File: tud_logo.pdf Graphic file (type pdf)
  <use tud_logo.pdf>
 Package pdftex.def Info: tud_logo.pdf used on input line 36.
@@ -759,9 +754,10 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 Non-PDF special ignored!
 
 
-Non-PDF special ignored!{C:/Users/Simon/AppData/Local/MiKTeX/2.9/pdftex/config/
-pdftex.map} <C:/Program Files/tuddesign/tex/latex/tuddesign/logo/tud_logo.pdf>]
-("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.toc")
+Non-PDF special ignored!{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C
+:/Program Files/tuddesign/tex/latex/tuddesign/logo/tud_logo.pdf>]
+("C:\Users\Martin\Documents\Studium\Bachelorpraktikum\repository\scm-ssi-studen
+t-whisper-library\doc\qadoc\Vorlage QS-Dokument.toc")
 \tf@toc=\write3
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 8.82996pt on input line 38.
@@ -780,21 +776,23 @@ Kapitel 2.
 Anhang A.
 [4
 
-] ("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.aux") ) 
+]
+("C:\Users\Martin\Documents\Studium\Bachelorpraktikum\repository\scm-ssi-studen
+t-whisper-library\doc\qadoc\Vorlage QS-Dokument.aux") ) 
 Here is how much of TeX's memory you used:
  7147 strings out of 493921
- 110250 string characters out of 3144876
+ 110424 string characters out of 3144873
  192850 words of memory out of 3000000
  10257 multiletter control sequences out of 15000+200000
  44991 words of font info for 58 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 59i,12n,75p,539b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTe
-X 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/tuddesign/fonts/type1/s
-oftmake/charter/5chr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/h
-elvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/
-uhvr8a.pfb>
-Output written on "Vorlage QS-Dokument.pdf" (5 pages, 72167 bytes).
+ 59i,12n,75p,625b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files (x86)/
+MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/tuddesign/fonts/ty
+pe1/softmake/charter/5chr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/
+urw/helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helv
+etic/uhvr8a.pfb>
+Output written on "Vorlage QS-Dokument.pdf" (5 pages, 73119 bytes).
 PDF statistics:
  38 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
