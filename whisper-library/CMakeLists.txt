@@ -18,4 +18,5 @@ add_library(whisper-library SHARED
 
 add_definitions(-DWHISPER_BUILD)
 
-install(TARGETS whisper-library RUNTIME DESTINATION .)
+install(TARGETS whisper-library RUNTIME DESTINATION .
+				LIBRARY DESTINATION .)
