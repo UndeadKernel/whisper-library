@@ -1,0 +1,77 @@
+\documentclass[colorback,accentcolor=tud2a,12pt,paper=a4]{tudreport}
+
+\usepackage{ngerman}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{helvet}
+\usepackage{parcolumns}
+
+\newcommand{\titlerow}[2]{
+	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
+		\colchunk[1]{#1:} 
+		\colchunk[2]{#2}
+	\end{parcolumns}
+	\vspace{0.2cm}
+}
+
+\title{Instant Message Whispering via Covert Channels}
+\subtitle{Qualitätssicherungsdokument}
+\subsubtitle{
+	\titlerow{Gruppe 35}{
+		Jan Simon Bunten <jan\_simon.bunten@stud.tu-darmstadt.de>\\
+		Simon Kadel <simon.kadel@stud.tu-darmstadt.de>\\
+		Martin Sven Oehler <martin\_sven.oehler@stud.tu-darmstadt.de>\\
+		Arne Sven Stühlmeier <arne\_sven.stuehlmeier@stud.tu-darmstadt.de>}
+	\titlerow{Teamleiter}{Philipp Plöhn <philipp.ploen@std.tu-darmstadt.de>}
+	\titlerow{Auftraggeber}{
+		Titel Carlos Garcia <carlos.garcia@cased.de>\\
+		FG Telekooperation\\
+		FB 20 - Informatik}
+	\titlerow{Abgabedatum}{15.2.2014}}
+\institution{Bachelor-Praktikum WS 2013/2014\\Fachbereich Informatik}
+
+\begin{document}
+	\maketitle
+	\tableofcontents 
+	
+	\chapter{Einleitung}
+		Ziel des Projekts ist es, eine Bibliothek zu entwickeln, die es ermöglicht, unentdeckt 	Kommunikationskanäle zu einem oder mehreren anderen Teilnehmern zu öffnen. Um die Kommunikation vor Dritten zu verstecken, werden sogennante Covert Channels verwendet.
+
+		\section*{Covert Channels}
+		Covert Channels sind Kommunikationskanäle, die von Außen nicht als solche erkennbar sind. In der Literatur sind viele unterschiedliche Covert Channels bekannt.
+		
+		Im Unterschied zur Kryptographie, die nur die Daten eines Kanals verbirgt, wird der ganze Kanal verborgen. Dadurch wird es Dritten erschwert, die Verkehrsdaten der Verbindung (Zeitpunkt, Dauer) auszuwerten. Ist es möglich die Pakete einer bestehenden Verbindung anderer Teilnehmer des Netzwerks zu verändern, kann damit auch die Identität der Nutzer verborgen werden.
+
+		Wie bei offenen Kanälen ist es auch bei Covert Channels von großer Bedeutung, wie groß der Datendurchsatz ist und wie zuverlässig die Informationen übertragen werden. Vor allem der Datendurchsatz ist bei Covert Channels üblicherweise stark beschränkt.
+
+		\section*{Implementierung}
+		Das Hauptziel ist, ein Framework zu implementieren, das notwendige Funktionen für die Covert Channels bereit stellt. Dazu gehören das Öffnen und Schließen von Covert Channels, das Senden von selbst erstellten Paketen, das Empfangen von Paketen und das Anzeigen von Statistiken der geöffneten Kanäle. Die eigentlichen Covert Channels können als Plugins hinzugefügt werden. So soll sichergestellt werden, dass die Bibliothek für unterschiedliche Covert Channels genutzt werden kann.
+		
+		Neben dem Frameword werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Zuerst ein einfacher Channel, der darauf beruht Informationen im Header eines TCP oder UDP Pakets zu verstecken. Als zweites einen komplizierterer Covert Channel aus der Literatur. Wenn möglich soll dann noch ein dritter von uns entwickelter Covert Channel implementiert werden.
+
+		Das Projekt soll als Open-Source veröffentlich werden, um es anderen zu ermöglichen die Bibliothek in ihren Projekten zu verwenden oder die Bibliothek weiterzuentwinkeln. Wir werden eine Beispielanwedung in der Art eines Instant Messagers entwickeln, um die Funktionen zu demonstrieren. 
+	
+	\chapter{Qualitäsziele}
+
+		\section{Zuverlässigkeit}
+		Der Benutzer einer Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und macht, was in der Dokumentation festgehalten ist. Deshalb ist Zuverlässigkeit für eine Bibliothek unbedingt notwendig.
+		
+		Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens 2 Tests. Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM- Servers eingetragen.
+		
+		Außerdem führen wir Code Reviews durch. Nach Abschluss eines Use Cases wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
+		
+        	\section{Testbarkeit}
+    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vorallem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
+    		
+    		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
+    		
+    		Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten.
+	        
+	
+%\appendix	
+%	\chapter{Anhang}
+%		(Am Ende des Projekts nachzureichen)\\
+%		Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
+%		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+	
+\end{document}
