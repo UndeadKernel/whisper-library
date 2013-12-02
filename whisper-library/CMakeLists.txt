@@ -1,10 +1,12 @@
 set(SOURCES
 	src/socketconnector.cpp
+	src/encoder.cpp
 )
 
 set(HEADERS
 	include/whisper-library/socketconnector.hpp
 	include/whisper-library/common.hpp
+	include/whisper-library/encoder.hpp
 )
 
 # Boost library.
