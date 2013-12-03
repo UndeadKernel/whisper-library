@@ -2,18 +2,13 @@
 
 #ifndef TCP_PACKAGE
 #define TCP_PACKAGE
-<<<<<<< HEAD
 #endif
-=======
-#define maxUInt = 65000;
-#define uint unsigned int
->>>>>>> changed ifdef to match code conventions
 
 #include "common.hpp"
 
 namespace whisperLibrary {
 
-  class WHISPERAPI TcpPackage { 
+  class TcpPackage { 
   
   public:
 	  TcpPackage();
@@ -42,29 +37,29 @@ namespace whisperLibrary {
 	  int get_checksum();
 	  int* get_options();
 	  
-	  void set_sourcePort(int val); // 16bit
-	  void set_destPort(int val); // 16 bit
+	  int set_sourcePort(); // 16bit
+	  int set_destPort(); // 16 bit
 	  
-	  void set_sequenceNumber(int val); // 32 bit
-	  void set_acknowlageNumber(int val); // 32 bit
+	  int set_sequenceNumber(); // 32 bit
+	  int set_acknowlageNumber(); // 32 bit
 	  
-	  void set_dataOffset(int val); // 4 bit
-	  void set_reserved(int val); // 3 bit
+	  int set_dataOffset(); // 4 bit
+	  int set_reserved(); // 3 bit
 	  
-	  void set_flags(int val); // 9 bit
-	  void set_ns(bool val);
-	  void set_cwr(bool val);
-	  void set_ece(bool val);
-	  void set_urg(bool val);
-	  void set_ack(bool val);
-	  void set_psh(bool val);
-	  void set_rst(bool val);
-	  void set_syn(bool val);
-	  void set_fin(bool val);
+	  int set_flags(); // 9 bit
+	  bool set_ns();
+	  bool set_cwr();
+	  bool set_ece();
+	  bool set_urg();
+	  bool set_ack();
+	  bool set_psh();
+	  bool set_rst();
+	  bool set_syn();
+	  bool set_fin();
 
-	  void set_windowSize(int val);
-	  void set_checksum(int val);
-	  void set_options(int* val);
+	  int set_windowSize();
+	  int set_checksum();
+	  int *set_options();
 	  
   
   private:
@@ -89,7 +84,6 @@ namespace whisperLibrary {
 
 	  int windowSize;
 	  int checksum;
-	  int* options;
+	  int  options[10];
   };
 }
-#endif
