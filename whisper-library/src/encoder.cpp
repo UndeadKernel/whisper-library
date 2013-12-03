@@ -3,14 +3,39 @@
 
 #include <encoder.hpp>
 
+using namespace std;
+
 namespace whisperLibrary {
+
 
 	Encoder::Encoder() {
 	
 	}
 	
-	int Encoder::encodePackage() {
-		return 0;
+	vector<bitset<6>> Encoder::encodeMessage(string msg) {
+		string bitstream = "";
+
+		for (unsigned int i = 0; i < msg.length(); ++i) {
+			bitset<8> bit(msg[i]);
+			bitstream += bit.to_string();
+		}
+
+		vector<bitset<6>> vec;
+		unsigned int i = 0;
+		while (i + 6 < bitstream.length()) {
+			bitset<6> bit(bitstream.substr(i, 6));
+			vec.push_back(bit);
+
+			i += 6;
+		}
+
+		string zeros = "";
+		for (unsigned int i = 0; i < bitstream.length() - i; i++) {
+			zeros += "0";
+		}
+
+		vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - 1 - i) + zeros));
+		return vec;
 	}
 
 }
