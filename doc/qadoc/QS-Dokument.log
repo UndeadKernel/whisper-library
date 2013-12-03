@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.4.26)  29 NOV 2013 12:48
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.4.26)  3 DEC 2013 11:43
 entering extended mode
-**C:/BPRep/doc/qadoc/Vorlage*QS-Dokument.tex
-("C:/BPRep/doc/qadoc/Vorlage QS-Dokument.tex"
+**C:/BPRep/doc/qadoc/QS-Dokument.tex
+(C:/BPRep/doc/qadoc/QS-Dokument.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -557,7 +557,7 @@ Package: processkv 2004/08/09 v1.0.1 process key=value lists
 \pc@columncount=\count101
 \pc@everypar=\toks21
 )
-("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.aux")
+(C:\BPRep\doc\qadoc\QS-Dokument.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
 LaTeX Font Info:    ... okay on input line 33.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
@@ -663,52 +663,52 @@ File: t15ch.fd 2008/06/23 Fontinst v1.927 font definitions for T1/5ch.
 \TUD@tmp@height=\skip116
 \TUD@tmp@depth=\skip117
 LaTeX Font Info:    Font shape `T1/phv/mb/n' in size <36> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 36.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 35.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 31.78784pt on input line 36.
-LaTeX Font Info:    Try loading font information for OT1+mdbch on input line 36
+(Font)              scaled to size 31.78784pt on input line 35.
+LaTeX Font Info:    Try loading font information for OT1+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\ot1mdbch.
 fd
 File: ot1mdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OT1/mdbch.
 )
-LaTeX Font Info:    Try loading font information for OML+mdbch on input line 36
+LaTeX Font Info:    Try loading font information for OML+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omlmdbch.
 fd
 File: omlmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OML/mdbch.
 )
-LaTeX Font Info:    Try loading font information for OMS+mdbch on input line 36
+LaTeX Font Info:    Try loading font information for OMS+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omsmdbch.
 fd
 File: omsmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OMS/mdbch.
 )
-LaTeX Font Info:    Try loading font information for OMX+mdbch on input line 36
+LaTeX Font Info:    Try loading font information for OMX+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\omxmdbch.
 fd
 File: omxmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for OMX/mdbch.
 )
-LaTeX Font Info:    Try loading font information for MDA+mdbch on input line 36
+LaTeX Font Info:    Try loading font information for MDA+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdamdbch.
 fd
 File: mdamdbch.fd 2013/02/01 Fontinst v1.933 font definitions for MDA/mdbch.
 )
-LaTeX Font Info:    Try loading font information for MDB+mdbch on input line 36
+LaTeX Font Info:    Try loading font information for MDB+mdbch on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdbch\mdbmdbch.
 fd
 File: mdbmdbch.fd 2013/02/01 Fontinst v1.933 font definitions for MDB/mdbch.
 )
-LaTeX Font Info:    Try loading font information for OML+mdput on input line 36
+LaTeX Font Info:    Try loading font information for OML+mdput on input line 35
 .
 
 (C:\Users\Simon\AppData\Roaming\MiKTeX\2.9\tex\latex\mathdesign\mdput\omlmdput.
@@ -716,44 +716,44 @@ fd
 File: omlmdput.fd 2013/02/01 Fontinst v1.933 font definitions for OML/mdput.
 )
 LaTeX Font Info:    Font shape `T1/phv/mb/n' in size <12.6> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 36.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 35.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 11.12575pt on input line 36.
+(Font)              scaled to size 11.12575pt on input line 35.
 \@TUD@titlelines=\count108
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.15445pt on input line 36.
+(Font)              scaled to size 10.15445pt on input line 35.
 LaTeX Font Info:    Font shape `T1/phv/mb/n' in size <11.5> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 36.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 35.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 10.15445pt on input line 36.
+(Font)              scaled to size 10.15445pt on input line 35.
 \pc@column@1=\box38
 \pc@column@width@1=\dimen123
 \pc@column@2=\box39
 \pc@column@width@2=\dimen124
-Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 36.
+Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 35.
 Package parcolumns Info: Width of column 2 calculated as 388.41792pt on input l
-ine 36.
-Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 36.
+ine 35.
+Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 35.
 Package parcolumns Info: Width of column 2 calculated as 388.41792pt on input l
-ine 36.
-Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 36.
+ine 35.
+Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 35.
 Package parcolumns Info: Width of column 2 calculated as 388.41792pt on input l
-ine 36.
-Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 36.
+ine 35.
+Package parcolumns Info: Width of column 1 set to 72.1248pt on input line 35.
 Package parcolumns Info: Width of column 2 calculated as 388.41792pt on input l
-ine 36.
+ine 35.
  <tud_logo.pdf, id=1, 157.58875pt x 63.23625pt>
 File: tud_logo.pdf Graphic file (type pdf)
  <use tud_logo.pdf>
-Package pdftex.def Info: tud_logo.pdf used on input line 36.
+Package pdftex.def Info: tud_logo.pdf used on input line 35.
 (pdftex.def)             Requested size: 134.92238pt x 62.59605pt.
 File: tud_logo.pdf Graphic file (type pdf)
 
 <use tud_logo.pdf>
-Package pdftex.def Info: tud_logo.pdf used on input line 36.
+Package pdftex.def Info: tud_logo.pdf used on input line 35.
 (pdftex.def)             Requested size: 134.92238pt x 62.59605pt.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.18097pt on input line 36.
+(Font)              scaled to size 6.18097pt on input line 35.
 \@TUD@logolines=\count109
  [0
 Non-PDF special ignored!
@@ -761,10 +761,10 @@ Non-PDF special ignored!
 
 Non-PDF special ignored!{C:/Users/Simon/AppData/Local/MiKTeX/2.9/pdftex/config/
 pdftex.map} <C:/Program Files/tuddesign/tex/latex/tuddesign/logo/tud_logo.pdf>]
-("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.toc")
+(C:\BPRep\doc\qadoc\QS-Dokument.toc)
 \tf@toc=\write3
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.82996pt on input line 38.
+(Font)              scaled to size 8.82996pt on input line 37.
  [1
 
 
@@ -776,27 +776,23 @@ Kapitel 1.
 Kapitel 2.
 [3
 
-]
-Anhang A.
-[4
-
-] ("C:\BPRep\doc\qadoc\Vorlage QS-Dokument.aux") ) 
+] (C:\BPRep\doc\qadoc\QS-Dokument.aux) ) 
 Here is how much of TeX's memory you used:
  7147 strings out of 493921
- 110250 string characters out of 3144876
- 192850 words of memory out of 3000000
+ 110154 string characters out of 3144876
+ 192978 words of memory out of 3000000
  10257 multiletter control sequences out of 15000+200000
  44991 words of font info for 58 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 59i,12n,75p,536b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files (x86)/MiKTe
-X 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/tuddesign/fonts/type1/s
-oftmake/charter/5chr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/h
-elvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/
-uhvr8a.pfb>
-Output written on "Vorlage QS-Dokument.pdf" (5 pages, 72887 bytes).
+ 59i,12n,75p,528b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files (x86)/MiKTeX 2.9/font
+s/enc/dvips/fontname/8r.enc}<C:/Program Files/tuddesign/fonts/type1/softmake/ch
+arter/5chr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uh
+vb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb
+>
+Output written on QS-Dokument.pdf (4 pages, 72736 bytes).
 PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
+ 35 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  18 words of extra memory for PDF output out of 10000 (max. 10000000)
 

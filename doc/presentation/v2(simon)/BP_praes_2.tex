@@ -11,11 +11,11 @@
 
 	% Titel
 	\title{Instant Message Whispering via Covert Channels}
-	\subtitle{Simon Kadel}
+	\subtitle{Simon Kadel, Gruppe 35 }
 	
  	% Fußzeile
-	\author{Simon Kadel}
-	\date{22. November 2013}
+	\author{S. Kadel, J.S. Bunten, M.S. Oehler, A.S. Stühlmeier}
+	\date{3. Dezember 2013}
 	\logo{\includegraphics{../Bilder/tklogo.jpg}}
 
 \begin{titleframe}
@@ -25,40 +25,44 @@
 	\end{figure}
 \end{titleframe}
 
-\begin{frame}
-	\frametitle{Einführung}
-	
-	\begin{minipage}{.55\linewidth}
-	Verstecktes Instant Messaging
-	\begin{itemize}
-		\item Senden von Nachrichten durch Firewalls
-		\item Vermeiden von Entdeckung, Abhören und Abfangen
-	\end{itemize}	
-	
-	\end{minipage}
-	\hfill
-	\begin{minipage}{.4\linewidth}
-	{\includegraphics[scale=.3]{../Bilder/Firewall.jpg}}
-	\end{minipage}
-	
-	\begin{description}
-		\item {}
-		\item <2>[Kryptographie] Verschlüsselt die Daten, Kanal bleibt sichtbar
-		\item<2>[Covert Channels] Versteckt den Kanal
-	\end{description}
-	
-\end{frame}
+%\begin{frame}
+%	\frametitle{Einführung}
+%	
+%	\begin{minipage}{.55\linewidth}
+%	Verstecktes Instant Messaging
+%	\begin{itemize}
+%		\item Senden von Nachrichten durch Firewalls
+%		\item Vermeiden von Entdeckung, Abhören und Abfangen
+%	\end{itemize}	
+%	
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}{.4\linewidth}
+%	{\includegraphics[scale=.3]{../Bilder/Firewall.jpg}}
+%	\end{minipage}
+%	
+%	\begin{description}
+%		\item {}
+%		\item{}
+%		\item <2>\textbf{Kryptographie} Verschlüsselt die Daten, Kanal bleibt sichtbar
+%		\item<2>\textbf{Covert Channels} Versteckt den Kanal
+%	\end{description}
+%	
+%\end{frame}
 
 \begin{frame}
 
 	\frametitle{Projektbeschreibung}
+	\textbf{Cover Channel } Kommunikation kann nicht bemerkt werden\\
+	\vspace{.5cm}	
+	\only<2>{
 	Programmieren einer Bibliothek für Covert Channels
 	\begin{itemize}
-		\item <2->öffnet und verwendet Covert Channels
-		\item <3->Implementierung eines Frameworks
-		\item <4->konkrete Covert Channels als Plugin
-		\item <5->Veröffentlichung als Open Source
-	\end{itemize}
+		\item öffnet und verwendet Covert Channels
+		\item Implementierung eines Frameworks
+		\item konkrete Covert Channels als Plugin
+		\item Veröffentlichung als Open Source
+	\end{itemize}}
 	\begin{center}
 	%\parpic[r]{\includegraphics[scale=0.25]{Bilder/framework-puzzle.png}}
 	\end{center}
@@ -66,25 +70,36 @@
 \end{frame}
 
 \begin{frame}
+	\frametitle{Top-Level Design}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.4]{../Bilder/top-level-design.png}
+		\end{figure}
+\end{frame}
+
+\begin{frame}
 
 	\frametitle{QS-Ziele und ihre Sichherstellung}
 	\begin{itemize}
-		\item <1->\textbf{Modularität} \\
+%		\item <1->\textbf{Modularität} \\
+%		\only<2>
+%		{\begin{itemize}
+%			\item Modulares Design des Framework
+%			\item Feste, dokumentierte Modulschnittstellen
+%		\end{itemize}}
+		\item <1->\textbf{Zuverlässigkeit} \\
 		\only<2>
 		{\begin{itemize}
-			\item Modulares Design des Framework
-			\item Feste, dokumentierte Modulschnittstellen
+			\item automatisierte Tests mit Boost.Test
+			\item Ticket-System im SCM-Server
+			\item Code Reviews
 		\end{itemize}}
-		\item <3->\textbf{Zuverlässigkeit} \\
+		\item <1->\textbf{Testbarkeit}	\\
 		\only<4>
 		{\begin{itemize}
-			\item automatisierte Tests
-		\end{itemize}}
-		\item <5->\textbf{Testbarkeit}	\\
-		\only<6>
-		{\begin{itemize}
-			\item klare, getrennte Verantwortlichkeiten
-			\item Isolierbarkeit durch Module
+			\item Zuteilung der Aufgaben an Module
+			\item eigene Tests schreiben
+			\item Architektur bei Problemen anpassen
 		\end{itemize}}
 	\end{itemize}
 
@@ -93,26 +108,34 @@
 \begin{frame}
 	\frametitle{Zeitaufwand}
 	\begin{center}
-		\includegraphics[scale=0.5]{../Bilder/zeitsummen2.png} \newline
+		\includegraphics[scale=0.43]{../Bilder/zeitsummen2.png} \newline
 	\end{center}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Zeitmanagement}
-	\begin{center}
-		\includegraphics[scale=.5]{../Bilder/iteration2.png}
-	\end{center}
-
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.4]{../Bilder/iteration2.png}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.4]{../Bilder/velocity2.png}
+		\end{figure}
 \end{frame}
 
 \begin{frame}
 \frametitle{Zusammenfassung}
+	\vspace{.7cm}
+	\hfill
+	\begin{minipage}{.85\linewidth}
 	\begin{itemize}
 		\item Covert Channels zur versteckten Kommunikation
-		\item Entwicklung einer Bibliothek 
-		\item Sehr modular aufgebaut
+		\item Entwicklung einer modularen Bibliothek 
+		\item nutzbar für möglichst viele Covert Channels
 	\end{itemize}
+	\end{minipage}
 \end{frame}
 
 
