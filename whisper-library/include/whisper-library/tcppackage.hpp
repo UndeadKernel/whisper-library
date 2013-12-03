@@ -8,7 +8,7 @@
 
 namespace whisperLibrary {
 
-  class TcpPackage { 
+  class WHISPERAPI TcpPackage { 
   
   public:
 	  TcpPackage();
