@@ -26,7 +26,9 @@ target_link_libraries(whisper-library
     ${Boost_LIBRARIES}
 )
 
-
+if (UNIX)
+	add_definitions (-DWHISPERSTATIC)
+endif (UNIX)
 
 add_definitions(-DWHISPER_BUILD)
 
