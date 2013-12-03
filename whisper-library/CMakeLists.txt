@@ -1,10 +1,12 @@
 set(SOURCES
 	src/socketconnector.cpp
+	src/tcppackage.cpp
 )
 
 set(HEADERS
 	include/whisper-library/socketconnector.hpp
 	include/whisper-library/common.hpp
+	include/whisper-library/tcppackage.hpp
 )
 
 # Boost library.
@@ -25,6 +27,10 @@ add_library(whisper-library SHARED
 target_link_libraries(whisper-library
     ${Boost_LIBRARIES}
 )
+
+if (UNIX)
+	add_definitions(-DWHISPERSTATIC)
+endif (UNIX)
 
 
 
