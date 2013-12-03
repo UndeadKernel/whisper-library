@@ -1,9 +1,6 @@
 //author: Simon Kadel
 
-
-
-
-#ifdef WHISPERSTATIC 
+#ifndef WIN32 
 #	define WHISPERAPI
 #else 
 #	ifdef WHISPER_BUILD

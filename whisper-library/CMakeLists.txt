@@ -1,3 +1,5 @@
+FIND_PACKAGE (Boost 1.54 COMPONENT REQUIRED)
+
 set(SOURCES
 	src/socketconnector.cpp
 )
@@ -9,6 +11,11 @@ set(HEADERS
 
 include_directories(
     include/whisper-library
+	${Boost_INCLUDE_DIR}
+)
+
+TARGET_LINK_LIBRARIES(
+	whisper_library ${Boost_LIBRARIES}
 )
 
 add_library(whisper-library SHARED
