@@ -1,6 +1,7 @@
 set(SOURCES
 	src/socketconnector.cpp
 	src/channelmanager.cpp
+	src/bitSetEncoder.cpp
 )
 
 set(HEADERS
@@ -9,6 +10,7 @@ set(HEADERS
 	include/whisperLibrary/channelmanager.hpp
 	include/whisperLibrary/covertchannel.hpp
 	include/whisperLibrary/encoder.hpp
+	include/whisperLibrary/bitSetEncoder.hpp
 	include/whisperLibrary/decoder.hpp
 )
 
