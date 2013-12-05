@@ -52,6 +52,4 @@ BOOST_AUTO_TEST_CASE(funkction_test) {
 
 	output = generateTestOutput(en.encodeMessage(msg));
 	BOOST_CHECK_MESSAGE(!output.compare(expected_output), "Empty Test failed");
-
-
 }
