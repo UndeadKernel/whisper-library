@@ -4,7 +4,6 @@
 #ifndef ENCODER
 #define ENCODER
 
-
 #include "common.hpp"
 
 #include <string>

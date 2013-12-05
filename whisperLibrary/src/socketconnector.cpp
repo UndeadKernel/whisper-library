@@ -2,6 +2,8 @@
 
 #include <socketconnector.hpp>
 
+#include <boost\asio.hpp>
+
 namespace whisperLibrary{
 
 SocketConnector::SocketConnector(){

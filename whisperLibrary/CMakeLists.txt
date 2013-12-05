@@ -17,11 +17,11 @@ set(HEADERS
 # Boost library.
 set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.54.0 QUIET COMPONENTS filesystem system)
+find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex)
 
 include_directories(
-    include/whisperLibrary
-	${Boost_INCLUDE_DIRS}
+		include/whisperLibrary
+		${Boost_INCLUDE_DIRS}
 )
 
 add_library(whisperLibrary SHARED
