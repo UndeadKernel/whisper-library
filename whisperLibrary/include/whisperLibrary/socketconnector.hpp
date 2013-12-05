@@ -5,7 +5,6 @@
 
 
 #include "common.hpp"
-#include <boost/asio.hpp>
 
 namespace whisperLibrary {
 

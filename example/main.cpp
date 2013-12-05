@@ -1,6 +1,6 @@
 //author: Simon Kadel
 
-#include <whisper-library/socketconnector.hpp>
+#include <whisperLibrary/socketconnector.hpp>
 #include <iostream>
 
 

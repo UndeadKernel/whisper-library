@@ -4,7 +4,7 @@ set(SOURCES
 
 # Set include directories.
 include_directories(
-    ../whisper-library/include
+    ../whisperLibrary/include
     
 )
 
@@ -13,9 +13,9 @@ add_executable(example
 )
 
 add_dependencies(example
-    whisper-library
+    whisperLibrary
 )
 
 target_link_libraries(example
-    whisper-library
+    whisperLibrary
 )
