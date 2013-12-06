@@ -1,11 +1,14 @@
 #ifndef ENCODER
 #define ENCODER
 
+#include <common.hpp>
+
 namespace whisperLibrary {
 
-class Encoder {
+class WHISPERAPI Encoder {
 	public:
 		Encoder();
+
 };
 
 }

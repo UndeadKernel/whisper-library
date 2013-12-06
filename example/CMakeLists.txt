@@ -19,3 +19,5 @@ add_dependencies(example
 target_link_libraries(example
     whisperLibrary
 )
+
+install(TARGETS example RUNTIME DESTINATION .)

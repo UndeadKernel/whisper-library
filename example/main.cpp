@@ -14,8 +14,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-	whisperLibrary::SocketConnector sc = whisperLibrary::SocketConnector();
-	std::cout << sc.getPort() << std::endl;
+
 
 	// Test -  Encoder
 	whisperLibrary::BitSetEncoder en;

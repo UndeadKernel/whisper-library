@@ -14,7 +14,7 @@ set(HEADERS
 	include/whisperLibrary/decoder.hpp
 )
 
-# Boost library.
+# Boost library
 set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
 find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex)

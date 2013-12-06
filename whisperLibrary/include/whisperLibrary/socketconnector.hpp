@@ -12,7 +12,10 @@ class WHISPERAPI SocketConnector {
 
 public:
 	SocketConnector();
-	int getPort();
+	void openConnection(int protokoll);
+	//void send(TcpPackage package);
+	//void send(UdpPackage package);
+
 	
 private:
 	int port;
