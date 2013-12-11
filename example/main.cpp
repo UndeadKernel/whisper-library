@@ -3,6 +3,7 @@
 
 #include <whisperLibrary\socketconnector.hpp>
 #include <whisperLibrary\bitSetEncoder.hpp>
+#include <whisperLibrary\bitSetDecoder.hpp>
 
 #include <iostream>
 
@@ -20,7 +21,9 @@ int main(int argc, char* argv[]){
 	whisperLibrary::BitSetEncoder en;
 
 	vector<bitset<6>> vec;
-	vec = en.encodeMessage("AB");
+	string msg = "123 456 !+#";
+	cout << "Message: " << msg << endl;
+	vec = en.encodeMessage(msg);
 
 	string out = "";
 
@@ -28,5 +31,13 @@ int main(int argc, char* argv[]){
 		out += vec[i].to_string() + " ";
 	}
 
-	cout << out << endl;
+	cout << "Encoder: " << out << endl;
+
+	// test - Decoder
+
+	whisperLibrary::BitSetDecoder dec;
+
+	string msg_d = dec.decodeMessage(vec);
+
+	cout << "Decoder: " << msg_d << endl;
 }

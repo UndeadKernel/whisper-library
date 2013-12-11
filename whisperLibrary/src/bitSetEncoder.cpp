@@ -23,7 +23,7 @@ namespace whisperLibrary {
 
 	//split binary
 	unsigned int i = 0;
-	while (i + 6 < bitstream.length()) {
+	while (i + 6 <= bitstream.length()) {
 	  bitset<6> bit(bitstream.substr(i, 6));
 	  vec.push_back(bit);
 
@@ -31,13 +31,13 @@ namespace whisperLibrary {
 	}
 
 	// build trailing zeroes
-	string zeros = "";
+	string zeroes = "";
 	for (unsigned int i = 0; i < bitstream.length() - i; i++) {
-	  zeros += "0";
+	  zeroes += "0";
 	}
 
 	// add trailing zeroes
-	vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - 1 - i) + zeros));
+	vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - i) + zeroes));
 	return vec;
   }
 
