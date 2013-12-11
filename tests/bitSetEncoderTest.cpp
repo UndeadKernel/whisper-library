@@ -24,7 +24,7 @@ string generateTestOutput(vector<bitset<6>> vec) {
 	return ret;
 }
 
-BOOST_AUTO_TEST_CASE(funkction_test) {
+BOOST_AUTO_TEST_CASE(encode_Message) {
 	// -----------------------------------------
 	// Init
 	// -----------------------------------------
