@@ -2,6 +2,7 @@ set(SOURCES
 	src/socketconnector.cpp
 	src/channelmanager.cpp
 	src/bitSetEncoder.cpp
+	src/bitSetDecoder.cpp
 )
 
 set(HEADERS
@@ -12,6 +13,7 @@ set(HEADERS
 	include/whisperLibrary/encoder.hpp
 	include/whisperLibrary/bitSetEncoder.hpp
 	include/whisperLibrary/decoder.hpp
+	include/whisperLibrary/bitSetDecoder.hpp
 )
 
 # Boost library
