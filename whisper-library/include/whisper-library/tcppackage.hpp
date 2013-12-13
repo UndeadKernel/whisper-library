@@ -2,8 +2,6 @@
 
 #ifndef TCP_PACKAGE
 #define TCP_PACKAGE
-#endif
-
 #include "common.hpp"
 
 namespace whisperLibrary {
@@ -87,3 +85,4 @@ namespace whisperLibrary {
 	  int* options;
   };
 }
+#endif
