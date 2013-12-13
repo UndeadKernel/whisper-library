@@ -3,8 +3,6 @@
 #ifndef TCP_PACKAGE
 #define TCP_PACKAGE
 #define maxUInt = 65000;
-#endif
-
 #define uint unsigned int
 
 #include "common.hpp"
@@ -93,3 +91,4 @@ namespace whisperLibrary {
 		void uIntToVector(int start, int end, std::vector<bool> &set, uint val);
 	};
 }
+#endif
