@@ -2,7 +2,12 @@
 
 #ifndef TCP_PACKAGE
 #define TCP_PACKAGE
+<<<<<<< HEAD
 #endif
+=======
+#define maxUInt = 65000;
+#define uint unsigned int
+>>>>>>> changed ifdef to match code conventions
 
 #include "common.hpp"
 
@@ -87,3 +92,4 @@ namespace whisperLibrary {
 	  int* options;
   };
 }
+#endif
