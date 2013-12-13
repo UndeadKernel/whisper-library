@@ -3,14 +3,17 @@
 
 #include <common.hpp>
 
-namespace whisperLibrary {
+namespace whisper_library {
 
+/*
+	Decoder is the abstract class every decoder has to inherit from. You can assign a Decoder to a CovertChannel.
+*/
 class WHISPERAPI Decoder {
-	public:
-		Decoder();
+
+public:
+	// constructor
+	Decoder();
 
 };
-
 }
-
-#endif
+#endif // DECODER

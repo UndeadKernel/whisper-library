@@ -1,12 +1,9 @@
-//author: Simon Kadel
-
 #ifndef SOCKET_CONNECTOR
 #define SOCKET_CONNECTOR
 
-
 #include "common.hpp"
 
-namespace whisperLibrary {
+namespace whisper_library {
 
 class WHISPERAPI SocketConnector {
 
@@ -15,13 +12,6 @@ public:
 	void openConnection(int protokoll);
 	//void send(TcpPackage package);
 	//void send(UdpPackage package);
-
-	
-private:
-	int port;
-
 };
-
 }
-
-#endif
+#endif // SOCKET_CONNECTOR

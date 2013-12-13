@@ -3,14 +3,17 @@
 
 #include <common.hpp>
 
-namespace whisperLibrary {
+namespace whisper_library {
 
+/*
+	Encoder is the abstract class every encoder has to inherit from. You can assign an encoder to a CovertChannel.
+*/
 class WHISPERAPI Encoder {
-	public:
-		Encoder();
+
+public:
+	// constructor
+	Encoder();
 
 };
-
 }
-
-#endif
+#endif // ENCODER

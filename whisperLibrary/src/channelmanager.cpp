@@ -1,6 +1,6 @@
 #include <channelmanager.hpp>
 
-namespace whisperLibrary {
+namespace whisper_library {
 
 ChannelManager::ChannelManager(){
 }
