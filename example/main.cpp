@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 
 
 	// Test -  Encoder
-	whisperLibrary::BitSetEncoder en;
+	whisper_library::BitSetEncoder en;
 
 	vector<bitset<6>> vec;
 	vec = en.encodeMessage("AB");

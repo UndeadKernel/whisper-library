@@ -1,10 +1,10 @@
-// Descriptions in header.
+// Author: Martin Oehler
 
 #include <bitSetEncoder.hpp>
 
 using namespace std;
 
-namespace whisperLibrary {
+namespace whisper_library {
 
 	vector<bitset<6>> BitSetEncoder::encodeMessage(string msg) {
 		string bitstream = "";
@@ -31,13 +31,13 @@ namespace whisperLibrary {
 		}
 
 		// build trailing zeroes
-		string zeros = "";
+		string zeroes = "";
 		for (unsigned int i = 0; i < bitstream.length() - i; i++) {
-			zeros += "0";
+			zeroes += "0";
 		}
 
 		// add trailing zeroes
-		vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - 1 - i) + zeros));
+		vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - 1 - i) + zeroes));
 		return vec;
 	}
 
