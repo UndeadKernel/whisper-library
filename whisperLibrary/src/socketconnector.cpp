@@ -2,12 +2,9 @@
 
 #include <socketconnector.hpp>
 
-
-namespace whisperLibrary{
+namespace whisper_library{
 
 SocketConnector::SocketConnector(){
 }
-
-
 
 }

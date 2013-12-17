@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 
 
 	// Test -  Encoder
-	whisperLibrary::BitSetEncoder en;
+	whisper_library::BitSetEncoder en;
 
 	vector<bitset<6>> vec;
 	string msg = "123 456 !+#";

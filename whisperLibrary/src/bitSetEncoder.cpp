@@ -1,10 +1,10 @@
-// Descriptions in header.
+// Author: Martin Oehler
 
 #include <bitSetEncoder.hpp>
 
 using namespace std;
 
-namespace whisperLibrary {
+namespace whisper_library {
 
   vector<bitset<6>> BitSetEncoder::encodeMessage(string msg) {
     string bitstream = "";

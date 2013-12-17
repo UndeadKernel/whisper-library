@@ -1,14 +1,24 @@
-#define BOOST_TEST_MODULE bitSetEncoderTest
 #include <whisperLibrary\bitSetEncoder.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include<string>
 #include<vector>
 #include<bitset>
-
 #include <iostream>
 
 using namespace std;
+
+struct Fixture {
+    Fixture(){
+		en = whisperLibrary::BitSetEncoder();
+	}
+    ~Fixture(){
+	}
+	string msg;
+	string expected_output;
+	string output;
+	whisperLibrary::BitSetEncoder en;
+};
 
 string generateTestOutput(vector<bitset<6>> vec) {
 	string ret = "";
@@ -24,32 +34,23 @@ string generateTestOutput(vector<bitset<6>> vec) {
 	return ret;
 }
 
-BOOST_AUTO_TEST_CASE(encode_Message) {
-	// -----------------------------------------
-	// Init
-	// -----------------------------------------
-	whisperLibrary::BitSetEncoder en;
+BOOST_FIXTURE_TEST_SUITE (bitSetEncoder, Fixture)
 
-	string msg = "AB";
-	string expected_output = "";
+BOOST_AUTO_TEST_CASE(encode_simple_message) {
 
-	string output;
-
-	// -----------------------------------------
-	// Tests
-	// -----------------------------------------
-
-	// Common Case
 	msg = "AB";
 	expected_output = "010000 010100 001000";
 
 	output = generateTestOutput(en.encodeMessage(msg));
-	BOOST_CHECK_MESSAGE(!output.compare(expected_output), "Common Test failed");
+	BOOST_CHECK_EQUAL(output, expected_output);
+}
+BOOST_AUTO_TEST_CASE(encode_empty_message) {
 
-	// Empty Case
 	msg = "";
 	expected_output = "";
 
 	output = generateTestOutput(en.encodeMessage(msg));
-	BOOST_CHECK_MESSAGE(!output.compare(expected_output), "Empty Test failed");
+	BOOST_CHECK_EQUAL(output, expected_output);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
