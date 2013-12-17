@@ -4,15 +4,14 @@
 #include<string>
 #include<vector>
 #include<bitset>
-#include <iostream>
 
 using namespace std;
 
-struct Fixture {
-	Fixture(){
+struct BitSetDecoderFixture {
+	BitSetDecoderFixture(){
 		dec = whisper_library::BitSetDecoder();
 	}
-	~Fixture(){
+	~BitSetDecoderFixture(){
 	}
 	vector<bitset<6>> test_vec;
 	string expected_output = "";
@@ -20,14 +19,11 @@ struct Fixture {
 	whisper_library::BitSetDecoder dec;
 };
 
-BOOST_FIXTURE_TEST_SUITE(bitSetDecoder, Fixture)
+BOOST_FIXTURE_TEST_SUITE(bitSetDecoder, BitSetDecoderFixture)
 
 
 BOOST_AUTO_TEST_CASE(decode_simple_message) {
-	bitset<6> bit("010000");
-	cout << "test" << endl;
-	test_vec.push_back(bit);
-	cout << "test2" << endl;
+	test_vec.push_back(bitset<6>("010000"));
 	test_vec.push_back(bitset<6>("010100"));
 	test_vec.push_back(bitset<6>("001000"));
 
@@ -35,15 +31,14 @@ BOOST_AUTO_TEST_CASE(decode_simple_message) {
 
 	output = dec.decodeMessage(test_vec);
 	BOOST_CHECK_EQUAL(output, expected_output);
-}/*
+}
 
 
 BOOST_AUTO_TEST_CASE(decode_empty_message) {
-
 	expected_output = "";
 
 	output = dec.decodeMessage(test_vec);
 	BOOST_CHECK_EQUAL(output, expected_output);
-} */
+} 
 
 BOOST_AUTO_TEST_SUITE_END()
