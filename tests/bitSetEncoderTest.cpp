@@ -10,14 +10,14 @@ using namespace std;
 
 struct Fixture {
     Fixture(){
-		en = whisperLibrary::BitSetEncoder();
+		en = whisper_library::BitSetEncoder();
 	}
     ~Fixture(){
 	}
 	string msg;
 	string expected_output;
 	string output;
-	whisperLibrary::BitSetEncoder en;
+	whisper_library::BitSetEncoder en;
 };
 
 string generateTestOutput(vector<bitset<6>> vec) {
