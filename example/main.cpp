@@ -1,6 +1,3 @@
-//author: Simon Kadel
-
-
 #include <whisperLibrary\socketconnector.hpp>
 #include <whisperLibrary\bitSetEncoder.hpp>
 #include <whisperLibrary\bitSetDecoder.hpp>
@@ -35,7 +32,7 @@ int main(int argc, char* argv[]){
 
 	// test - Decoder
 
-	whisperLibrary::BitSetDecoder dec;
+	whisper_library::BitSetDecoder dec;
 
 	string msg_d = dec.decodeMessage(vec);
 
