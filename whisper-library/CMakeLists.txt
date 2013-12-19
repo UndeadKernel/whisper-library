@@ -1,12 +1,12 @@
 set(SOURCES
 	src/socketconnector.cpp
-	src/tcppackage.cpp
+	src/tcppacket.cpp
 )
 
 set(HEADERS
 	include/whisper-library/socketconnector.hpp
 	include/whisper-library/common.hpp
-	include/whisper-library/tcppackage.hpp
+	include/whisper-library/tcppacket.hpp
 )
 
 # Boost library.
