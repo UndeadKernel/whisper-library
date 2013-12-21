@@ -25,9 +25,6 @@ class WHISPERAPI BitSetDecoder {
 			The bitsets contain the binary representation of ASCI-encoded letters.
 		*/
 		string decodeMessage(vector<bitset<6>> vec);
-
-	private:
-
 };
 
 }
