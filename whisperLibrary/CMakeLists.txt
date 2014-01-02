@@ -4,6 +4,7 @@ set(SOURCES
 	src/bitSetEncoder.cpp
 	src/bitSetDecoder.cpp
 	src/tcpheadercovertchannel.cpp
+	src/tcppacket.cpp
 )
 
 set(HEADERS
@@ -16,6 +17,7 @@ set(HEADERS
 	include/whisperLibrary/decoder.hpp
 	include/whisperLibrary/bitSetDecoder.hpp
 	include/whisperLibrary/tcpheadercovertchannel.hpp
+	include/whisperLibrary/tcppacket.hpp
 )
 
 # Boost library
