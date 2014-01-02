@@ -1,44 +1,37 @@
 // Author: Martin Oehler
-
 #include <bitSetEncoder.hpp>
 
 using namespace std;
-
 namespace whisper_library {
 
-  vector<bitset<6>> BitSetEncoder::encodeMessage(string msg) {
-    string bitstream = "";
-	vector<bitset<6>> vec;
+vector<bitset<6>> BitSetEncoder::encodeMessage(string message) {
+	string bit_sequence = "";
+	vector<bitset<6>> vector;
 
 	// do nothing if the message is empty
-	if (msg.length() == 0) {
-	  return vec;
+	if (message.length() == 0) {
+		return vector;
 	}
-
 	// convert chars to binary
-	for (unsigned int i = 0; i < msg.length(); ++i) {
-	  bitset<8> bit(msg[i]);
-	  bitstream += bit.to_string();
+	for (unsigned int i = 0; i < message.length(); ++i) {
+		bitset<8> bit(message[i]);
+		bit_sequence += bit.to_string();
 	}
-
 	//split binary
 	unsigned int i = 0;
-	while (i + 6 <= bitstream.length()) {
-	  bitset<6> bit(bitstream.substr(i, 6));
-	  vec.push_back(bit);
+	while (i + 6 <= bit_sequence.length()) {
+		bitset<6> bit(bit_sequence.substr(i, 6));
+		vector.push_back(bit);
 
-	  i += 6;
+		i += 6;
 	}
-
 	// build trailing zeroes
 	string zeroes = "";
-	for (unsigned int i = 0; i < bitstream.length() - i; i++) {
-	  zeroes += "0";
+	for (unsigned int i = 0; i < bit_sequence.length() - i; i++) {
+		zeroes += "0";
 	}
-
 	// add trailing zeroes
-	vec.push_back(bitset<6>(bitstream.substr(i, bitstream.length() - i) + zeroes));
-	return vec;
-  }
-
+	vector.push_back(bitset<6>(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+	return vector;
+}
 }
