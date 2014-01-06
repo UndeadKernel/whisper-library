@@ -6,8 +6,8 @@ namespace whisper_library {
 	
 string BitSetDecoder::decodeMessage(vector<bitset<6>> vector) {
 	string bit_sequence = "";
-	// append bits to string
-	for (unsigned int i = 0; i < vector.size(); ++i) {
+	// append bits to string, starting from second block to skip block-count
+	for (unsigned int i = 1; i < vector.size(); ++i) {
 		bit_sequence += vector[i].to_string();
 	}
 
