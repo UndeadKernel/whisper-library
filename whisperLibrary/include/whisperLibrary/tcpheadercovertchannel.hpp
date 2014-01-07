@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <bitset>
+#include <channelmanager.hpp>
 
 using namespace std;
 
@@ -18,18 +19,17 @@ namespace whisper_library {
 class WHISPERAPI TcpHeaderCovertChannel {
 
 public:
-	void addMessage(string message);
-
-private:
-	void modifyTcpPacket(whisper_library::TcpPacket& packet);
+	TcpHeaderCovertChannel(whisper_library::ChannelManager* channelmanager);
+	vector<whisper_library::TcpPacket> sendMessage(string message);
 	void receiveMessage(whisper_library::TcpPacket& packet);
 
-	bitset<6> getNextMessageBlock();
+private:
+	void modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<6> data);
+	bitset<6> extractData(whisper_library::TcpPacket& packet);
+	vector<bitset<6>> m_data_blocks;
+	int m_numb_packets;
+	whisper_library::ChannelManager* m_channelmanager;
 
-	//TODO umstellen auf deque (queue)
-	vector<bitset<6>> m_message_blocks;
-	vector<bitset<6>> m_received_message_blocks;
-	string m_output_string;
 };
 
 }

@@ -4,28 +4,49 @@
 using namespace std;
 
 namespace whisper_library {
-	void TcpHeaderCovertChannel::modifyTcpPacket(whisper_library::TcpPacket& packet) {
-		bitset<6> message_block = getNextMessageBlock();
-		packet.set_reserved(message_block.to_ulong());
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel(whisper_library::ChannelManager* channelmanager) {
+		m_channelmanager = channelmanager;
+		m_numb_packets = 0;
+	}
+
+	vector<whisper_library::TcpPacket> TcpHeaderCovertChannel::sendMessage(string message) {
+		vector<whisper_library::TcpPacket> ret_vector;
+		whisper_library::BitSetEncoder encoder;
+
+		vector<bitset<6>> bit_blocks = encoder.encodeMessage(message);
+		for (int i = 0; i < bit_blocks.size(); ++i) {
+			whisper_library::TcpPacket packet = m_channelmanager->getTcpPacket();
+			modifyTcpPacket(packet, bit_blocks[i]);
+			ret_vector.push_back(packet);
+		}
+
+		return ret_vector;
+	}
+
+	void TcpHeaderCovertChannel::modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<6> data) {
+		packet.set_reserved(data.to_ulong());
+	}
+
+	bitset<6> TcpHeaderCovertChannel::extractData(whisper_library::TcpPacket& packet) {
+		return bitset<6>(packet.reserved());
 	}
 
 	void TcpHeaderCovertChannel::receiveMessage(whisper_library::TcpPacket& packet) {
-		bitset<6> message_block(packet.reserved());
-		m_received_message_blocks.push_back(message_block);
+		bitset<6> data = extractData(packet);
+		m_data_blocks.push_back(data);
+		if (m_data_blocks.size() == 1) {			// only init-packet received
+			m_numb_packets = data.to_ulong() +1;	
+		}
+		else {
+			m_numb_packets--;
 
-		whisper_library::BitSetDecoder decoder;
-		m_output_string = decoder.decodeMessage(m_received_message_blocks);
+			if (m_numb_packets == 0) {
+				whisper_library::BitSetDecoder decoder;
+				string message = decoder.decodeMessage(m_data_blocks);
+				m_channelmanager->outputMessage(message);
+				m_data_blocks.clear();			// ready to receive new message
+			}
+		}
 	}
 
-	bitset<6> TcpHeaderCovertChannel::getNextMessageBlock() {
-		bitset<6> next_message_block = m_message_blocks.front();
-		m_message_blocks.erase(m_message_blocks.begin());
-		return next_message_block;
-	}
-
-	void TcpHeaderCovertChannel::addMessage(string message) {
-		whisper_library::BitSetEncoder encoder;
-		vector<bitset<6>> new_message_blocks = encoder.encodeMessage(message);
-		m_message_blocks.insert(m_message_blocks.end(), new_message_blocks.begin(), new_message_blocks.end());
-	}
 }

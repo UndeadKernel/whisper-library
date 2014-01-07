@@ -5,6 +5,7 @@
 #include <vector>
 #include <covertchannel.hpp>
 #include <socketconnector.hpp>
+#include <tcppacket.hpp>
 
 namespace whisper_library {
 
@@ -23,6 +24,8 @@ public:
 	void addChannel(CovertChannel* channel);
 	//removes a channel from the available channels
 	void removeChannel(CovertChannel* channel);
+	void outputMessage(std::string message);
+	whisper_library::TcpPacket getTcpPacket();
 	
 private:
 	// hold all available channels
