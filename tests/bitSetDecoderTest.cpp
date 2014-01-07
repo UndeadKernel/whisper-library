@@ -23,6 +23,7 @@ BOOST_FIXTURE_TEST_SUITE(bitSetDecoder, BitSetDecoderFixture)
 
 
 BOOST_AUTO_TEST_CASE(decode_simple_message) {
+	test_vec.push_back(bitset<6>("010010"));
 	test_vec.push_back(bitset<6>("010000"));
 	test_vec.push_back(bitset<6>("010100"));
 	test_vec.push_back(bitset<6>("001000"));
@@ -32,7 +33,6 @@ BOOST_AUTO_TEST_CASE(decode_simple_message) {
 	output = dec.decodeMessage(test_vec);
 	BOOST_CHECK_EQUAL(output, expected_output);
 }
-
 
 BOOST_AUTO_TEST_CASE(decode_empty_message) {
 	expected_output = "";
