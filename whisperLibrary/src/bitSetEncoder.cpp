@@ -40,19 +40,24 @@ vector<bitset<6>> BitSetEncoder::encodeMessageHelper(string message) {
 	while (i + 6 <= bit_sequence.length()) {
 		bitset<6> bit(bit_sequence.substr(i, 6));
 		ret_vector.push_back(bit);
-
 		i += 6;
 	}
-	int numb_packets = i / 6;
 	// build trailing zeroes
 	string zeroes = "";
-	for (unsigned int i = 0; i < bit_sequence.length() - i; i++) {
+	for (unsigned int j = 0; j < bit_sequence.length() - i; j++) {
 		zeroes += "0";
 	}
+	// don't add a next package, if the length matched 6bit-blocks
+	if (i == bit_sequence.length()) {
+		i -= 6;
+	}
+	int numb_packets = i / 6;
 	//create block with packet-count
 	ret_vector[0] = bitset<6>(numb_packets);
 	// add trailing zeroes
-	ret_vector.push_back(bitset<6>(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+	if (zeroes != "") {
+		ret_vector.push_back(bitset<6>(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+	}
 	return ret_vector;
 }
 }

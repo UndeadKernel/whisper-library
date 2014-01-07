@@ -25,7 +25,7 @@ public:
 	*/
 	vector<bitset<6>> encodeMessage(string message);
 private:
-	vector<bitset<6>> encodeMessageHelper(string message)
+	vector<bitset<6>> encodeMessageHelper(string message);
 };
 }
 

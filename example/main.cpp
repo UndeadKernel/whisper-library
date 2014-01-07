@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 	whisper_library::BitSetEncoder en;
 
 	vector<bitset<6>> vec;
-	string msg = "AB";
+	string msg = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	cout << "Message: " << msg << endl;
 	vec = en.encodeMessage(msg);
 
