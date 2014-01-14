@@ -2,8 +2,6 @@
 #ifndef COVERT_CHANNEL
 #define COVERT_CHANNEL
 
-#include <encoder.hpp>
-#include <decoder.hpp>
 #include <common.hpp>
 
 namespace whisper_library {
@@ -25,17 +23,8 @@ public:
 	// --- Getter/Setter ---
 	// TODO needed?
 	int getProtokol();
-	void setEncoder(Encoder encoder);
-	void setDecoder(Decoder decoder);
-	Encoder encoder() const;
-	Decoder decoder() const;
 
 private:
-	// TODO needed?
-	// the current Encoder
-	Encoder* m_encoder;
-	// the current Decoder
-	Decoder* m_decoder;
 };
 }
 #endif // COVERT_CHANNEL

@@ -1,6 +1,5 @@
 #include <whisperLibrary\socketconnector.hpp>
-#include <whisperLibrary\bitSetEncoder.hpp>
-#include <whisperLibrary\bitSetDecoder.hpp>
+#include <whisperLibrary\bitSetCoder.hpp>
 
 #include <iostream>
 
@@ -15,13 +14,13 @@ int main(int argc, char* argv[]){
 
 
 	// Test -  Encoder
-	whisper_library::BitSetEncoder en;
-
+	whisper_library::BitSetCoder<6> coder;
+	cout << coder.blockLength() << endl;
 	vector<bitset<6>> vec;
-	string msg = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	string msg = "AAA";
 	cout << "Message: " << msg << endl;
-	vec = en.encodeMessage(msg);
-
+	//vec = coder.encodeMessage(msg);
+	/*
 	string out = "";
 
 	for (unsigned int i = 0; i < vec.size(); ++i) {
@@ -31,10 +30,11 @@ int main(int argc, char* argv[]){
 	cout << "Encoder: " << out << endl;
 
 	// test - Decoder
-
-	whisper_library::BitSetDecoder dec;
-
-	string msg_d = dec.decodeMessage(vec);
+	string msg_d = coder.decodeMessage(vec);
 
 	cout << "Decoder: " << msg_d << endl;
+
+	*/
+
+	
 }

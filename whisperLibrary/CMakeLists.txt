@@ -12,12 +12,11 @@ set(HEADERS
 	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
 	include/whisperLibrary/covertchannel.hpp
-	include/whisperLibrary/encoder.hpp
 	include/whisperLibrary/bitSetEncoder.hpp
-	include/whisperLibrary/decoder.hpp
 	include/whisperLibrary/bitSetDecoder.hpp
 	include/whisperLibrary/tcpheadercovertchannel.hpp
 	include/whisperLibrary/tcppacket.hpp
+	include/whisperLibrary/bitSetCoder.hpp
 )
 
 # Boost library
