@@ -11,16 +11,15 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-
-
 	// Test -  Encoder
 	whisper_library::BitSetCoder<6> coder;
 	cout << coder.blockLength() << endl;
+
+	
 	vector<bitset<6>> vec;
 	string msg = "AAA";
 	cout << "Message: " << msg << endl;
-	//vec = coder.encodeMessage(msg);
-	/*
+	vec = coder.encodeMessage(msg);
 	string out = "";
 
 	for (unsigned int i = 0; i < vec.size(); ++i) {
@@ -34,7 +33,7 @@ int main(int argc, char* argv[]){
 
 	cout << "Decoder: " << msg_d << endl;
 
-	*/
+	
 
 	
 }
