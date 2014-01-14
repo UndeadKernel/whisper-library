@@ -25,11 +25,11 @@ public:
 	//removes a channel from the available channels
 	void removeChannel(CovertChannel* channel);
 	void outputMessage(std::string message);
-	whisper_library::TcpPacket getTcpPacket();
+	TcpPacket getTcpPacket();
 	
 private:
 	// hold all available channels
-	std::vector<CovertChannel*> m_channels;
+	//std::vector<CovertChannel*> m_channels;
 	// connects the ChannelManager to the network
 	SocketConnector m_socket;
 };

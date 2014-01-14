@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(encode_long_message) {
 	output = generateTestOutput(en.encodeMessage(msg));
 	cout << output.compare(expected_output) << endl;
 	// TODO, doesn't work. i checked the strings by hand and they match. compare function says otherwise, though..
-	//BOOST_CHECK_EQUAL(output.compare(expected_output), 0);
+	BOOST_CHECK_EQUAL(output, expected_output);
 }
 
 BOOST_AUTO_TEST_CASE(encode_empty_message) {

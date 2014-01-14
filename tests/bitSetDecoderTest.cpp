@@ -14,8 +14,8 @@ struct BitSetDecoderFixture {
 	~BitSetDecoderFixture(){
 	}
 	vector<bitset<6>> test_vec;
-	string expected_output = "";
-	string output = "";
+	string expected_output;
+	string output;
 	whisper_library::BitSetDecoder dec;
 };
 
