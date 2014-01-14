@@ -5,12 +5,11 @@
 
 #include "common.hpp"
 #include <tcppacket.hpp>
-#include <bitSetEncoder.hpp>
-#include <bitSetDecoder.hpp>
 #include <string>
 #include <vector>
 #include <bitset>
 #include <channelmanager.hpp>
+#include <bitSetCoder.hpp>
 
 using namespace std;
 
@@ -29,6 +28,7 @@ private:
 	vector<bitset<6>> m_data_blocks;
 	int m_numb_packets;
 	whisper_library::ChannelManager* m_channelmanager;
+	whisper_library::BitSetCoder<6> m_coder;
 
 };
 

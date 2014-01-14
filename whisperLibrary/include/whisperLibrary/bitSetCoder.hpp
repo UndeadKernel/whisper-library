@@ -11,12 +11,15 @@
 using namespace std;
 namespace whisper_library {
 	/*
-	BitSetCoder converts the message, that we want to send, into 6bit-blocks and reassembles them to a message
-	To do this, call the function 'encodeMessage' with the message as a string or 'decodeMessage' with the message-blocks in a vector.
+	BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a message.
+	BLOCK_LENGTH sets the length of these bit-blocks.
+	To use this class, call the function 'encodeMessage' with the message as a string or 'decodeMessage' with the message-blocks in a vector.
 	*/
 	template <size_t BLOCK_LENGTH> class BitSetCoder {
-
 	public:
+		/*
+		Returns the size of a message block (number of bits).
+		*/
 		size_t blockLength() {
 			return BLOCK_LENGTH;
 		}
