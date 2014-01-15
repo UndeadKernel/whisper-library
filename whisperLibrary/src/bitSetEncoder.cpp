@@ -4,9 +4,9 @@
 using namespace std;
 namespace whisper_library {
 
-vector<bitset<6>> BitSetEncoder::encodeMessage(string message) {
+vector<bitset6> BitSetEncoder::encodeMessage(string message) {
 	string bit_sequence = "";
-	vector<bitset<6>> vector;
+	vector<bitset6> vector;
 
 	// do nothing if the message is empty
 	if (message.length() == 0) {

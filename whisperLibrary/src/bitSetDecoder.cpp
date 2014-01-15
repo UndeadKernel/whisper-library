@@ -4,7 +4,7 @@
 using namespace std;
 namespace whisper_library {
 	
-string BitSetDecoder::decodeMessage(vector<bitset<6>> vector) {
+string BitSetDecoder::decodeMessage(vector<bitset6> vector) {
 	string bit_sequence = "";
 	// append bits to string
 	for (unsigned int i = 0; i < vector.size(); ++i) {
