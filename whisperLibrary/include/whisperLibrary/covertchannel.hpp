@@ -5,6 +5,7 @@
 #include <encoder.hpp>
 #include <decoder.hpp>
 #include <common.hpp>
+#include <string>
 
 namespace whisper_library {
 
