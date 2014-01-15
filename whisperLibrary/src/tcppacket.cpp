@@ -2,8 +2,8 @@
 
 namespace whisperLibrary {
     TcpPacket::TcpPacket(){
-        _header.resize(159);
-        _options.resize(319);
+        m_header.resize(159);
+        m_options.resize(319);
 	}
 	
 	/* Locations of the header informations:
@@ -22,182 +22,225 @@ namespace whisperLibrary {
 		 */
 	 
 	// header: bits 0-15
-    uint TcpPacket::sourcePort(){
-        return vectorToUInt(0, 15, _header);
-	} 
+    int TcpPacket::sourcePort(){
+        return vectorToUInt(0, 15, m_header);
+	}
 	// header: bits 16-31
-    uint TcpPacket::destPort(){
-        return vectorToUInt(16, 31, _header);
+    int TcpPacket::destPort(){
+        return vectorToUInt(16, 31, m_header);
 	} 
 	// header: bits 32-63  
-    uint TcpPacket::sequenceNumber(){
-        return vectorToUInt(32, 63, _header);
+    int TcpPacket::sequenceNumber(){
+        return vectorToUInt(32, 63, m_header);
     }
 	// header: bits 64-95 
-    uint TcpPacket::acknowlageNumber(){
-        return vectorToUInt(64, 95, _header);
+    int TcpPacket::acknowlageNumber(){
+        return vectorToUInt(64, 95, m_header);
     }
 	// header: bits 96-99  
-    uint TcpPacket::dataOffset(){
-        return vectorToUInt(96, 99, _header);
+    std::bitset<4>* TcpPacket::dataOffset(){
+        std::bitset<4>* ret = new std::bitset<4>();
+        for (int i = 96; i <= 99; i++){
+			ret->set(i-96, m_header[i]);
+		}
+        return ret;
     }
 	// header: bits 100-102
-    uint TcpPacket::reserved(){
-        return vectorToUInt(100, 102, _header);
+    std::bitset<3>* TcpPacket::reserved(){
+        std::bitset<3>* ret = new std::bitset<3>();
+        for (int i = 100; i <= 102; i++){
+			ret->set(i-100, m_header[i]);
+		}
+        return ret;
     }
 	// header: bits 103-111  
-    std::vector<bool>* TcpPacket::flags(){
-        std::vector<bool>* ret = new std::vector<bool>();
+    std::bitset<9>* TcpPacket::flags(){
+        std::bitset<9>* ret = new std::bitset<9>();
         for (int i = 103; i <= 111; i++){
-            ret->push_back(_header.at(i));
-        }
+			ret->set(i-103, m_header[i]);
+		}
         return ret;
     }
 	// header: bit 103
     bool TcpPacket::ns(){
-        return _header.at(103);
+        return m_header.at(103);
     }
 	// header: bit 104
     bool TcpPacket::cwr(){
-        return _header.at(104);
+        return m_header.at(104);
     }
 	// header: bit 105
     bool TcpPacket::ece(){
-        return _header.at(105);
+        return m_header.at(105);
     }
 	// header: bit 106
     bool TcpPacket::urg(){
-        return _header.at(106);
+        return m_header.at(106);
     }
 	// header: bit 107
     bool TcpPacket::ack(){
-        return _header.at(107);
+        return m_header.at(107);
     }
 	// header: bit 108
     bool TcpPacket::psh(){
-        return _header.at(108);
+        return m_header.at(108);
     }
 	// header: bit 109
     bool TcpPacket::rst(){
-        return _header.at(109);
+        return m_header.at(109);
     }
 	// header: bit 110
     bool TcpPacket::syn(){
-        return _header.at(110);
+        return m_header.at(110);
     }
 	// header: bit 111
     bool TcpPacket::fin(){
-        return _header.at(111);
+        return m_header.at(111);
     }
 	// header: bits 112-127
-    uint TcpPacket::windowSize(){
-        return vectorToUInt(112, 127, _header);
+    int TcpPacket::windowSize(){
+        return vectorToUInt(112, 127, m_header);
     }
 	// header: bits 128-143
-    uint TcpPacket::checksum(){
-        return vectorToUInt(128, 143, _header);
+    int TcpPacket::checksum(){
+        return vectorToUInt(128, 143, m_header);
+    }
+    // header: bits 128-143
+    int TcpPacket::urgentPointer(){
+        return vectorToUInt(128, 143, m_header);
     }
 	// options: bits 0-320
     std::vector<bool>* TcpPacket::options(){
-        return new std::vector<bool>(_options);
+        std::vector<bool>* ret = new std::vector<bool>(m_options);
+        return ret;
     }
     // packet
     std::vector<bool>* TcpPacket::packet(){
-        std::vector<bool>* ret = new std::vector<bool>(_header);
-        for (int i = 0; i < _options.size(); i++){
-            ret->push_back(_options[i]);
+        std::vector<bool>* ret = new std::vector<bool>(m_header);
+        for (int i = 0; i < m_options.size(); i++){
+            ret->push_back(m_options[i]);
         }
-        for (int i = 0; i < _data.size(); i++){
-            ret->push_back(_data[i]);
+        for (int i = 0; i < m_data.size(); i++){
+            ret->push_back(m_data[i]);
         }
         return ret;
     }
 
     // data
     std::vector<bool>* TcpPacket::data(){
-        return new std::vector<bool>(_data);
+        std::vector<bool>* ret = new std::vector<bool>(m_data);
+        return ret;
     }
 
 	// header: bits 0-15  
-    void TcpPacket::set_sourcePort(uint val){
-        uIntToVector(0,15,_header,val);
+    void TcpPacket::setSourcePort(int val){
+        uIntToVector(0,15,m_header,val);
     }
 	// header: bits 16-31
-    void TcpPacket::set_destPort(uint val){
-        uIntToVector(16,31,_header,val);
+    void TcpPacket::setDestPort(int val){
+        uIntToVector(16,31,m_header,val);
     }
 	// header: bits 32-63  
-    void TcpPacket::set_sequenceNumber(uint val){
-        uIntToVector(32,63,_header,val);
+    void TcpPacket::setSequenceNumber(int val){
+        uIntToVector(32,63,m_header,val);
     }
 	// header: bits 64-95
-    void TcpPacket::set_acknowlageNumber(uint val){
-        uIntToVector(64,95,_header,val);
+    void TcpPacket::setAcknowlageNumber(int val){
+        uIntToVector(64,95,m_header,val);
     }
 	// header: bits 96-99  
-    void TcpPacket::set_dataOffset(uint val){
-        uIntToVector(96,99,_header,val);
+    void TcpPacket::setDataOffset(std::bitset<4> val){
+        for (int i = 96; i <= 99; i++){
+			m_header[i] = val[i-96];
+		}
     }
 	// header: bits 100-102
-    void TcpPacket::set_reserved(uint val){
-        uIntToVector(100,102,_header,val);
+    void TcpPacket::setReserved(std::bitset<3> val){
+        for (int i = 100; i <= 102; i++){
+			m_header[i] = val[i-100];
+		}
     }
 	// header: bits 103-111  
-    void TcpPacket::set_flags(std::vector<bool> &val){
+    void TcpPacket::setFlags(std::bitset<9> &val){
         for (int i = 103; i <= 111; i++){
-            _header[i] = val.at(i - 103);
-        }
+			m_header[i] = val[i-103];
+		}
     }
 	// header: bit 103
-    void TcpPacket::set_ns(bool val){
-        _header[103] = val;
+    void TcpPacket::setNs(bool val){
+        m_header[103] = val;
     }
 	// header: bit 104
-    void TcpPacket::set_cwr(bool val){
-        _header[104] = val;
+    void TcpPacket::setCwr(bool val){
+        m_header[104] = val;
     }
 	// header: bit 105
-    void TcpPacket::set_ece(bool val){
-        _header[105] = val;
+    void TcpPacket::setEce(bool val){
+        m_header[105] = val;
     }
 	// header: bit 106
-    void TcpPacket::set_urg(bool val){
-        _header[106] = val;
+    void TcpPacket::setUrg(bool val){
+        m_header[106] = val;
     }
 	// header: bit 107
-    void TcpPacket::set_ack(bool val){
-        _header[107] = val;
+    void TcpPacket::setAck(bool val){
+        m_header[107] = val;
     }
 	// header: bit 108
-    void TcpPacket::set_psh(bool val){
-        _header[108] = val;
+    void TcpPacket::setPsh(bool val){
+        m_header[108] = val;
     }
 	// header: bit 109
-    void TcpPacket::set_rst(bool val){
-        _header[109] = val;
+    void TcpPacket::setRst(bool val){
+        m_header[109] = val;
     }
 	// header: bit 110
-    void TcpPacket::set_syn(bool val){
-        _header[110] = val;
+    void TcpPacket::setSyn(bool val){
+        m_header[110] = val;
     }
 	// header: bit 111
-    void TcpPacket::set_fin(bool val){
-        _header[111] = val;
+    void TcpPacket::setFin(bool val){
+        m_header[111] = val;
     }
 	// header: bits 112-127
-    void TcpPacket::set_windowSize(uint val){
-        uIntToVector(112,127,_header,val);
+    void TcpPacket::setWindowSize(int val){
+        uIntToVector(112,127,m_header,val);
     }
 	// header: bits 128-143
-    void TcpPacket::set_checksum(uint val){
-        uIntToVector(128,143,_header,val);
+    void TcpPacket::setChecksum(int val){
+        uIntToVector(128,143,m_header,val);
     }
-	// options: bits 0-15
-    void TcpPacket::set_options(std::vector<bool> &val){
-        _options = val;
+    // header: bits 144-159
+    void TcpPacket::setUrgentPointer(int val){
+        uIntToVector(144,159,m_header,val);
+    }
+	// options
+    void TcpPacket::setOptions(std::vector<bool> val){
+        m_options = std::vector<bool>(val);
+    }
+    // data
+    void TcpPacket::setData(std::vector<bool> val){
+        m_data = std::vector<bool>(val);
     }
 	
-    bool* TcpPacket::intToBoolArray(uint val){
+    
+    int TcpPacket::vectorToUInt(int start, int end, std::vector<bool> &vec){
+    int ret = 0;
+		for (int i = start; i <= end; i++){
+			if 	(vec.at(i))
+				ret += 1 << (i - start);
+		}
+		return ret;
+	}
+     
+    void TcpPacket::uIntToVector(int start, int end, std::vector<bool> &vec, int val){
+    	bool* ins = intToBoolArray(val);
+		for (int i = start; i <= end; i++){
+			vec.at(i) = ins[i-start];
+		}
+    }
+    
+	bool* TcpPacket::intToBoolArray(int val){
         bool* ret = new bool[32];
         for(int i = 0; i<32; i++){
             if (val % 2 == 1)
@@ -205,19 +248,5 @@ namespace whisperLibrary {
             val >> 1;
         }
         return ret;
-    }
-    uint TcpPacket::vectorToUInt(int start, int end, std::vector<bool> &set){
-		uint ret = 0;
-		for (int i = start; i <= end; i++){
-			if 	(set.at(i))
-				ret += 1 << (i - start);
-		}
-		return ret;
-    }
-    void TcpPacket::uIntToVector(int start, int end, std::vector<bool> &set, uint val){
-		bool* ins = intToBoolArray(val);
-		for (int i = start; i <= end; i++){
-			set[i] = ins[i];
-		}
     }
 }
