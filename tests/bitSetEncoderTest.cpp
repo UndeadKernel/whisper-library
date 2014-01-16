@@ -1,4 +1,4 @@
-#include <whisperLibrary\bitSetEncoder.hpp>
+#include <whisperLibrary/bitSetEncoder.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include<string>
@@ -6,6 +6,8 @@
 #include<bitset>
 
 using namespace std;
+
+typedef bitset<6> bitset6;
 
 struct BitSetEncoderFixture {
 	BitSetEncoderFixture(){
@@ -19,7 +21,7 @@ struct BitSetEncoderFixture {
 	whisper_library::BitSetEncoder en;
 };
 
-string generateTestOutput(vector<bitset<6>> vec) {
+string generateTestOutput(vector<bitset6> vec) {
 	string ret = "";
 	for (unsigned int i = 0; i < vec.size(); ++i) {
 		ret += vec[i].to_string();
