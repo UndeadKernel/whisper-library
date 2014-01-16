@@ -1,20 +1,30 @@
+# To disable the warning while executing cmake
+cmake_minimum_required(VERSION 2.8)
+
+# Name the project
+project(whisperLibraryTest)
+
 set(SOURCES
-    bitSetEncoderTest.cpp
+    	bitSetEncoderTest.cpp
 	bitSetDecoderTest.cpp
 	main_test_suite.cpp
 )
 
 # Set include directories.
 include_directories(
-    ../whisperLibrary/include   
+   	../whisperLibrary/include
+	../whisperLibrary/src
 )
 
+# Add the directory of the cmake build file for the whisper library, to enable cmake to link it to the test project
+add_subdirectory(../whisperLibrary "${CMAKE_CURRENT_BINARY_DIR}/whisperLibrary/bin")
+
 add_executable(tests
-    ${SOURCES}
+    	${SOURCES}
 )
 
 add_dependencies(tests
-    whisperLibrary
+    	whisperLibrary
 )
 
 # Boost library.
@@ -23,12 +33,11 @@ add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
 find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system unit_test_framework)
 
 
-include_directories(
-		include/whisperLibrary
-		${Boost_INCLUDE_DIRS}
+include_directories(		
+	${Boost_INCLUDE_DIRS}
 )
 
 target_link_libraries(tests
-    whisperLibrary
+    	whisperLibrary
 	${Boost_LIBRARIES}
 )

@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(whisperLibrary)
+
 set(SOURCES
 	src/socketconnector.cpp
 	src/channelmanager.cpp
