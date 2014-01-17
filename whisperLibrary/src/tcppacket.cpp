@@ -1,4 +1,5 @@
 #include "tcppacket.hpp"
+#include <iostream>
 
 namespace whisper_library {
     TcpPacket::TcpPacket(){
@@ -38,26 +39,26 @@ namespace whisper_library {
         return vectorToUInt(64, 95, m_header);
     }
 	// header: bits 96-99  
-    std::bitset<4>* TcpPacket::dataOffset(){
-        std::bitset<4>* ret = new std::bitset<4>();
+    std::bitset<4> TcpPacket::dataOffset(){
+        std::bitset<4> ret;
         for (int i = 96; i <= 99; i++){
-			ret->set(i-96, m_header[i]);
+			ret.set(i-96, m_header[i]);
 		}
         return ret;
     }
 	// header: bits 100-102
-    std::bitset<3>* TcpPacket::reserved(){
-        std::bitset<3>* ret = new std::bitset<3>();
+    std::bitset<3> TcpPacket::reserved(){
+        std::bitset<3> ret;
         for (int i = 100; i <= 102; i++){
-			ret->set(i-100, m_header[i]);
+			ret.set(i-100, m_header[i]);
 		}
         return ret;
     }
 	// header: bits 103-111  
-    std::bitset<9>* TcpPacket::flags(){
-        std::bitset<9>* ret = new std::bitset<9>();
+    std::bitset<9> TcpPacket::flags(){
+        std::bitset<9> ret;
         for (int i = 103; i <= 111; i++){
-			ret->set(i-103, m_header[i]);
+			ret.set(i-103, m_header[i]);
 		}
         return ret;
     }
@@ -110,25 +111,25 @@ namespace whisper_library {
         return vectorToUInt(128, 143, m_header);
     }
 	// options: bits 0-320
-    std::vector<bool>* TcpPacket::options(){
-        std::vector<bool>* ret = new std::vector<bool>(m_options);
+    std::vector<bool> TcpPacket::options(){
+        std::vector<bool> ret (m_options);
         return ret;
     }
     // packet
-    std::vector<bool>* TcpPacket::packet(){
-        std::vector<bool>* ret = new std::vector<bool>(m_header);
+    std::vector<bool> TcpPacket::packet(){
+        std::vector<bool> ret (m_header);
         for (int i = 0; i < m_options.size(); i++){
-            ret->push_back(m_options[i]);
+            ret.push_back(m_options[i]);
         }
         for (int i = 0; i < m_data.size(); i++){
-            ret->push_back(m_data[i]);
+            ret.push_back(m_data[i]);
         }
         return ret;
     }
 
     // data
-    std::vector<bool>* TcpPacket::data(){
-        std::vector<bool>* ret = new std::vector<bool>(m_data);
+    std::vector<bool> TcpPacket::data(){
+        std::vector<bool> ret (m_data);
         return ret;
     }
 
@@ -234,18 +235,21 @@ namespace whisper_library {
 	}
      
     void TcpPacket::uIntToVector(int start, int end, std::vector<bool> &vec, int val){
-    	bool* ins = intToBoolArray(val);
+    	std::vector<bool> ins(intToBoolVector(val));
 		for (int i = start; i <= end; i++){
 			vec.at(i) = ins[i-start];
 		}
     }
     
-	bool* TcpPacket::intToBoolArray(int val){
-        bool* ret = new bool[32];
+	std::vector<bool> TcpPacket::intToBoolVector(int val){
+        std::vector<bool> ret;
         for(int i = 0; i<32; i++){
-            if (val % 2 == 1)
-                ret[i] = 1;
-            val >> 1;
+            if (val % 2 == 1){
+                ret.push_back(true);
+            }
+            else
+				ret.push_back(false);
+            val = val / 2;
         }
         return ret;
     }

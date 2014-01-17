@@ -34,10 +34,10 @@ namespace whisper_library {
         int sequenceNumber(); // 32 bit
         int acknowlageNumber(); // 32 bit
 
-        std::bitset<4>* dataOffset(); // 4 bit
-        std::bitset<3>* reserved(); // 3 bit
+        std::bitset<4> dataOffset(); // 4 bit
+        std::bitset<3> reserved(); // 3 bit
 
-        std::bitset<9>* flags(); // 9 bit
+        std::bitset<9> flags(); // 9 bit
         bool ns();
         bool cwr();
         bool ece();
@@ -51,9 +51,9 @@ namespace whisper_library {
         int windowSize();
         int checksum();
         int urgentPointer();
-        std::vector<bool>* options();
-        std::vector<bool>* packet();
-        std::vector<bool>* data();
+        std::vector<bool> options();
+        std::vector<bool> packet();
+        std::vector<bool> data();
 
 		void setSourcePort(int val); // 16bit
 		void setDestPort(int val); // 16 bit
@@ -89,7 +89,7 @@ namespace whisper_library {
         std::vector<bool> m_data;
         int vectorToUInt(int start, int end, std::vector<bool> &vec);
         void uIntToVector(int start, int end, std::vector<bool> &vec, int val);
-        bool* intToBoolArray(int val);
+        std::vector<bool> intToBoolVector(int val);
 	};
 }
 #endif
