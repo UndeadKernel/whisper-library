@@ -5,7 +5,7 @@
 using namespace std;
 namespace whisper_library {
     TcpPacket::TcpPacket(){
-        m_header.resize(159);
+        m_header.resize(160);
 	}
 	TcpPacket::TcpPacket(uint inSourcePort, 
 							uint inDestPort, 
@@ -154,34 +154,41 @@ namespace whisper_library {
 
 	// header: bits 0-15  
     void TcpPacket::setSourcePort(uint val){
+		cout << "setting source port\n";
         uIntToVector(0,15,m_header,val);
     }
 	// header: bits 16-31
     void TcpPacket::setDestPort(uint val){
+        cout << "setting dest port\n";
         uIntToVector(16,31,m_header,val);
     }
 	// header: bits 32-63  
     void TcpPacket::setSequenceNumber(ulong val){
+        cout << "setting sequence number\n";
         uIntToVector(32,63,m_header,val);
     }
 	// header: bits 64-95
     void TcpPacket::setAcknowlageNumber(ulong val){
+        cout << "setting ack number\n";
         uIntToVector(64,95,m_header,val);
     }
 	// header: bits 96-99  
     void TcpPacket::setDataOffset(bitset<4> val){
+        cout << "setting data offset\n";
         for (int i = 96; i <= 99; i++){
 			m_header[i] = val[i-96];
 		}
     }
 	// header: bits 100-102
     void TcpPacket::setReserved(bitset<3> val){
+        cout << "setting reserved\n";
         for (int i = 100; i <= 102; i++){
 			m_header[i] = val[i-100];
 		}
     }
 	// header: bits 103-111  
     void TcpPacket::setFlags(bitset<9> val){
+        cout << "setting flags\n";
         for (int i = 103; i <= 111; i++){
 			m_header[i] = val[i-103];
 		}
@@ -224,14 +231,17 @@ namespace whisper_library {
     }
 	// header: bits 112-127
     void TcpPacket::setWindowSize(uint val){
+        cout << "setting window size\n";
         uIntToVector(112,127,m_header,val);
     }
 	// header: bits 128-143
     void TcpPacket::setChecksum(uint val){
+        cout << "setting checksum\n";
         uIntToVector(128,143,m_header,val);
     }
     // header: bits 144-159
     void TcpPacket::setUrgentPointer(uint val){
+        cout << "setting urgent pointer\n";
         uIntToVector(144,159,m_header,val);
     }
 	// options
@@ -262,31 +272,40 @@ namespace whisper_library {
     void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
 		vector<bool> sum (destPort());
 		vector<vector<bool> > split;
+		cout << "starting splitting of header\n";
 		split = splitHeaderTo16Bit();
+		cout << "header splitted, starting sum\n";
 		for (int i = 0; i < split.size(); i++){
-			oneComplementAdd(sum, split[i]);
+			sum = oneComplementAdd(sum, split[i]);
 		}
+		cout << "header sum calculated\n";
+		cout << "splitting source IP\n";
 		split = split32BitVector(intToBoolVector(sourceIp));
 		for (int i = 0; i < split.size(); i++){
-			oneComplementAdd(sum, split[i]);
+			sum = oneComplementAdd(sum, split[i]);
 		}
+		cout << "splitting dest IP\n";
 		split = split32BitVector(intToBoolVector(destIp));
 		for (int i = 0; i < split.size(); i++){
-			oneComplementAdd(sum, split[i]);
+			sum = oneComplementAdd(sum, split[i]);
 		}
+		cout << "combining res and prot\n";
 		vector<bool> combine (intToBoolVector(reservedBits));
 		vector<bool> temp (intToBoolVector(protocol));
 		for (int i = 0; i < temp.size(); i++){
 			combine.push_back(temp[i]);
 		}
+		cout << "calculating and combining tcp size\n";
 		vector<bool> temp2 (intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8));
 		for (int i = 0; i < temp.size(); i++){
 			combine.push_back(temp[i]);
 		}
+		cout << "adding combined vector\n";
 		split = split32BitVector(combine);
 		for (int i = 0; i < split.size(); i++){
-			oneComplementAdd(sum, split[i]);
+			sum = oneComplementAdd(sum, split[i]);
 		}
+		cout << "header sum calculated\n";
 		setChecksum(vectorToULong(0, 16, sum));
 	}
 	
@@ -295,7 +314,7 @@ namespace whisper_library {
     int ret = 0;
 		for (int i = start; i <= end; i++){
 			if 	(vec.at(i))
-				ret += 1 << (i - start);
+				ret += 1 << (i - (end - start+1));
 		}
 		return ret;
 	}
@@ -322,19 +341,16 @@ namespace whisper_library {
     
     vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
 		vector<bool> result;
-		int iter;
-		if (vec1.size() > vec2.size())
-			iter = vec1.size();
-		else
-			iter = vec2.size();
 		bool carry = false;
 		int sum = 0;
-		for (int i = 0; i < iter; i++){
+		cout << "starting one complement adding\n";
+		for (int i = 0; i < 16; i++){
+			sum = 0;
 			if (carry)
 				sum = sum + 1;
-			if (vec1[i])
+			if ((i < vec1.size()) && vec1[i])
 				sum = sum + 1;
-			if (vec2[i])
+			if ((i < vec2.size()) && vec2[i])
 				sum = sum + 1;
 			if (sum == 0){
 				result.push_back(false);
@@ -352,8 +368,10 @@ namespace whisper_library {
 				result.push_back(true);
 				carry = 1;
 			}
+			cout << result.back() << "\n";
 		}
-		if (carry = 1){
+		if (carry == 1){
+			cout << "recursing\n";
 			vector<bool> carryvec (1, true);
 			result = oneComplementAdd(result, carryvec);
 		}
@@ -361,15 +379,16 @@ namespace whisper_library {
 	}
 	
 	vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
+		cout << "splitting 32 bit vector\n";
 		vector<bool> vec1;
 		vector<bool> vec2;
 		vector< vector<bool> > result;
 		for (int i = 0; i < 16; i++){
-			vec1[i] = vec[i];
-			vec2[i] = vec[i+16];
+			vec1.push_back(vec[i]);
+			vec2.push_back(vec[i+16]);
 		}
-		result[0] = vec1;
-		result[1] = vec2;
+		result.push_back(vec1);
+		result.push_back(vec2);
 		return result;
 	}
 	
@@ -378,23 +397,27 @@ namespace whisper_library {
 		for (int i = 0; i < (m_header.size()/16); i++){
 			vector<bool> temp;
 			for (int j = 0; j < 16; j++){
-				temp[j] = m_header[(i*16)+j];
+				temp.push_back(m_header[(i*16)+j]);
 			}
 			result.push_back(temp);
 		}
-		for (int i = 0; i < (m_options.size()/16); i++){
-			vector<bool> temp;
-			for (int j = 0; j < 16; j++){
-				temp[j] = m_options[(i*16)+j];
+		if (m_options.empty() == false){
+			for (int i = 0; i < (m_options.size()/16); i++){
+				vector<bool> temp;
+				for (int j = 0; j < 16; j++){
+					temp.push_back(m_options[(i*16)+j]);
+				}
+				result.push_back(temp);
 			}
-			result.push_back(temp);
 		}
-		for (int i = 0; i < (m_data.size()/16); i++){
-			vector<bool> temp;
-			for (int j = 0; j < 16; j++){
-				temp[j] = m_data[(i*16)+j];
+		if (m_data.empty() == false){
+			for (int i = 0; i < (m_data.size()/16); i++){
+				vector<bool> temp;
+				for (int j = 0; j < 16; j++){
+					temp.push_back(m_data[(i*16)+j]);
+				}
+				result.push_back(temp);
 			}
-			result.push_back(temp);
 		}
 		return result;
 	}
