@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_CASE(testPacketGeneration) {
 	sourceIP = (192 << 24) + (68 << 16) + (43 << 8) + 1;
 	ulong destIP;
 	destIP = (10 << 24) + (176 << 16) + (2 << 8) + 34;
+	cout << "starting checksum calc\n";
 	dut->calculateChecksum(sourceIP, destIP, 0, 6);
 	uint expchecksum = 20339;
 	uint checks = dut->checksum();
