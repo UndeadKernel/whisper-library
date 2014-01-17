@@ -80,7 +80,7 @@ namespace whisper_library {
         /* This function is used to calculate the tcp checksum.
          * To do this it needs some additional information of the IP header as parameters.
          */
-        void calculateChecksum(int sourceIp, int destIp, int reservedBits, int protocol);
+        void calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol);
 
 
 	private:

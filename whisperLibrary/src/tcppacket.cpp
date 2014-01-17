@@ -5,7 +5,6 @@ using namespace std;
 namespace whisper_library {
     TcpPacket::TcpPacket(){
         m_header.resize(159);
-        m_options.resize(319);
 	}
 	TcpPacket::TcpPacket(uint inSourcePort, 
 							uint inDestPort, 
@@ -16,7 +15,6 @@ namespace whisper_library {
 							vector<bool> inOptions){
 		
 		m_header.resize(159);
-        m_options.resize(319);
         
         setSourcePort(inSourcePort);
         setDestPort(inDestPort);
@@ -260,7 +258,7 @@ namespace whisper_library {
 		}
 	}
     
-    void TcpPacket::calculateChecksum(int sourceIp, int destIp, int reservedBits, int protocol){
+    void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
 		vector<bool> sum (destPort());
 		vector<vector<bool> > split;
 		split = splitHeaderTo16Bit();
