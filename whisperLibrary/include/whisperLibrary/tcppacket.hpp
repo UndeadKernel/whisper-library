@@ -7,7 +7,7 @@
 #include <vector>
 #include <bitset>
 
-namespace whisperLibrary {
+namespace whisper_library {
 
     class /*WHISPERAPI*/ TcpPacket {
 

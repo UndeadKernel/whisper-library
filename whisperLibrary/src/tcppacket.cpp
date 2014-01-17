@@ -1,6 +1,6 @@
 #include "tcppacket.hpp"
 
-namespace whisperLibrary {
+namespace whisper_library {
     TcpPacket::TcpPacket(){
         m_header.resize(159);
         m_options.resize(319);

@@ -7,6 +7,7 @@ project(whisperLibraryTest)
 set(SOURCES
     	bitSetEncoderTest.cpp
 	bitSetDecoderTest.cpp
+	tcpPacketTest.cpp
 	main_test_suite.cpp
 )
 
