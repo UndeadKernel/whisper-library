@@ -8,13 +8,13 @@ namespace whisper_library {
         m_header.resize(159);
         m_options.resize(319);
 	}
-	TcpPacket::TcpPacket(int inSourcePort, 
-					int inDestPort, 
-					int inSequenceNumber,
-					int inAckNumber,
-					bitset<4> inDataOffset,
-					int inWindowSize,
-					vector<bool> inOptions){
+	TcpPacket::TcpPacket(uint inSourcePort, 
+							uint inDestPort, 
+							ulong inSequenceNumber,
+							ulong inAckNumber,
+							bitset<4> inDataOffset,
+							uint inWindowSize,
+							vector<bool> inOptions){
 		
 		m_header.resize(159);
         m_options.resize(319);
@@ -44,20 +44,20 @@ namespace whisper_library {
 		 */
 	 
 	// header: bits 0-15
-    int TcpPacket::sourcePort(){
-        return vectorToUInt(0, 15, m_header);
+    uint TcpPacket::sourcePort(){
+        return vectorToULong(0, 15, m_header);
 	}
 	// header: bits 16-31
-    int TcpPacket::destPort(){
-        return vectorToUInt(16, 31, m_header);
+    uint TcpPacket::destPort(){
+        return vectorToULong(16, 31, m_header);
 	} 
 	// header: bits 32-63  
-    int TcpPacket::sequenceNumber(){
-        return vectorToUInt(32, 63, m_header);
+    ulong TcpPacket::sequenceNumber(){
+        return vectorToULong(32, 63, m_header);
     }
 	// header: bits 64-95 
-    int TcpPacket::acknowlageNumber(){
-        return vectorToUInt(64, 95, m_header);
+    ulong TcpPacket::acknowlageNumber(){
+        return vectorToULong(64, 95, m_header);
     }
 	// header: bits 96-99  
     bitset<4> TcpPacket::dataOffset(){
@@ -120,16 +120,16 @@ namespace whisper_library {
         return m_header.at(111);
     }
 	// header: bits 112-127
-    int TcpPacket::windowSize(){
-        return vectorToUInt(112, 127, m_header);
+    uint TcpPacket::windowSize(){
+        return vectorToULong(112, 127, m_header);
     }
 	// header: bits 128-143
-    int TcpPacket::checksum(){
-        return vectorToUInt(128, 143, m_header);
+    uint TcpPacket::checksum(){
+        return vectorToULong(128, 143, m_header);
     }
     // header: bits 128-143
-    int TcpPacket::urgentPointer(){
-        return vectorToUInt(128, 143, m_header);
+    uint TcpPacket::urgentPointer(){
+        return vectorToULong(128, 143, m_header);
     }
 	// options: bits 0-320
     vector<bool> TcpPacket::options(){
@@ -155,19 +155,19 @@ namespace whisper_library {
     }
 
 	// header: bits 0-15  
-    void TcpPacket::setSourcePort(int val){
+    void TcpPacket::setSourcePort(uint val){
         uIntToVector(0,15,m_header,val);
     }
 	// header: bits 16-31
-    void TcpPacket::setDestPort(int val){
+    void TcpPacket::setDestPort(uint val){
         uIntToVector(16,31,m_header,val);
     }
 	// header: bits 32-63  
-    void TcpPacket::setSequenceNumber(int val){
+    void TcpPacket::setSequenceNumber(ulong val){
         uIntToVector(32,63,m_header,val);
     }
 	// header: bits 64-95
-    void TcpPacket::setAcknowlageNumber(int val){
+    void TcpPacket::setAcknowlageNumber(ulong val){
         uIntToVector(64,95,m_header,val);
     }
 	// header: bits 96-99  
@@ -183,7 +183,7 @@ namespace whisper_library {
 		}
     }
 	// header: bits 103-111  
-    void TcpPacket::setFlags(bitset<9> &val){
+    void TcpPacket::setFlags(bitset<9> val){
         for (int i = 103; i <= 111; i++){
 			m_header[i] = val[i-103];
 		}
@@ -225,15 +225,15 @@ namespace whisper_library {
         m_header[111] = val;
     }
 	// header: bits 112-127
-    void TcpPacket::setWindowSize(int val){
+    void TcpPacket::setWindowSize(uint val){
         uIntToVector(112,127,m_header,val);
     }
 	// header: bits 128-143
-    void TcpPacket::setChecksum(int val){
+    void TcpPacket::setChecksum(uint val){
         uIntToVector(128,143,m_header,val);
     }
     // header: bits 144-159
-    void TcpPacket::setUrgentPointer(int val){
+    void TcpPacket::setUrgentPointer(uint val){
         uIntToVector(144,159,m_header,val);
     }
 	// options
@@ -244,6 +244,22 @@ namespace whisper_library {
     void TcpPacket::setData(vector<bool> val){
         m_data = vector<bool>(val);
     }
+    // packet
+    void TcpPacket::setPacket(vector<bool> val){
+		for (int i = 0; i < 160; i++){
+			m_header[i] = val[i];
+		}
+		int offset = dataOffset().to_ulong();
+		int lengthopt = (offset*8) - 160;
+		m_options.empty();
+		for (int i = 160; i < lengthopt+160; i++){
+			m_options.push_back(val[i]);
+		} 
+		m_data.empty();
+		for (int i = lengthopt + 160; i < val.size(); i++){
+			m_data.push_back(val[i]);
+		}
+	}
     
     void TcpPacket::calculateChecksum(int sourceIp, int destIp, int reservedBits, int protocol){
 		vector<bool> sum (destPort());
@@ -273,11 +289,11 @@ namespace whisper_library {
 		for (int i = 0; i < split.size(); i++){
 			oneComplementAdd(sum, split[i]);
 		}
-		setChecksum(vectorToUInt(0, 16, sum);
+		setChecksum(vectorToULong(0, 16, sum));
 	}
 	
     
-    int TcpPacket::vectorToUInt(int start, int end, vector<bool> &vec){
+    ulong TcpPacket::vectorToULong(int start, int end, vector<bool> &vec){
     int ret = 0;
 		for (int i = start; i <= end; i++){
 			if 	(vec.at(i))
@@ -286,14 +302,14 @@ namespace whisper_library {
 		return ret;
 	}
      
-    void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, int val){
+    template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
     	vector<bool> ins(intToBoolVector(val));
 		for (int i = start; i <= end; i++){
 			vec.at(i) = ins[i-start];
 		}
     }
     
-	vector<bool> TcpPacket::intToBoolVector(int val){
+	template <class T> vector<bool> TcpPacket::intToBoolVector(T val){
         vector<bool> ret;
         for(int i = 0; i<32; i++){
             if (val % 2 == 1){
@@ -308,20 +324,80 @@ namespace whisper_library {
     
     vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
 		vector<bool> result;
+		int iter;
 		if (vec1.size() > vec2.size())
-			int iter = vec1.size();
+			iter = vec1.size();
 		else
-			int iter = vec2.size();
+			iter = vec2.size();
+		bool carry = false;
+		int sum = 0;
 		for (int i = 0; i < iter; i++){
-			
-			
+			if (carry)
+				sum = sum + 1;
+			if (vec1[i])
+				sum = sum + 1;
+			if (vec2[i])
+				sum = sum + 1;
+			if (sum == 0){
+				result.push_back(false);
+				carry = 0;
+			}
+			if (sum == 1){
+				result.push_back(true);
+				carry = 0;
+			}
+			if (sum == 2){
+				result.push_back(false);
+				carry = 1;
+			}
+			if (sum == 3){
+				result.push_back(true);
+				carry = 1;
+			}
+		}
+		if (carry = 1){
+			vector<bool> carryvec (1, true);
+			result = oneComplementAdd(result, carryvec);
+		}
+		return result;
 	}
 	
 	vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
-		
+		vector<bool> vec1;
+		vector<bool> vec2;
+		vector< vector<bool> > result;
+		for (int i = 0; i < 16; i++){
+			vec1[i] = vec[i];
+			vec2[i] = vec[i+16];
+		}
+		result[0] = vec1;
+		result[1] = vec2;
+		return result;
 	}
 	
 	vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
-		
+		vector< vector<bool> > result;
+		for (int i = 0; i < (m_header.size()/16); i++){
+			vector<bool> temp;
+			for (int j = 0; j < 16; j++){
+				temp[j] = m_header[(i*16)+j];
+			}
+			result.push_back(temp);
+		}
+		for (int i = 0; i < (m_options.size()/16); i++){
+			vector<bool> temp;
+			for (int j = 0; j < 16; j++){
+				temp[j] = m_options[(i*16)+j];
+			}
+			result.push_back(temp);
+		}
+		for (int i = 0; i < (m_data.size()/16); i++){
+			vector<bool> temp;
+			for (int j = 0; j < 16; j++){
+				temp[j] = m_data[(i*16)+j];
+			}
+			result.push_back(temp);
+		}
+		return result;
 	}
 }
