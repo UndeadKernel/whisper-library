@@ -307,7 +307,14 @@ namespace whisper_library {
     }
     
     vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
-		
+		vector<bool> result;
+		if (vec1.size() > vec2.size())
+			int iter = vec1.size();
+		else
+			int iter = vec2.size();
+		for (int i = 0; i < iter; i++){
+			
+			
 	}
 	
 	vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
