@@ -1,6 +1,6 @@
-#include <whisperLibrary\socketconnector.hpp>
-#include <whisperLibrary\bitSetEncoder.hpp>
-#include <whisperLibrary\bitSetDecoder.hpp>
+#include <whisperLibrary/socketconnector.hpp>
+#include <whisperLibrary/bitSetEncoder.hpp>
+#include <whisperLibrary/bitSetDecoder.hpp>
 
 #include <iostream>
 
@@ -10,6 +10,7 @@
 #include <vector>
 
 using namespace std;
+typedef bitset<6> bitset6;
 
 int main(int argc, char* argv[]){
 
@@ -17,7 +18,7 @@ int main(int argc, char* argv[]){
 	// Test -  Encoder
 	whisper_library::BitSetEncoder en;
 
-	vector<bitset<6>> vec;
+	vector<bitset6> vec;
 	string msg = "123 456 !+#";
 	cout << "Message: " << msg << endl;
 	vec = en.encodeMessage(msg);

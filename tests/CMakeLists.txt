@@ -17,7 +17,7 @@ include_directories(
 )
 
 # Add the directory of the cmake build file for the whisper library, to enable cmake to link it to the test project
-add_subdirectory(../whisperLibrary "${CMAKE_CURRENT_BINARY_DIR}/whisperLibrary/bin")
+#add_subdirectory(../whisperLibrary "${CMAKE_CURRENT_BINARY_DIR}/whisperLibrary/bin")
 
 add_executable(tests
     	${SOURCES}
