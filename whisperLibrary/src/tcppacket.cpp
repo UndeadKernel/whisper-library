@@ -273,6 +273,7 @@ namespace whisper_library {
 		for (int i = 0; i < split.size(); i++){
 			oneComplementAdd(sum, split[i]);
 		}
+		setChecksum(vectorToUInt(0, 16, sum);
 	}
 	
     
