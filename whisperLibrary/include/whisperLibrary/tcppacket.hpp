@@ -7,12 +7,21 @@
 #include <vector>
 #include <bitset>
 
+
+using namespace std;
 namespace whisper_library {
 
     class /*WHISPERAPI*/ TcpPacket {
 
 	public:
         TcpPacket();
+        TcpPacket(int inSourcePort, 
+					int inDestPort, 
+					int inSequenceNumber,
+					int inAckNumber,
+					bitset<4> inDataOffset,
+					int inWindowSize,
+					vector<bool> inOptions);
 		/* Locations of the header informations:
 		 * 0-15 Source port, 16-31 Destination port
 		 * 32-63 Sequence number
@@ -34,10 +43,10 @@ namespace whisper_library {
         int sequenceNumber(); // 32 bit
         int acknowlageNumber(); // 32 bit
 
-        std::bitset<4> dataOffset(); // 4 bit
-        std::bitset<3> reserved(); // 3 bit
+        bitset<4> dataOffset(); // 4 bit
+        bitset<3> reserved(); // 3 bit
 
-        std::bitset<9> flags(); // 9 bit
+        bitset<9> flags(); // 9 bit
         bool ns();
         bool cwr();
         bool ece();
@@ -51,9 +60,9 @@ namespace whisper_library {
         int windowSize();
         int checksum();
         int urgentPointer();
-        std::vector<bool> options();
-        std::vector<bool> packet();
-        std::vector<bool> data();
+        vector<bool> options();
+        vector<bool> packet();
+        vector<bool> data();
 
 		void setSourcePort(int val); // 16bit
 		void setDestPort(int val); // 16 bit
@@ -61,10 +70,10 @@ namespace whisper_library {
 		void setSequenceNumber(int val); // 32 bit
 		void setAcknowlageNumber(int val); // 32 bit
 
-		void setDataOffset(std::bitset<4> val); // 4 bit
-		void setReserved(std::bitset<3> val); // 3 bit
+		void setDataOffset(bitset<4> val); // 4 bit
+		void setReserved(bitset<3> val); // 3 bit
 
-        void setFlags(std::bitset<9> &val); // 9 bit
+        void setFlags(bitset<9> &val); // 9 bit
 		void setNs(bool val);
 		void setCwr(bool val);
 		void setEce(bool val);
@@ -78,18 +87,23 @@ namespace whisper_library {
 		void setWindowSize(int val);
 		void setChecksum(int val);
         void setUrgentPointer(int val);
-        void setOptions(std::vector<bool> val);
+        void setOptions(vector<bool> val);
 		
-        void setData(std::vector<bool> val);
+        void setData(vector<bool> val);
+        
+        void calculateChecksum(int sourceIp, int destIp, int reservedBits, int protocol);
 
 
 	private:
-        std::vector<bool> m_header;
-        std::vector<bool> m_options;
-        std::vector<bool> m_data;
-        int vectorToUInt(int start, int end, std::vector<bool> &vec);
-        void uIntToVector(int start, int end, std::vector<bool> &vec, int val);
-        std::vector<bool> intToBoolVector(int val);
+        vector<bool> m_header;
+        vector<bool> m_options;
+        vector<bool> m_data;
+        int vectorToUInt(int start, int end, vector<bool> &vec);
+        void uIntToVector(int start, int end, vector<bool> &vec, int val);
+        vector<bool> intToBoolVector(int val);
+        vector<bool> oneComplementAdd(vector<bool> vec1, vector<bool> vec2);
+		vector<vector<bool> > split32BitVector(vector<bool> vec);
+		vector<vector<bool> > splitHeaderTo16Bit();
 	};
 }
 #endif

@@ -1,10 +1,30 @@
 #include "tcppacket.hpp"
 #include <iostream>
 
+using namespace std;
 namespace whisper_library {
     TcpPacket::TcpPacket(){
         m_header.resize(159);
         m_options.resize(319);
+	}
+	TcpPacket::TcpPacket(int inSourcePort, 
+					int inDestPort, 
+					int inSequenceNumber,
+					int inAckNumber,
+					bitset<4> inDataOffset,
+					int inWindowSize,
+					vector<bool> inOptions){
+		
+		m_header.resize(159);
+        m_options.resize(319);
+        
+        setSourcePort(inSourcePort);
+        setDestPort(inDestPort);
+        setSequenceNumber(inSequenceNumber);
+        setAcknowlageNumber(inAckNumber);
+        setDataOffset(inDataOffset);
+        setWindowSize(inWindowSize);
+        setOptions(inOptions);
 	}
 	
 	/* Locations of the header informations:
@@ -39,24 +59,24 @@ namespace whisper_library {
         return vectorToUInt(64, 95, m_header);
     }
 	// header: bits 96-99  
-    std::bitset<4> TcpPacket::dataOffset(){
-        std::bitset<4> ret;
+    bitset<4> TcpPacket::dataOffset(){
+        bitset<4> ret;
         for (int i = 96; i <= 99; i++){
 			ret.set(i-96, m_header[i]);
 		}
         return ret;
     }
 	// header: bits 100-102
-    std::bitset<3> TcpPacket::reserved(){
-        std::bitset<3> ret;
+    bitset<3> TcpPacket::reserved(){
+        bitset<3> ret;
         for (int i = 100; i <= 102; i++){
 			ret.set(i-100, m_header[i]);
 		}
         return ret;
     }
 	// header: bits 103-111  
-    std::bitset<9> TcpPacket::flags(){
-        std::bitset<9> ret;
+    bitset<9> TcpPacket::flags(){
+        bitset<9> ret;
         for (int i = 103; i <= 111; i++){
 			ret.set(i-103, m_header[i]);
 		}
@@ -111,13 +131,13 @@ namespace whisper_library {
         return vectorToUInt(128, 143, m_header);
     }
 	// options: bits 0-320
-    std::vector<bool> TcpPacket::options(){
-        std::vector<bool> ret (m_options);
+    vector<bool> TcpPacket::options(){
+        vector<bool> ret (m_options);
         return ret;
     }
     // packet
-    std::vector<bool> TcpPacket::packet(){
-        std::vector<bool> ret (m_header);
+    vector<bool> TcpPacket::packet(){
+        vector<bool> ret (m_header);
         for (int i = 0; i < m_options.size(); i++){
             ret.push_back(m_options[i]);
         }
@@ -128,8 +148,8 @@ namespace whisper_library {
     }
 
     // data
-    std::vector<bool> TcpPacket::data(){
-        std::vector<bool> ret (m_data);
+    vector<bool> TcpPacket::data(){
+        vector<bool> ret (m_data);
         return ret;
     }
 
@@ -150,19 +170,19 @@ namespace whisper_library {
         uIntToVector(64,95,m_header,val);
     }
 	// header: bits 96-99  
-    void TcpPacket::setDataOffset(std::bitset<4> val){
+    void TcpPacket::setDataOffset(bitset<4> val){
         for (int i = 96; i <= 99; i++){
 			m_header[i] = val[i-96];
 		}
     }
 	// header: bits 100-102
-    void TcpPacket::setReserved(std::bitset<3> val){
+    void TcpPacket::setReserved(bitset<3> val){
         for (int i = 100; i <= 102; i++){
 			m_header[i] = val[i-100];
 		}
     }
 	// header: bits 103-111  
-    void TcpPacket::setFlags(std::bitset<9> &val){
+    void TcpPacket::setFlags(bitset<9> &val){
         for (int i = 103; i <= 111; i++){
 			m_header[i] = val[i-103];
 		}
@@ -216,16 +236,46 @@ namespace whisper_library {
         uIntToVector(144,159,m_header,val);
     }
 	// options
-    void TcpPacket::setOptions(std::vector<bool> val){
-        m_options = std::vector<bool>(val);
+    void TcpPacket::setOptions(vector<bool> val){
+        m_options = vector<bool>(val);
     }
     // data
-    void TcpPacket::setData(std::vector<bool> val){
-        m_data = std::vector<bool>(val);
+    void TcpPacket::setData(vector<bool> val){
+        m_data = vector<bool>(val);
     }
+    
+    void TcpPacket::calculateChecksum(int sourceIp, int destIp, int reservedBits, int protocol){
+		vector<bool> sum (destPort());
+		vector<vector<bool> > split;
+		split = splitHeaderTo16Bit();
+		for (int i = 0; i < split.size(); i++){
+			oneComplementAdd(sum, split[i]);
+		}
+		split = split32BitVector(intToBoolVector(sourceIp));
+		for (int i = 0; i < split.size(); i++){
+			oneComplementAdd(sum, split[i]);
+		}
+		split = split32BitVector(intToBoolVector(destIp));
+		for (int i = 0; i < split.size(); i++){
+			oneComplementAdd(sum, split[i]);
+		}
+		vector<bool> combine (intToBoolVector(reservedBits));
+		vector<bool> temp (intToBoolVector(protocol));
+		for (int i = 0; i < temp.size(); i++){
+			combine.push_back(temp[i]);
+		}
+		vector<bool> temp2 (intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8));
+		for (int i = 0; i < temp.size(); i++){
+			combine.push_back(temp[i]);
+		}
+		split = split32BitVector(combine);
+		for (int i = 0; i < split.size(); i++){
+			oneComplementAdd(sum, split[i]);
+		}
+	}
 	
     
-    int TcpPacket::vectorToUInt(int start, int end, std::vector<bool> &vec){
+    int TcpPacket::vectorToUInt(int start, int end, vector<bool> &vec){
     int ret = 0;
 		for (int i = start; i <= end; i++){
 			if 	(vec.at(i))
@@ -234,15 +284,15 @@ namespace whisper_library {
 		return ret;
 	}
      
-    void TcpPacket::uIntToVector(int start, int end, std::vector<bool> &vec, int val){
-    	std::vector<bool> ins(intToBoolVector(val));
+    void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, int val){
+    	vector<bool> ins(intToBoolVector(val));
 		for (int i = start; i <= end; i++){
 			vec.at(i) = ins[i-start];
 		}
     }
     
-	std::vector<bool> TcpPacket::intToBoolVector(int val){
-        std::vector<bool> ret;
+	vector<bool> TcpPacket::intToBoolVector(int val){
+        vector<bool> ret;
         for(int i = 0; i<32; i++){
             if (val % 2 == 1){
                 ret.push_back(true);
@@ -253,4 +303,16 @@ namespace whisper_library {
         }
         return ret;
     }
+    
+    vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
+		
+	}
+	
+	vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
+		
+	}
+	
+	vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
+		
+	}
 }

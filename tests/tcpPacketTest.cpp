@@ -40,12 +40,9 @@ BOOST_AUTO_TEST_CASE(testBitsetHeaderFields) {
 	BOOST_CHECK_EQUAL(retstring, std::string("101"));
 }
 
-BOOST_AUTO_TEST_CASE(testPrivateFunctions) {
-
-}
 
 BOOST_AUTO_TEST_CASE(testPacketGeneration) {
-	
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
