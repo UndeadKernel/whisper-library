@@ -26,20 +26,21 @@ namespace whisper_library {
         setOptions(inOptions);
 	}
 	
-	/* Locations of the header informations:
-		 * 0-15 Source port, 16-31 Destination port
-		 * 32-63 Sequence number
-		 * 64-95 Acknowledgement number
-		 * 96-99 Data offset
-		 * 100-102 Reserved
-		 * 103 NS, 104 CWR, 105 ECE, 106 URG, 107 ACK
-		 * 108 PSH, 109 RST, 110 SYN, 111 FIN, 112-127 Window Size
-		 * 128-143 checksum, 144-159 Urgent Pointer
-		 * Options field:
-		 * 0-319 depending on data-offset
-		 * 0-7 option kind, 8-15 option length
-		 * (option-length) option data
-		 */
+	/* 	
+	  Locations of the header informations:
+	  0-15 Source port, 16-31 Destination port
+	  32-63 Sequence number
+	  64-95 Acknowledgement number
+	  96-99 Data offset
+	  100-102 Reserved
+	  103 NS, 104 CWR, 105 ECE, 106 URG, 107 ACK
+	  108 PSH, 109 RST, 110 SYN, 111 FIN, 112-127 Window Size
+	  128-143 checksum, 144-159 Urgent Pointer
+	  Options field:
+	  0-319 depending on data-offset
+	  0-7 option kind, 8-15 option length
+	  (option-length) option data
+	*/
 	 
 	// header: bits 0-15
     uint TcpPacket::sourcePort(){
@@ -83,39 +84,39 @@ namespace whisper_library {
     }
 	// header: bit 103
     bool TcpPacket::nonceSumFlag(){
-        return m_header.at(103);
+        return m_header[103];
     }
 	// header: bit 104
     bool TcpPacket::congestionWindowReducedFlag(){
-        return m_header.at(104);
+        return m_header[104];
     }
 	// header: bit 105
     bool TcpPacket::ecnEchoFlag(){
-        return m_header.at(105);
+        return m_header[105];
     }
 	// header: bit 106
     bool TcpPacket::urgentFlag(){
-        return m_header.at(106);
+        return m_header[106];
     }
 	// header: bit 107
     bool TcpPacket::acknowledementFlag(){
-        return m_header.at(107);
+        return m_header[107];
     }
 	// header: bit 108
     bool TcpPacket::pushFlag(){
-        return m_header.at(108);
+        return m_header[108];
     }
 	// header: bit 109
     bool TcpPacket::resetFlag(){
-        return m_header.at(109);
+        return m_header[109];
     }
 	// header: bit 110
     bool TcpPacket::synchronisationFlag(){
-        return m_header.at(110);
+        return m_header[110];
     }
 	// header: bit 111
     bool TcpPacket::finishFlag(){
-        return m_header.at(111);
+        return m_header[111];
     }
 	// header: bits 112-127
     uint TcpPacket::windowSize(){
@@ -261,25 +262,46 @@ namespace whisper_library {
     
     void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
         vector<bool> sum;
+		/* 
+		  split the tcp packet into 16bit values and add all of them up
+		  using the one complement addidtion
+		*/
 		vector<vector<bool> > split;
 		split = splitHeaderTo16Bit();
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
 		}
-		split = split32BitVector(invertVector(intToBoolVector(sourceIp)));
+		// split the source IP into 16bit values and add them to the sum
+		vector<bool> temp (intToBoolVector(sourceIp));
+		reverse(temp.begin(), temp.end());
+		split = split32BitVector(temp);
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
 		}
-		split = split32BitVector(invertVector(intToBoolVector(destIp)));
+		// split the source IP into 16bit values and add them to the sum
+		temp = intToBoolVector(destIp);
+		reverse(temp.begin(), temp.end());
+		split = split32BitVector(temp);
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
 		}
-		vector<bool> combine (trimBigEndianVector(invertVector(intToBoolVector(reservedBits)), 8));
-		vector<bool> temp (trimBigEndianVector(invertVector(intToBoolVector(protocol)), 8));
+		/*
+		  combine the remaining values for the IP headers reserved bits, 
+		  the protocol used and the size of the tcp packet in bytes into a
+		  new vector, split it into 16bit values and add them to the sum
+		*/ 
+		vector<bool> combine (intToBoolVector(reservedBits));
+		reverse(combine.begin(), combine.end());
+		combine = trimBigEndianVector(combine, 8);
+		temp = intToBoolVector(protocol);
+		reverse(temp.begin(), temp.end());
+		temp = trimBigEndianVector(temp, 8);
 		for (int i = 0; i < temp.size(); i++){
 			combine.push_back(temp[i]);
 		}
-        vector<bool> temp2 (trimBigEndianVector(invertVector(intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8)), 16));
+        vector<bool> temp2(intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8));
+        reverse(temp2.begin(), temp2.end());
+        temp2 = (trimBigEndianVector(temp2, 16));
         for (int i = 0; i < temp2.size(); i++){
             combine.push_back(temp2[i]);
 		}
@@ -287,6 +309,7 @@ namespace whisper_library {
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
 		}
+		// if the resulting sum vector exeeds 16 bits add the exeeding bits as carry to the sum
         if (sum.size()>16){
             vector<bool> remainder;
             for (int i = 0; i < 16; i++){
@@ -295,7 +318,8 @@ namespace whisper_library {
             }
             sum = oneComplementAdd(sum,remainder);
         }
-        sum = oneComplement(sum);
+        // compute the one complement of the sum and store it as the new checksum
+        sum.flip();
         setChecksum(vectorToULong(0, sum.size()-1, sum));
 	}
 	
@@ -303,7 +327,7 @@ namespace whisper_library {
     ulong TcpPacket::vectorToULong(int start, int end, vector<bool> &vec){
     int ret = 0;
 		for (int i = start; i <= end; i++){
-			if 	(vec.at(i))
+			if 	(vec[i])
                 ret += 1 << (end -i);
 		}
 		return ret;
@@ -312,7 +336,7 @@ namespace whisper_library {
     template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
     	vector<bool> ins (intToBoolVector(val));
 		for (int i = end; i >= start; i--){
-			vec.at(i) = ins[end-i];
+			vec[i] = ins[end-i];
 		}
     }
     
@@ -330,19 +354,16 @@ namespace whisper_library {
     }
     
     vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
-        vec1 = invertVector(vec1);
-        vec2 = invertVector(vec2);
+        // convert the vectors to little endian to make the addition easier
+        reverse(vec1.begin(), vec1.end());
+        reverse(vec2.begin(), vec2.end());
         vector<bool> result;
 		bool carry = false;
 		int sum = 0;
-		int iter;
-		if (vec1.size() > vec2.size())
-			iter = vec1.size();
-		else
-			iter = vec2.size();
-		
+		//compute the bitwise one complement addition of the two vectors
         for (int i = 0; i < 16; i++){
 			sum = 0;
+			// computing carry and value of the sum at position i
 			if (carry)
 				sum = sum + 1;
 			if ((i < vec1.size()) && vec1[i])
@@ -366,10 +387,13 @@ namespace whisper_library {
                 carry = true;
 			}
 		}
+        reverse(result.begin(), result.end());
+        // if there is an overflow add the remaining carry to the sum
         if (carry){
-            return oneComplementAdd(vector<bool>(1,true), invertVector(result));
+            return oneComplementAdd(vector<bool>(1,true), result);
 		}
-        return invertVector(result);
+        
+        return result;
 	}
 	
 	vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
@@ -415,14 +439,6 @@ namespace whisper_library {
 		return result;
 	}
 	
-	vector<bool> TcpPacket::invertVector(vector<bool> vec){
-		vector<bool> ret;
-		for (int i = (vec.size() - 1); i >= 0; i--){
-			ret.push_back(vec[i]);
-		}
-		return ret;
-	}
-	
 	vector<bool> TcpPacket::trimBigEndianVector(vector<bool> vec, int size){
 		vector<bool> ret;
 		for (int i = vec.size()-size; i < vec.size(); i++){
@@ -430,12 +446,4 @@ namespace whisper_library {
 		}
 		return ret;
 	}
-
-    vector<bool> TcpPacket::oneComplement(vector<bool> vec){
-        vector<bool> ret;
-        for (int i = 0; i < vec.size(); i++){
-            ret.push_back(true^(vec[i]));
-        }
-        return ret;
-    }
 }
