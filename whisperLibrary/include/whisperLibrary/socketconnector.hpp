@@ -5,7 +5,7 @@
 
 namespace whisper_library {
 
-class WHISPERAPI SocketConnector {
+class SocketConnector {
 
 public:
 	SocketConnector();

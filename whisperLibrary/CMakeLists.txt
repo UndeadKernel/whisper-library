@@ -20,10 +20,16 @@ set(HEADERS
 	include/whisperLibrary/bitSetDecoder.hpp
 )
 
+set(TESTS
+	tests/bitSetEncoderTest.cpp
+	tests/bitSetDecoderTest.cpp
+	tests/main_test_suite.cpp
+)
+
 # Boost library
 set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex)
+find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
 
 include_directories(
 		include/whisperLibrary
@@ -37,6 +43,19 @@ add_library(whisperLibrary SHARED
 
 TARGET_LINK_LIBRARIES(whisperLibrary
 	${Boost_LIBRARIES}
+)
+
+add_executable(tests
+    	${TESTS}
+)
+
+add_dependencies(tests
+    	whisperLibrary
+)
+
+target_link_libraries(tests
+    	whisperLibrary
+		${Boost_LIBRARIES}
 )
 
 add_definitions(-DWHISPER_BUILD)

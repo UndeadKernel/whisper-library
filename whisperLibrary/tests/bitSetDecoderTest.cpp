@@ -1,4 +1,4 @@
-#include <whisperLibrary/bitSetDecoder.hpp>
+#include "bitSetDecoder.hpp"
 #include <boost/test/unit_test.hpp>
 
 #include<string>
