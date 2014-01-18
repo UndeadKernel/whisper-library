@@ -194,39 +194,39 @@ namespace whisper_library {
 		}
     }
 	// header: bit 103
-    void TcpPacket::setNs(bool val){
+    void TcpPacket::setNonceSumFlag(bool val){
         m_header[103] = val;
     }
 	// header: bit 104
-    void TcpPacket::setCwr(bool val){
+    void TcpPacket::setCongestionWindowReducedFlag(bool val){
         m_header[104] = val;
     }
 	// header: bit 105
-    void TcpPacket::setEce(bool val){
+    void TcpPacket::setEcnEchoFlag(bool val){
         m_header[105] = val;
     }
 	// header: bit 106
-    void TcpPacket::setUrg(bool val){
+    void TcpPacket::setUrgentFlag(bool val){
         m_header[106] = val;
     }
 	// header: bit 107
-    void TcpPacket::setAck(bool val){
+    void TcpPacket::setAcknowledgementFlag(bool val){
         m_header[107] = val;
     }
 	// header: bit 108
-    void TcpPacket::setPsh(bool val){
+    void TcpPacket::setPushFlag(bool val){
         m_header[108] = val;
     }
 	// header: bit 109
-    void TcpPacket::setRst(bool val){
+    void TcpPacket::setResetFlag(bool val){
         m_header[109] = val;
     }
 	// header: bit 110
-    void TcpPacket::setSyn(bool val){
+    void TcpPacket::setSynchronisationFlag(bool val){
         m_header[110] = val;
     }
 	// header: bit 111
-    void TcpPacket::setFin(bool val){
+    void TcpPacket::setFinishFlag(bool val){
         m_header[111] = val;
     }
 	// header: bits 112-127
