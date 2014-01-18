@@ -154,41 +154,34 @@ namespace whisper_library {
 
 	// header: bits 0-15  
     void TcpPacket::setSourcePort(uint val){
-		cout << "setting source port\n";
         uIntToVector(0,15,m_header,val);
     }
 	// header: bits 16-31
     void TcpPacket::setDestPort(uint val){
-        cout << "setting dest port\n";
         uIntToVector(16,31,m_header,val);
     }
 	// header: bits 32-63  
     void TcpPacket::setSequenceNumber(ulong val){
-        cout << "setting sequence number\n";
         uIntToVector(32,63,m_header,val);
     }
 	// header: bits 64-95
     void TcpPacket::setAcknowlageNumber(ulong val){
-        cout << "setting ack number\n";
         uIntToVector(64,95,m_header,val);
     }
 	// header: bits 96-99  
     void TcpPacket::setDataOffset(bitset<4> val){
-        cout << "setting data offset\n";
         for (int i = 96; i <= 99; i++){
 			m_header[i] = val[i-96];
 		}
     }
 	// header: bits 100-102
     void TcpPacket::setReserved(bitset<3> val){
-        cout << "setting reserved\n";
         for (int i = 100; i <= 102; i++){
 			m_header[i] = val[i-100];
 		}
     }
 	// header: bits 103-111  
     void TcpPacket::setFlags(bitset<9> val){
-        cout << "setting flags\n";
         for (int i = 103; i <= 111; i++){
 			m_header[i] = val[i-103];
 		}
@@ -231,17 +224,14 @@ namespace whisper_library {
     }
 	// header: bits 112-127
     void TcpPacket::setWindowSize(uint val){
-        cout << "setting window size\n";
         uIntToVector(112,127,m_header,val);
     }
 	// header: bits 128-143
     void TcpPacket::setChecksum(uint val){
-        cout << "setting checksum\n";
         uIntToVector(128,143,m_header,val);
     }
     // header: bits 144-159
     void TcpPacket::setUrgentPointer(uint val){
-        cout << "setting urgent pointer\n";
         uIntToVector(144,159,m_header,val);
     }
 	// options
@@ -279,12 +269,10 @@ namespace whisper_library {
 		split = split32BitVector(invertVector(intToBoolVector(sourceIp)));
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
-			cout << "Zwischensumme: " << vectorToULong(0, sum.size()-1, sum) << "\n";
 		}
 		split = split32BitVector(invertVector(intToBoolVector(destIp)));
 		for (int i = 0; i < split.size(); i++){
 			sum = oneComplementAdd(sum, split[i]);
-			cout << "Zwischensumme: " << vectorToULong(0, sum.size()-1, sum) << "\n";
 		}
 		vector<bool> combine (trimBigEndianVector(invertVector(intToBoolVector(reservedBits)), 8));
 		vector<bool> temp (trimBigEndianVector(invertVector(intToBoolVector(protocol)), 8));
@@ -402,7 +390,6 @@ namespace whisper_library {
 		for (int i = 0; i < (m_header.size()/16); i++){
             vector<bool> temp;
 			for (int j = 0; j < 16; j++){
-                cout << m_header[(i*16)+j];
 				temp.push_back(m_header[(i*16)+j]);
 			}
 			result.push_back(temp);

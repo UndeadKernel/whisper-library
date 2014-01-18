@@ -58,14 +58,11 @@ BOOST_AUTO_TEST_CASE(testPacketGeneration) {
 	dut->setUrgentPointer(0);
 	ulong sourceIP;
 	sourceIP = (192 << 24) + (68 << 16) + (43 << 8) + 1;
-    cout << "source IP " << sourceIP << "\n";
 	ulong destIP;
 	destIP = (10 << 24) + (176 << 16) + (2 << 8) + 34;
-	cout << "starting checksum calc\n";
     dut->calculateChecksum(sourceIP, destIP, 0, 6);
     uint expchecksum = 45196;
 	uint checks = dut->checksum();
-    cout << "starting boost check\n";
 	BOOST_CHECK_EQUAL(expchecksum, checks);
 	vector<bool> tcp_packet (dut->packet());
 }
