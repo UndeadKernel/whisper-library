@@ -1,6 +1,5 @@
 set(SOURCES
-    bitSetEncoderTest.cpp
-	bitSetDecoderTest.cpp
+	bitSetCoderTest.cpp
 	main_test_suite.cpp
 )
 

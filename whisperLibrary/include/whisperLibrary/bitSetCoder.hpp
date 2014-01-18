@@ -7,6 +7,7 @@
 #include <string>
 #include <bitset>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 namespace whisper_library {
@@ -48,18 +49,16 @@ namespace whisper_library {
 				ret_vector.push_back(bit);
 				i += BLOCK_LENGTH;
 			}
-			// build trailing zeroes
-			string zeroes = "";
-			for (unsigned int j = 0; j < bit_sequence.length() - i; j++) {
-				zeroes += "0";
-			}
-			// don't add a next package, if the length matched 6bit-blocks
-			if (i == bit_sequence.length()) {
-				i -= BLOCK_LENGTH;
-			}
-			// add trailing zeroes
-			if (zeroes != "") {
-				ret_vector.push_back(bitset<BLOCK_LENGTH>(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+			// build trailing zeroes if bit_sequence length didn't match the bit block size
+			if (i != bit_sequence.length()) {
+				string zeroes = "";
+				for (unsigned int j = 0; j < BLOCK_LENGTH - (bit_sequence.length() - i); j++) {
+					zeroes += "0";
+				}
+				// add trailing zeroes
+				if (zeroes != "") {
+					ret_vector.push_back(bitset<BLOCK_LENGTH>(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+				}
 			}
 			return ret_vector;
 		}

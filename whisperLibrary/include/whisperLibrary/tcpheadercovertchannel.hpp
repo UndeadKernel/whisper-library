@@ -15,14 +15,15 @@ using namespace std;
 
 namespace whisper_library {
 
-class WHISPERAPI TcpHeaderCovertChannel {
+class TcpHeaderCovertChannel {
 
 public:
 	TcpHeaderCovertChannel(whisper_library::ChannelManager* channelmanager);
-	vector<whisper_library::TcpPacket> sendMessage(string message);
+	void sendMessage(string message);
 	void receiveMessage(whisper_library::TcpPacket& packet);
 
 private:
+	vector<bitset<6>> encodeMessageWithLength(string message);
 	void modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<6> data);
 	bitset<6> extractData(whisper_library::TcpPacket& packet);
 	vector<bitset<6>> m_data_blocks;
