@@ -15,11 +15,9 @@ set(HEADERS
 	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
 	include/whisperLibrary/covertchannel.hpp
-	include/whisperLibrary/encoder.hpp
 	include/whisperLibrary/bitSetEncoder.hpp
-	include/whisperLibrary/decoder.hpp
 	include/whisperLibrary/bitSetDecoder.hpp
-	include/whisperLibrary/tcppacket.hpp
+	src/tcppacket.hpp
 )
 
 set(TESTS
@@ -50,6 +48,8 @@ TARGET_LINK_LIBRARIES(whisperLibrary
 
 add_executable(tests
     	${TESTS}
+		${HEADERS}
+		${SOURCES}
 )
 
 add_dependencies(tests

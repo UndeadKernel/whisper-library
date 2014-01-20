@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-=======
-#include <whisperLibrary/tcppacket.hpp>
+#include "../src/tcppacket.hpp"
 #include <boost/test/unit_test.hpp>
 
 #include<string>
@@ -30,8 +28,8 @@ BOOST_AUTO_TEST_CASE(testIntHeaderField) {
 
 
 BOOST_AUTO_TEST_CASE(testBoolHeaderFields) {
-	dut->setUrg(true);
-	BOOST_CHECK_EQUAL(dut->urg(), true);
+	dut->setUrgentFlag(true);
+	BOOST_CHECK_EQUAL(dut->urgentFlag(), true);
 } 
 
 BOOST_AUTO_TEST_CASE(testBitsetHeaderFields) {
@@ -51,4 +49,3 @@ BOOST_AUTO_TEST_CASE(testPacketGeneration) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
->>>>>>> first tests working

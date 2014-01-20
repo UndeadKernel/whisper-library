@@ -15,7 +15,7 @@ typedef unsigned long ulong;
 namespace whisper_library {
 
 // This class represents a tcp packet. All fields are accessable.
-class WHISPERAPI TcpPacket {
+class TcpPacket {
 
 public:
     // The empty constructor creates an empty tcp packet.

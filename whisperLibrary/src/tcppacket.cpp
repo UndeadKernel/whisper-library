@@ -336,7 +336,7 @@ ulong TcpPacket::vectorToULong(int start, int end, const vector<bool> &vec) cons
 	return ret;
 }
      
-template <class T> void TcpPacket::uIntToVector(int start, int end, const vector<bool> &vec, T val){
+template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
     vector<bool> ins (intToBoolVector(val));
 	for (int i = end; i >= start; i--){
 		vec[i] = ins[end-i];
