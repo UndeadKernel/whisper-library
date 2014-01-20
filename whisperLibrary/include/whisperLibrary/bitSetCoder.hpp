@@ -7,7 +7,6 @@
 #include <string>
 #include <bitset>
 #include <vector>
-#include <iostream>
 
 using namespace std;
 namespace whisper_library {
@@ -25,8 +24,8 @@ namespace whisper_library {
 			return BLOCK_LENGTH;
 		}
 		/*
-		encodeMessage takes a string and splits it into parts of 6 bit.
-		These are returned as a vector of bitsets in order. If you can't divide the bit count by 6, the last bits are filled up with 0's.
+		encodeMessage takes a string and splits it into parts.
+		These are returned as a vector of bitsets in order. If you can't divide the bit count by BLOCK_LENGTH, the last bits are filled up with 0's.
 		The bitsets contain the binary representation of ASCI-encoded letters.
 		*/
 		vector<bitset<BLOCK_LENGTH>> encodeMessage(string message) {
@@ -64,7 +63,7 @@ namespace whisper_library {
 		}
 
 		/*
-		decodeMessage takes 6-bit blocks and converts them to characters returned as a string.
+		decodeMessage takes bit blocks and converts them to characters returned as a string.
 		The bitsets contain the binary representation of ASCI-encoded letters.
 		*/
 		string decodeMessage(vector<bitset<BLOCK_LENGTH>> vector) {
