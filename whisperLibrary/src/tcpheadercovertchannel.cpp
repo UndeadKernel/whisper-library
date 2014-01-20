@@ -12,7 +12,7 @@ namespace whisper_library {
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<whisper_library::TcpPacket> ret_vector;
 
-		vector<bitset<6>> bit_blocks = encodeMessageWithLength(message);
+		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 
 		//iterate through blocks and modify packets
 		for (int i = 0; i < bit_blocks.size(); ++i) {
@@ -24,31 +24,31 @@ namespace whisper_library {
 		//TODO send packets with socketconnector
 	}
 
-	vector<bitset<6>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
-		vector<bitset<6>> ret_vector;
-		if (message.length() <= 48) {
+	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
+		vector<bitset<3>> ret_vector;
+		if (message.length() <= 24) {
 			ret_vector = m_coder.encodeMessage(message);
 		}
 		else {
-			string head = message.substr(0, 48);	//length of 48 chars
-			string rest = message.substr(48, message.length() - 48);	// length > 0
+			string head = message.substr(0, 24);	//length of 24 chars
+			string rest = message.substr(24, message.length() - 24);	// length > 0
 			ret_vector = m_coder.encodeMessage(head);
-			vector<bitset<6>> rec_vector = encodeMessageWithLength(rest);	//recursive call
+			vector<bitset<3>> rec_vector = encodeMessageWithLength(rest);	//recursive call
 			ret_vector.insert(ret_vector.end(), rec_vector.begin(), rec_vector.end());
 		}
 		return ret_vector;
 	}
 
-	void TcpHeaderCovertChannel::modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<6> data) {
-		packet.set_reserved(data.to_ulong());
+	void TcpHeaderCovertChannel::modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<3> data) {
+		packet.setReserved(data);
 	}
 
-	bitset<6> TcpHeaderCovertChannel::extractData(whisper_library::TcpPacket& packet) {
-		return bitset<6>(packet.reserved());
+	bitset<3> TcpHeaderCovertChannel::extractData(whisper_library::TcpPacket& packet) {
+		return packet.reserved();
 	}
 
 	void TcpHeaderCovertChannel::receiveMessage(whisper_library::TcpPacket& packet) {
-		bitset<6> data = extractData(packet);
+		bitset<3> data = extractData(packet);
 		if (m_numb_packets == 0) {					// no message received yet
 			m_numb_packets = data.to_ulong() +1;	// save length from first packet
 		}

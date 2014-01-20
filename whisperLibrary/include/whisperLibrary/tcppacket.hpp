@@ -2,92 +2,131 @@
 
 #ifndef TCP_PACKET
 #define TCP_PACKET
-#define uint unsigned int
 
 #include "common.hpp"
 #include <vector>
+#include <bitset>
+#include <algorithm>
+
+using namespace std;
+typedef unsigned int uint;
+typedef unsigned long ulong;
 
 namespace whisper_library {
 
-    class /*WHISPERAPI*/ TcpPacket {
+// This class represents a tcp packet. All fields are accessable.
+class TcpPacket {
 
-	public:
-        TcpPacket();
-		/* Locations of the header informations:
-		 * 0-15 Source port, 16-31 Destination port
-		 * 32-63 Sequence number
-		 * 63-95 Acknowledgement number
-		 * 96-99 Data offset
-		 * 100-102 Reserved
-		 * 103 NS, 104 CWR, 105 ECE, 106 URG, 107 ACK
-		 * 108 PSH, 109 RST, 110 SYN, 111 FIN, 112-127 Window Size
-		 * 128-143 checksum, 144-159 Urgent Pointer
-		 * Options field:
-		 * 0-319 depending on data-offset
-		 * 0-7 option kind, 8-15 option length
-		 * (option-length) option data
-		 */
+public:
+    // The empty constructor creates an empty tcp packet.
+    TcpPacket();
+	
+    /* 
+		This constructor is used to fill in some of the important fields
+		beforehand.
+    */
+    TcpPacket(uint inSourcePort, 
+				uint inDestPort, 
+				ulong inSequenceNumber,
+				ulong inAckNumber,
+				bitset<4> inDataOffset,
+				uint inWindowSize,
+				vector<bool> inOptions);
 
-        uint sourcePort(); // 16bit
-        uint destPort(); // 16 bit
+    // start of the getters
+    uint sourcePort() const;
+    uint destPort() const;
+    ulong sequenceNumber() const;
+    ulong acknowlageNumber() const;
+    bitset<4> dataOffset() const;
+    bitset<3> reserved() const;
+    bitset<9> flags() const;
+    bool nonceSumFlag() const;
+    bool congestionWindowReducedFlag() const;
+    bool ecnEchoFlag() const;
+    bool urgentFlag() const;
+    bool acknowledementFlag() const;
+    bool pushFlag() const;
+    bool resetFlag() const;
+    bool synchronisationFlag() const;
+    bool finishFlag() const;
+    uint windowSize() const;
+    uint checksum() const;
+    uint urgentPointer() const;
+    vector<bool> options() const;
+    vector<bool> packet() const;
+    vector<bool> data() const;
 
-        uint sequenceNumber(); // 32 bit
-        uint acknowlageNumber(); // 32 bit
+    // start of the setters
+	void setSourcePort(uint val);
+	void setDestPort(uint val);
+	void setSequenceNumber(ulong val);
+	void setAcknowlageNumber(ulong val);
+	void setDataOffset(bitset<4> val);
+	void setReserved(bitset<3> val);
+    void setFlags(bitset<9> val);
+    void setNonceSumFlag(bool val);
+    void setCongestionWindowReducedFlag(bool val);
+    void setEcnEchoFlag(bool val);
+    void setUrgentFlag(bool val);
+    void setAcknowledgementFlag(bool val);
+    void setPushFlag(bool val);
+    void setResetFlag(bool val);
+    void setSynchronisationFlag(bool val);
+    void setFinishFlag(bool val);
+	void setWindowSize(uint val);
+	void setChecksum(uint val);
+    void setUrgentPointer(uint val);
+    void setOptions(vector<bool> val);
+    void setData(vector<bool> val);
+    void setPacket(vector<bool> val);
+        
+    // other public functions
+        
+    /* 
+		This function is used to calculate the tcp checksum.
+		To do this it needs some additional information of the IP header as parameters.
+    */
+    void calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol);
 
-        uint dataOffset(); // 4 bit
-        uint reserved(); // 3 bit
+private: 
+    /* 
+		This function is used to convert a vector into an unsigned integer value.
+		The parameters are start and end bits of the number in the given vector
+		and the vector the number is stored in.
+    */
+    ulong vectorToULong(int start, int end, const vector<bool> &vec) const;
 
-        std::vector<bool>* flags(); // 9 bit
-        bool ns();
-        bool cwr();
-        bool ece();
-        bool urg();
-        bool ack();
-        bool psh();
-        bool rst();
-        bool syn();
-        bool fin();
+    /* 
+		This function is used to insert an unsigned integer value into a given boolean vector.
+		The parameters needed are the start and end of where to put the integer
+		into the vector, the vector itself and the value to be inserted.
+    */
+    template <class T> void uIntToVector(int start, int end, vector<bool> &vec, T val);
 
-        uint windowSize();
-        uint checksum();
-        std::vector<bool>* options();
-        std::vector<bool>* packet();
-        std::vector<bool>* data();
+    // This function is used to convert a given integer value into a boolean vector.
+    template <class T> vector<bool> intToBoolVector(T val);
 
-		void set_sourcePort(uint val); // 16bit
-		void set_destPort(uint val); // 16 bit
+    /* 
+		This function uses the one complement addition to add two boolean vectors.
+		The input boolean vectors max size is 16. 
+		The returned sum will have a max size of 16.
+    */ 
+    vector<bool> oneComplementAdd(vector<bool> vec1, vector<bool> vec2);
 
-		void set_sequenceNumber(uint val); // 32 bit
-		void set_acknowlageNumber(uint val); // 32 bit
+    // This function splits a 32 bit boolean vector into two 16 bit vectors
+	vector<vector<bool> > split32BitVector(vector<bool> vec);
 
-		void set_dataOffset(uint val); // 4 bit
-		void set_reserved(uint val); // 3 bit
+    // This function splits the complete packet into a vector of 16bit boolean vectors.
+	vector<vector<bool> > splitHeaderTo16Bit();
 
-        void set_flags(std::vector<bool> &val); // 9 bit
-		void set_ns(bool val);
-		void set_cwr(bool val);
-		void set_ece(bool val);
-		void set_urg(bool val);
-		void set_ack(bool val);
-		void set_psh(bool val);
-		void set_rst(bool val);
-		void set_syn(bool val);
-		void set_fin(bool val);
-
-		void set_windowSize(uint val);
-		void set_checksum(uint val);
-        void set_options(std::vector<bool> &val);
-		
-        void set_data(std::vector<bool> &val);
+    // This function trims a big endian to a fixed size
+	vector<bool> trimBigEndianVector(vector<bool> vec, int size);
 
 
-	private:
-        std::vector<bool> _header;
-        std::vector<bool> _options;
-        std::vector<bool> _data;
-        uint vectorToUInt(int start, int end, std::vector<bool> &set);
-        void uIntToVector(int start, int end, std::vector<bool> &set, uint val);
-        bool* intToBoolArray(uint val);
-	};
+	vector<bool> m_header;
+    vector<bool> m_options;
+    vector<bool> m_data;	
+};
 }
 #endif

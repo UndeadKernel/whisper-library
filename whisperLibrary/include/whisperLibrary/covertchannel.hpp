@@ -3,6 +3,7 @@
 #define COVERT_CHANNEL
 
 #include <common.hpp>
+#include <channelmanager.hpp>
 
 namespace whisper_library {
 
@@ -14,15 +15,12 @@ class WHISPERAPI CovertChannel {
 
 public:
 	// constructor
-	CovertChannel();
-	// prepares the message for sending using the current encoder
-	void encode(std::string message);
-	// reassembles the received bits to get the message
-	// TODO add parameter, maybe vector of bitset?
-	std::string decode();
-	// --- Getter/Setter ---
-	// TODO needed?
-	int getProtokol();
+	CovertChannel(whisper_library::ChannelManager* channelmanager);
+	// sends a message through the covert channel
+	virtual void sendMessage(std::string message) = 0;
+	// receive a message
+	virtual void receiveMessage(whisper_library::TcpPacket& packet) = 0;
+	
 
 private:
 };
