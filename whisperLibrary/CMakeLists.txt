@@ -23,6 +23,7 @@ set(HEADERS
 )
 
 set(TESTS
+	tests/tcpPacketTest.cpp
 	tests/bitSetEncoderTest.cpp
 	tests/bitSetDecoderTest.cpp
 	tests/main_test_suite.cpp
