@@ -8,8 +8,6 @@
 #include <bitset>
 #include <algorithm>
 
-
-
 using namespace std;
 typedef unsigned int uint;
 typedef unsigned long ulong;

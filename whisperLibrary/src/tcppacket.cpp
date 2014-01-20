@@ -2,7 +2,6 @@
 #include <iostream>
 #include <math.h>
 
-
 using namespace std;
 
 namespace whisper_library {
