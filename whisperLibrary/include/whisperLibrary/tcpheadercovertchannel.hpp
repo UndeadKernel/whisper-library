@@ -10,6 +10,7 @@
 #include <bitset>
 #include <channelmanager.hpp>
 #include <bitSetCoder.hpp>
+#include <covertchannel.hpp>
 
 using namespace std;
 
@@ -18,18 +19,19 @@ namespace whisper_library {
 class TcpHeaderCovertChannel : public CovertChannel {
 
 public:
-	TcpHeaderCovertChannel(whisper_library::ChannelManager* channelmanager);
+	TcpHeaderCovertChannel(ChannelManager* channelmanager)
+		: CovertChannel(channelmanager), m_numb_packets(0), m_channelmanager(channelmanager) {};
 	void sendMessage(string message);
-	void receiveMessage(whisper_library::TcpPacket& packet);
+	void receiveMessage(TcpPacket& packet);
 
 private:
 	vector<bitset<3>> encodeMessageWithLength(string message);
-	void modifyTcpPacket(whisper_library::TcpPacket& packet, bitset<3> data);
-	bitset<3> extractData(whisper_library::TcpPacket& packet);
+	void modifyTcpPacket(TcpPacket& packet, bitset<3> data);
+	bitset<3> extractData(TcpPacket& packet);
 	vector<bitset<3>> m_data_blocks;
 	int m_numb_packets;
-	whisper_library::ChannelManager* m_channelmanager;
-	whisper_library::BitSetCoder<3> m_coder;
+	BitSetCoder<3> m_coder;
+	ChannelManager* m_channelmanager;
 
 };
 

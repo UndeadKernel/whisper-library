@@ -3,11 +3,12 @@
 
 #include "common.hpp"
 #include <vector>
-#include <covertchannel.hpp>
-#include <socketconnector.hpp>
-#include <tcppacket.hpp>
+#include "tcppacket.hpp"
 
 namespace whisper_library {
+
+class CovertChannel;
+class SocketConnector;
 
 /*
 	A ChannelManager is the connecting part for the covert channel and the framework. You can add and remove
@@ -22,16 +23,20 @@ public:
 	ChannelManager();
 	// adds a channel to the available channels
 	void addChannel(CovertChannel* channel);
+	void selectChannel(int index);
 	//removes a channel from the available channels
 	void removeChannel(CovertChannel* channel);
 	void outputMessage(std::string message);
 	TcpPacket getTcpPacket();
+	void packetReceived(TcpPacket packet);
+	SocketConnector* sender();
 	
 private:
 	// hold all available channels
-	//std::vector<CovertChannel*> m_channels;
+	std::vector<CovertChannel*> m_channels;
+	CovertChannel* m_current_channel;
 	// connects the ChannelManager to the network
-	SocketConnector m_socket;
+	SocketConnector* m_socket;
 };
 }
 #endif // CHANNEL_MANAGER

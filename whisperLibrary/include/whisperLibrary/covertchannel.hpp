@@ -15,11 +15,12 @@ class WHISPERAPI CovertChannel {
 
 public:
 	// constructor
-	CovertChannel(whisper_library::ChannelManager* channelmanager);
+	CovertChannel(ChannelManager* channelmanager) {};
 	// sends a message through the covert channel
 	virtual void sendMessage(std::string message) = 0;
 	// receive a message
-	virtual void receiveMessage(whisper_library::TcpPacket& packet) = 0;
+	virtual void receiveMessage(TcpPacket& packet) = 0;
+private:
 	
 
 private:

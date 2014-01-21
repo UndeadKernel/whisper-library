@@ -4,11 +4,6 @@
 using namespace std;
 
 namespace whisper_library {
-	TcpHeaderCovertChannel::TcpHeaderCovertChannel(whisper_library::ChannelManager* channelmanager) {
-		m_channelmanager = channelmanager;
-		m_numb_packets = 0;
-	}
-
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<whisper_library::TcpPacket> ret_vector;
 
@@ -21,7 +16,7 @@ namespace whisper_library {
 			ret_vector.push_back(packet);
 		}
 
-		//TODO send packets with socketconnector
+		(m_channelmanager->sender)->sendPacket()
 	}
 
 	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {

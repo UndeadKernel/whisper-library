@@ -4,7 +4,9 @@
 
 namespace whisper_library{
 
-SocketConnector::SocketConnector(){
+void SocketConnector::sendPacket(TcpPacket packet) {
+	m_channelmanager->packetReceived(packet);
 }
 
 }
+
