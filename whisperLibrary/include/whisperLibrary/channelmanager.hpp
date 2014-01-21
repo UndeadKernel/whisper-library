@@ -4,6 +4,9 @@
 #include "common.hpp"
 #include <vector>
 #include "tcppacket.hpp"
+#include <iostream>
+#include "tcpheadercovertchannel.hpp"
+#include <functional>
 
 namespace whisper_library {
 
@@ -21,17 +24,18 @@ class WHISPERAPI ChannelManager {
 public:
 	// constructor
 	ChannelManager();
-	// adds a channel to the available channels
-	void addChannel(CovertChannel* channel);
+	~ChannelManager();
 	void selectChannel(int index);
-	//removes a channel from the available channels
-	void removeChannel(CovertChannel* channel);
 	void outputMessage(std::string message);
+	void sendTCPPacket(TcpPacket packet);
 	TcpPacket getTcpPacket();
 	void packetReceived(TcpPacket packet);
-	SocketConnector* sender();
 	
 private:
+	// adds a channel to the available channels
+	void addChannel(CovertChannel* channel);
+	//removes a channel from the available channels
+	void removeChannel(CovertChannel* channel);
 	// hold all available channels
 	std::vector<CovertChannel*> m_channels;
 	CovertChannel* m_current_channel;

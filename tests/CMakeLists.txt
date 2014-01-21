@@ -1,5 +1,6 @@
 set(SOURCES
 	bitSetCoderTest.cpp
+	tcpHeaderCovertChannelTest.cpp
 	main_test_suite.cpp
 )
 

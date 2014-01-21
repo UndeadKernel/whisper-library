@@ -2,8 +2,9 @@
 #ifndef COVERT_CHANNEL
 #define COVERT_CHANNEL
 
-#include <common.hpp>
-#include <channelmanager.hpp>
+#include "common.hpp"
+#include "channelmanager.hpp"
+#include <functional>
 
 namespace whisper_library {
 
@@ -15,7 +16,7 @@ class WHISPERAPI CovertChannel {
 
 public:
 	// constructor
-	CovertChannel(ChannelManager* channelmanager) {};
+	CovertChannel(function<void(string)> output) {};
 	// sends a message through the covert channel
 	virtual void sendMessage(std::string message) = 0;
 	// receive a message
