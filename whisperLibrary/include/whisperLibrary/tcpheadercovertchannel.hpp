@@ -20,14 +20,16 @@ class TcpHeaderCovertChannel : public CovertChannel {
 
 public:
 	TcpHeaderCovertChannel(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket)
-		: CovertChannel(output),
-			m_numb_packets(0), 
+		: CovertChannel(output)//,
+		/*	m_numb_packets(0), 
 			m_output(output), 
 			m_send(send),
-			m_getPacket(getPacket) {};
+			m_getPacket(getPacket) */{};
+	~TcpHeaderCovertChannel();
 
 	void sendMessage(string message);
 	void receiveMessage(TcpPacket& packet);
+	string test();
 
 private:
 	vector<bitset<3>> encodeMessageWithLength(string message);

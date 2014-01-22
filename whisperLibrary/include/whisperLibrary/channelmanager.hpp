@@ -25,11 +25,12 @@ public:
 	// constructor
 	ChannelManager();
 	~ChannelManager();
-	void selectChannel(int index);
+	void selectChannel(unsigned int index);
 	void outputMessage(std::string message);
 	void sendTCPPacket(TcpPacket packet);
 	TcpPacket getTcpPacket();
 	void packetReceived(TcpPacket packet);
+	void sendMessage(string message);
 	
 private:
 	// adds a channel to the available channels

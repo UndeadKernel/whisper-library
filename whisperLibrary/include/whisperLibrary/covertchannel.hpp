@@ -21,6 +21,8 @@ public:
 	virtual void sendMessage(std::string message) = 0;
 	// receive a message
 	virtual void receiveMessage(TcpPacket& packet) = 0;
+
+	virtual string test() = 0;
 private:
 	
 
