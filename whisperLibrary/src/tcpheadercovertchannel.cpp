@@ -4,6 +4,14 @@
 using namespace std;
 
 namespace whisper_library {
+	string TcpHeaderCovertChannel::name() {
+		return "TCP Header Covert Channel";
+	}
+
+	string TcpHeaderCovertChannel::info() {
+		return	"The TCP Header Covert Channel uses unused bits in the TCP Header to hide data. 3 bits are sent per packet.";
+	}
+
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (int i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets

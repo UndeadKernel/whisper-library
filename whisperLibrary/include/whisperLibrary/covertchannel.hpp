@@ -21,10 +21,10 @@ public:
 	virtual void sendMessage(std::string message) = 0;
 	// This function is called, when a new packet arrived. The argument is a reference to this packet.
 	virtual void receiveMessage(TcpPacket& packet) = 0;
-private:
-	
-
-private:
+	// Displays the name of the covert channel
+	virtual string name() = 0;
+	// Displays information about the covert channel
+	virtual string info() = 0;
 };
 }
 #endif // COVERT_CHANNEL

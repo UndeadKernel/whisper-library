@@ -59,4 +59,20 @@ void ChannelManager::setOutputStream(std::ostream* stream) {
 	m_output_stream = stream;
 }
 
+vector<string> ChannelManager::getChannelInfos() {
+	vector<string> string_vector;
+	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back((*it)->info());
+	}
+	return string_vector;
+}
+
+vector<string> ChannelManager::getChannelNames() {
+	vector<string> string_vector;
+	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back((*it)->name());
+	}
+	return string_vector;
+}
+
 }

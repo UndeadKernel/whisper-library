@@ -25,12 +25,20 @@ public:
 	// constructor
 	ChannelManager();
 	~ChannelManager();
+	// Selects the channel for communication at 'index' of m_channels.
 	void selectChannel(unsigned int index);
+	// Writes 'message' to the selected output stream, stored in m_output_stream.
 	void outputMessage(std::string message);
+	// creates a valid tcp packet
 	TcpPacket getTcpPacket();
+	// Is called, when the socket receives a tcp packet of the communication
 	void packetReceived(TcpPacket packet);
+	// Sends a message through the currently selected covert channel
 	void sendMessage(string message);
+	// Sets the stream, that the covert channel uses as the output for received messages
 	void setOutputStream(std::ostream* stream);
+	vector<string> getChannelInfos();
+	vector<string> getChannelNames();
 	
 private:
 	// adds a channel to the available channels
@@ -39,9 +47,11 @@ private:
 	void removeChannel(CovertChannel* channel);
 	// hold all available channels
 	std::vector<CovertChannel*> m_channels;
+	// pointer to the covert channel, that is currently in use
 	CovertChannel* m_current_channel;
 	// connects the ChannelManager to the network
 	SocketConnector* m_socket;
+	// stream that holds received messages
 	std::ostream* m_output_stream;
 };
 }
