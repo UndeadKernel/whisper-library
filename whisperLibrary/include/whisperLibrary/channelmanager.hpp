@@ -30,7 +30,7 @@ public:
 	TcpPacket getTcpPacket();
 	void packetReceived(TcpPacket packet);
 	void sendMessage(string message);
-	string getOutputMessage();
+	void setOutputStream(std::ostream* stream);
 	
 private:
 	// adds a channel to the available channels
@@ -42,7 +42,7 @@ private:
 	CovertChannel* m_current_channel;
 	// connects the ChannelManager to the network
 	SocketConnector* m_socket;
-	string m_output_message;
+	std::ostream* m_output_stream;
 };
 }
 #endif // CHANNEL_MANAGER
