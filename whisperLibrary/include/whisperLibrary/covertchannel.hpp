@@ -3,26 +3,24 @@
 #define COVERT_CHANNEL
 
 #include "common.hpp"
-#include "channelmanager.hpp"
-#include <functional>
+#include "tcppacket.hpp"
 
 namespace whisper_library {
 
 /*
-	CovertChannel is the abstract class all covert channels you want use have to inherit from. It defines the
+	CovertChannel is the abstract class all covert channels you want to use have to inherit from. It defines the
 	interface for a covert channel. You can add CovertChannel objects to the ChannelManager to use them.
 */
-class WHISPERAPI CovertChannel {
-
+class CovertChannel {
 public:
-	// constructor
-	CovertChannel(function<void(string)> output) {};
-	// sends a message through the covert channel
+	// Empty constructor
+	CovertChannel() {};
+	// Virtual destructor so that the destructor of derived classes is called
+	virtual ~CovertChannel() {};
+	// Call this function to send a message using the covert channel.
 	virtual void sendMessage(std::string message) = 0;
-	// receive a message
+	// This function is called, when a new packet arrived. The argument is a reference to this packet.
 	virtual void receiveMessage(TcpPacket& packet) = 0;
-
-	virtual string test() = 0;
 private:
 	
 

@@ -27,10 +27,10 @@ public:
 	~ChannelManager();
 	void selectChannel(unsigned int index);
 	void outputMessage(std::string message);
-	void sendTCPPacket(TcpPacket packet);
 	TcpPacket getTcpPacket();
 	void packetReceived(TcpPacket packet);
 	void sendMessage(string message);
+	string getOutputMessage();
 	
 private:
 	// adds a channel to the available channels
@@ -42,6 +42,7 @@ private:
 	CovertChannel* m_current_channel;
 	// connects the ChannelManager to the network
 	SocketConnector* m_socket;
+	string m_output_message;
 };
 }
 #endif // CHANNEL_MANAGER

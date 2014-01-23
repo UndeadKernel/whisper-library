@@ -1,15 +1,10 @@
 // Author: Martin Oehler
 #include <tcpheadercovertchannel.hpp>
+#include <iostream>
 
 using namespace std;
 
 namespace whisper_library {
-	TcpHeaderCovertChannel::~TcpHeaderCovertChannel() {
-	}
-
-	string TcpHeaderCovertChannel::test() {
-		return "noch da";
-	}
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		cout << "TcpHeaderCovertChannel: encoded message ";
@@ -25,7 +20,6 @@ namespace whisper_library {
 			cout << "TcpHeaderCovertChannel: packet " << i << " sent" << endl;
 			m_send(packet);
 		}
-
 	}
 
 	void TcpHeaderCovertChannel::receiveMessage(whisper_library::TcpPacket& packet) {
@@ -49,13 +43,16 @@ namespace whisper_library {
 
 	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
 		vector<bitset<3>> ret_vector;
-		if (message.length() <= 24) {
+		if (message.length() == 0) {
+			return ret_vector;
+		}
+		if (message.length() <= 3) {
 			ret_vector = m_coder.encodeMessage(message);
 			ret_vector.insert(ret_vector.begin(), bitset<3>(ret_vector.size()-1));
 		}
 		else {
-			string head = message.substr(0, 24);	//length of 24 chars
-			string rest = message.substr(24, message.length() - 24);	// length > 0
+			string head = message.substr(0, 3);	//length of 3 chars
+			string rest = message.substr(3, message.length() - 3);	// length > 0
 			ret_vector = m_coder.encodeMessage(head);
 			ret_vector.insert(ret_vector.begin(), bitset<3>(ret_vector.size() - 1));
 			vector<bitset<3>> rec_vector = encodeMessageWithLength(rest);	//recursive call

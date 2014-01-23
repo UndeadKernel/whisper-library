@@ -5,28 +5,21 @@
 namespace whisper_library {
 
 ChannelManager::ChannelManager(){
+	m_socket = new SocketConnector(this);
+	m_output_message = "";
+
 	using namespace std::placeholders;
-	//m_socket = new SocketConnector(this);
-
 	// TcpHeaderCovertChannel
-	//std::function<void(string)> f_output = std::bind(&ChannelManager::outputMessage, this, _1);
-	//std::function<void(TcpPacket)> f_send = std::bind(&ChannelManager::sendTCPPacket, this, _1);
-	//std::function<TcpPacket(void)> f_packet = std::bind(&ChannelManager::getTcpPacket, this);
-	//addChannel((new TcpHeaderCovertChannel(f_output, f_send, f_packet)));
-	/*addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, _1),
-										   std::bind(&ChannelManager::sendTCPPacket, this, _1), 
-										   std::bind(&ChannelManager::getTcpPacket, this))));*/
-	CovertChannel* cc = new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, _1),
-													std::bind(&ChannelManager::sendTCPPacket, this, _1),
-													std::bind(&ChannelManager::getTcpPacket, this));
-	cout << cc->test() << endl;
-	delete cc;
-
-	//m_current_channel = m_channels[0];
+	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, _1),
+										   std::bind(&SocketConnector::sendPacket, m_socket, _1), 
+										   std::bind(&ChannelManager::getTcpPacket, this))));
+	m_current_channel = m_channels[0];
 }
 ChannelManager::~ChannelManager() {
-	m_channels.clear();
-	//delete m_socket;
+	for (unsigned int i = 0; i < m_channels.size(); i++) {
+		delete m_channels[i];
+	}
+	delete m_socket;
 }
 
 void ChannelManager::addChannel(CovertChannel* channel) {
@@ -36,11 +29,12 @@ void ChannelManager::addChannel(CovertChannel* channel) {
 //callback method for CC
 void ChannelManager::outputMessage(std::string message){
 	cout << "ChannelManager: message output " << message << endl;
-	//cout << message << endl;
+	m_output_message += message;
+	
 }
 
-void ChannelManager::sendTCPPacket(TcpPacket packet) {
-	m_socket->sendPacket(packet);
+string ChannelManager::getOutputMessage() {
+	return m_output_message;
 }
 
 void ChannelManager::sendMessage(string message) {
