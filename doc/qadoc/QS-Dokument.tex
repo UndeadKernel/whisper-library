@@ -52,18 +52,32 @@
 	\chapter{Qualitäsziele}
 
 		\section{Zuverlässigkeit}
-		Der Benutzer einer Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und sich wie in der Dokumentation beschrieben verhält. Deshalb ist Zuverlässigkeit für eine Bibliothek unbedingt notwendig.
+		Begründung: Framework soll zur Übermittlung von sicherheitskritischen Daten dienen. Soll in anderen Programmen genutzt werden. Nutzer "vertraut" dem Framework.
 		
-		Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens zwei Tests. Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM-Servers eingetragen.
+		Maßnahmen: Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens zwei Tests. Außerdem führen wir Code Reviews durch.
+
+		Prozess: Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM-Servers eingetragen.
 		
-		Außerdem führen wir Code Reviews durch. Nach Abschluss einer User Story wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
+		 Nach Abschluss einer User Story wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
 		
-        	\section{Testbarkeit}
-    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vor allem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
+        	\section{Wartbarkeit}
+		Begründung: Open Source, soll erweitert werden
+
+    		Maßnahmen: Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
     		
     		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
+
+		Konkrete Maßnahme?
     		
-    		Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten.
+    		Prozess: Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten. Beleg?
+
+		\section{Erlernbarkeit}
+		vielleicht als drittes Ziel??
+		Begründung: wie Wartbarkeit
+
+		Maßnahme: Dokumentation
+
+		Prozess: automatisch generiert, dann vervollständigt
 	        
 	
 %\appendix	
