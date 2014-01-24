@@ -14,14 +14,14 @@
 	\subtitle{Simon Bunten, Gruppe 35 }
 	
  	% Fußzeile
-	\author{S. Kadel, J.S. Bunten, M.S. Oehler, A.S. Stühlmeier}
+	\author{J.S. Bunten, S. Kadel, M.S. Oehler, A.S. Stühlmeyer}
 	\date{\today}
-	\logo{\includegraphics{../../Bilder/tklogo.jpg}}
+	\logo{\includegraphics{../Bilder/tklogo.jpg}}
 
 \begin{titleframe}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=.55]{../../Bilder/InstantMessenger.jpg}
+	\includegraphics[scale=.55]{../Bilder/InstantMessenger.jpg}
 	\end{figure}
 \end{titleframe}
 
@@ -31,13 +31,13 @@
 	\begin{minipage}{.55\linewidth}
 		Verstecktes Instant Messaging
 		\begin{itemize}
-			\item Senden von Nachrichten durch Firewalls
-			\item Vermeiden von Entdeckung, Abhören und Abfangen
+			\item Unentdecktes Senden von Nachrichten
+			\item Umgehen von Sicherheitsvorkehrungen wie Firewalls
 		\end{itemize}	
 	\end{minipage}
 	\hfill
 	\begin{minipage}{.4\linewidth}
-	{\includegraphics[scale=.3]{../../Bilder/Firewall.jpg}}
+	{\includegraphics[scale=.3]{../Bilder/Firewall.jpg}}
 	\end{minipage}
 	
 	\begin{description}
@@ -50,17 +50,40 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{Covert Channel im TCP Header}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.5]{../Bilder/tcpHeader.png}
+		\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Covert Channel im Inter Packet Delay}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.3]{../Bilder/sos.png}
+		\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Covert Channel im Inter Packet Delay}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=.5]{../Bilder/timingChannel.png}
+		\end{figure}
+\end{frame}
+
+\begin{frame}
 
 	\frametitle{Projektbeschreibung}
 	Programmieren einer Bibliothek für Covert Channels
 	\begin{itemize}
 		\item <2>öffnet und verwendet Covert Channels
-		\item <2>Implementierung eines Frameworks
-		\item <2>konkrete Covert Channels als Plugin
+		\item <2>Hilft Nutzern bei der Erstellung eigener Covert Channels
 		\item <2>Veröffentlichung als Open Source
 	\end{itemize}
 	\begin{center}
-		\includegraphics[scale=0.25]{../../Bilder/framework-puzzle.png}
+		\includegraphics[scale=0.25]{../Bilder/framework-puzzle.png}
 	\end{center}
 
 \end{frame}
@@ -69,7 +92,7 @@
 	\frametitle{Top-Level Design}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=.22]{../../Bilder/top_level_design_2.png}
+			\includegraphics[scale=.4]{../Bilder/module.png}
 		\end{figure}
 \end{frame}
 
@@ -78,15 +101,13 @@
 	\frametitle{QS-Ziele und ihre Sichherstellung}
 \begin{center}
 	\begin{itemize}
-		\item <1->\textbf{Zuverlässigkeit} \\
-		\only<2>
+		\item \textbf{Zuverlässigkeit} \\
 		{\begin{itemize}
 			\item automatisierte Tests mit Boost.Test
 			\item Ticket-System im SCM-Server
 			\item Code Reviews
 		\end{itemize}}
-		\item <1->\textbf{Testbarkeit}	\\
-		\only<3>
+		\item \textbf{Testbarkeit}	\\
 		{\begin{itemize}
 			\item Zuteilung der Aufgaben an Module
 			\item eigene Tests schreiben
@@ -100,7 +121,7 @@
 \begin{frame}
 	\frametitle{Zeitaufwand}
 	\begin{center}
-		\includegraphics[scale=0.43]{../../Bilder/zeitsummen2.png} \newline
+		\includegraphics[scale=0.35]{../Bilder/memberStunden.png} \newline
 	\end{center}
 
 \end{frame}
@@ -109,7 +130,7 @@
 \frametitle{Zeitmanagement}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=.4]{../../Bilder/iteration3.png}
+			\includegraphics[scale=0.35]{../Bilder/stundenStoryPoints.png}
 		\end{figure}
 \end{frame}
 
@@ -117,7 +138,7 @@
 \frametitle{Zeitmanagement}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=.4]{../../Bilder/velocity3.png}
+			\includegraphics[scale=0.3]{../Bilder/velocity.png}
 		\end{figure}
 \end{frame}
 
@@ -127,9 +148,11 @@
 	\hfill
 	\begin{minipage}{.85\linewidth}
 	\begin{itemize}
-		\item Covert Channels zur versteckten Kommunikation
-		\item Entwicklung einer modularen Bibliothek 
-		\item nutzbar für möglichst viele Covert Channels
+		\item Entwicklung einer modularen Bibliothek		
+		\item Implementierung von Covert Channels zur versteckten Kommunikation
+		\item Nutzbar für möglichst viele Covert Channels
+		\item Veröffentlichung als Open Source unter GPL Lizenz
+		\item Nutzbar für verschiedene Anwender
 	\end{itemize}
 	\end{minipage}
 \end{frame}
