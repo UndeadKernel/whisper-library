@@ -10,7 +10,6 @@
 
 using namespace std;
 namespace whisper_library {
-typedef bitset<6> bitset6;
 /*
 	BitSetEncoder converts the message, that we want to send, into 6bit-blocks.
 	To do this, call the function 'encodeMessage' with the message as a string.
@@ -23,7 +22,7 @@ public:
 		These are returned as a vector of bitsets in order. If you can't divide the bit count by 6, the last bits are filled up with 0's.
 		The bitsets contain the binary representation of ASCI-encoded letters.
 	*/
-	vector<bitset6> encodeMessage(string message);
+	vector< bitset<6> > encodeMessage(string message);
 };
 }
 
