@@ -20,8 +20,8 @@ set(HEADERS
 )
 
 set(TESTS
-	tests/tcpPacketTest.cpp
 	tests/main_test_suite.cpp
+	tests/tcpPacketTest.cpp
 	tests/tcpHeaderCovertChannelTest.cpp
 	tests/bitSetCoderTest.cpp
 )
