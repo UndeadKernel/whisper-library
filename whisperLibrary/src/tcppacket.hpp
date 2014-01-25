@@ -3,7 +3,7 @@
 #ifndef TCP_PACKET
 #define TCP_PACKET
 
-#include "common.hpp"
+#include "../include/whisperLibrary/common.hpp"
 #include <vector>
 #include <bitset>
 #include <algorithm>

@@ -1,4 +1,4 @@
-#include "whisperLibrary\channelmanager.hpp"
+#include "whisperLibrary/channelmanager.hpp"
 #include <iostream>
 
 
