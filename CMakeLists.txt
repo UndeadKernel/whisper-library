@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-set(CMAKE_CXX_FLAGS "-std=c++0x")
+
+if(UNIX)
+	set(CMAKE_CXX_FLAGS "-std=c++0x")
+endif(UNIX)
 
 project(CovertChannels)
 
