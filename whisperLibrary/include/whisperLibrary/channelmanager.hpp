@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 #include <vector>
-#include "tcppacket.hpp"
+#include "../../src/tcppacket.hpp"
 #include <iostream>
 #include "tcpheadercovertchannel.hpp"
 #include <functional>

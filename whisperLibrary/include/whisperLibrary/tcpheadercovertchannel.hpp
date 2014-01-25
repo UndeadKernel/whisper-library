@@ -4,7 +4,7 @@
 #define TCP_HEADER_COVERT_CHANNEL
 
 #include "common.hpp"
-#include "tcppacket.hpp"
+#include "../../src/tcppacket.hpp"
 #include <string>
 #include <vector>
 #include <bitset>

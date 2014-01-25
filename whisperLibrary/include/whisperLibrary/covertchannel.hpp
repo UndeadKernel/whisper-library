@@ -3,7 +3,7 @@
 #define COVERT_CHANNEL
 
 #include "common.hpp"
-#include "tcppacket.hpp"
+#include "../../src/tcppacket.hpp"
 
 
 namespace whisper_library {
