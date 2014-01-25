@@ -1,4 +1,4 @@
-\documentclass[colorback,accentcolor=tud2a,12pt,paper=a4]{tudreport}
+\documentclass[colorback,accentcolor=tud9d,12pt,paper=a4]{tudreport}
 
 \usepackage{ngerman}
 \usepackage[T1]{fontenc}
@@ -17,14 +17,12 @@
 \title{Instant Message Whispering via Covert Channels}
 \subtitle{Qualitätssicherungsdokument}
 \subsubtitle{
-	\titlerow{Gruppe 35}{
-		Jan Simon Bunten <jan\_simon.bunten@stud.tu-darmstadt.de>\\
+	\titlerow{Gruppe 35}{Jan Simon Bunten <jan\_simon.bunten@stud.tu-darmstadt.de>\\
 		Simon Kadel <simon.kadel@stud.tu-darmstadt.de>\\
 		Martin Sven Oehler <martin\_sven.oehler@stud.tu-darmstadt.de>\\
 		Arne Sven Stühlmeier <arne\_sven.stuehlmeier@stud.tu-darmstadt.de>}
-	\titlerow{Teamleiter}{Philipp Plöhn <philipp.ploen@std.tu-darmstadt.de>}
-	\titlerow{Auftraggeber}{
-		Titel Carlos Garcia <carlos.garcia@cased.de>\\
+	\titlerow{Teamleiter}{Philipp Plöhn <philipp.ploen@stud.tu-darmstadt.de>}
+	\titlerow{Auftraggeber}{Carlos Garcia <carlos.garcia@cased.de>\\
 		FG Telekooperation\\
 		FB 20 - Informatik}
 	\titlerow{Abgabedatum}{15.2.2014}}
@@ -47,21 +45,21 @@
 		\section*{Implementierung}
 		Das Hauptziel ist, ein Framework zu implementieren, das notwendige Funktionen für die Covert Channels bereit stellt. Dazu gehören das Öffnen und Schließen von Covert Channels, das Senden von selbst erstellten Paketen, das Empfangen von Paketen und das Anzeigen von Statistiken der geöffneten Kanäle. Die eigentlichen Covert Channels können als Plugins hinzugefügt werden. So soll sichergestellt werden, dass die Bibliothek für unterschiedliche Covert Channels genutzt werden kann.
 		
-		Neben dem Frameword werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Zuerst ein einfacher Channel, der darauf beruht Informationen im Header eines TCP oder UDP Pakets zu verstecken. Als zweites einen komplizierterer Covert Channel aus der Literatur. Wenn möglich soll dann noch ein dritter von uns entwickelter Covert Channel implementiert werden.
+		Neben dem Framework werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Zuerst ein einfacher Channel, der darauf beruht Informationen im Header eines TCP oder UDP Pakets zu verstecken. Als zweites einen komplizierterer Covert Channel aus der Literatur. Wenn möglich soll dann noch ein dritter von uns entwickelter Covert Channel implementiert werden.
 
 		Das Projekt soll als Open-Source veröffentlich werden, um es anderen zu ermöglichen die Bibliothek in ihren Projekten zu verwenden oder die Bibliothek weiterzuentwinkeln. Wir werden eine Beispielanwedung in der Art eines Instant Messagers entwickeln, um die Funktionen zu demonstrieren. 
 	
 	\chapter{Qualitäsziele}
 
 		\section{Zuverlässigkeit}
-		Der Benutzer einer Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und macht, was in der Dokumentation festgehalten ist. Deshalb ist Zuverlässigkeit für eine Bibliothek unbedingt notwendig.
+		Der Benutzer einer Bibliothek verlässt sich darauf, dass sie korrekt funktioniert und sich wie in der Dokumentation beschrieben verhält. Deshalb ist Zuverlässigkeit für eine Bibliothek unbedingt notwendig.
 		
-		Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens 2 Tests. Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM- Servers eingetragen.
+		Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Für jede Methode wird mindestens ein Test geschrieben und für jede Aufgabe (siehe Testbarkeit) mindestens zwei Tests. Diese werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Fehler werden im Ticketsystem unseres SCM-Servers eingetragen.
 		
-		Außerdem führen wir Code Reviews durch. Nach Abschluss eines Use Cases wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
+		Außerdem führen wir Code Reviews durch. Nach Abschluss einer User Story wird der Code von einem an diesem Use Case unbeteiligten Teammitglied anhand einer Checkliste überprüft. Mögliche Fehler werden schnellstmöglich von den Entwicklern behoben. Dann wird der Vorgang wiederholt, bis die Kriterien erfüllt sind.
 		
         	\section{Testbarkeit}
-    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vorallem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
+    		Aus der Zuverlässigkeit ergibt sich ein weiters Qualitätsmerkmal. Wenn man die Software Testen will, muss sie auch testbar sein. Dabei geht es nicht nur um Unittests, sondern vor allem um Integrations- und Systemtests. Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen. 
     		
     		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Sofware, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
     		

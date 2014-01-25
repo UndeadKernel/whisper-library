@@ -1,4 +1,4 @@
-#include <whisperLibrary\channelmanager.hpp>
+#include "channelmanager.hpp"
 #include <boost\test\unit_test.hpp>
 #include <string>
 

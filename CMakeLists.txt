@@ -8,4 +8,3 @@ set(LIBRARY_OUTPUT_PATH    "${PROJECT_BINARY_DIR}/bin")
 
 add_subdirectory(whisperLibrary)
 add_subdirectory(example)
-add_subdirectory(tests)

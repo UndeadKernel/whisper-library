@@ -1,4 +1,4 @@
-#include <whisperLibrary\bitSetCoder.hpp>
+#include "bitSetCoder.hpp"
 #include <boost\test\unit_test.hpp>
 
 #include<string>
@@ -17,7 +17,6 @@ BOOST_FIXTURE_TEST_SUITE(bitSetCoder, BitSetCoderFixture)
 BOOST_AUTO_TEST_CASE(encode_simple_message) {
 	whisper_library::BitSetCoder<6> coder;
 	msg = "AB";
-	//expected_output = "000010 010000 010100 001000";
 
 	vector<bitset<6>> vec = coder.encodeMessage(msg);
 	msg_decoded = coder.decodeMessage(vec);
