@@ -26,16 +26,16 @@ namespace whisper_library {
 		bitset<3> data = extractData(packet);
 		if (m_remaining_packets == 0) {					// no message received yet
 			m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
+			return;
 		}
-		else {
-			m_data_blocks.push_back(data);
-			m_remaining_packets--;
+		// process messages
+		m_data_blocks.push_back(data);
+		m_remaining_packets--;
 
-			if (m_remaining_packets == 0) {				// all packets received
-				string message = m_coder.decodeMessage(m_data_blocks);
-				m_output(message);
-				m_data_blocks.clear();					// ready to receive new message
-			}
+		if (m_remaining_packets == 0) {				// all packets received
+			string message = m_coder.decodeMessage(m_data_blocks);
+			m_output(message);
+			m_data_blocks.clear();					// ready to receive new message
 		}
 	}
 

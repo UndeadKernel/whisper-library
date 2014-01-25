@@ -53,7 +53,7 @@ namespace whisper_library {
 
 	private:
 		//	encodeMessageWithLength splits the message into parts of 3 bits and adds length blocks inbetween.
-		vector<bitset<3>> encodeMessageWithLength(string message);
+		vector<bitset<3> > encodeMessageWithLength(string message);
 
 		//	modifyTcpPacket sets the reserved bits of packet to the value of data.
 		void modifyTcpPacket(TcpPacket& packet, bitset<3> data);
@@ -62,7 +62,7 @@ namespace whisper_library {
 		bitset<3> extractData(TcpPacket& packet);
 
 		// This vector stores the bit blocks we received in the current communication
-		vector<bitset<3>> m_data_blocks;
+		vector<bitset<3> > m_data_blocks;
 
 		/* 
 			Stores the number of packets, we expect to receive in the current communication. 

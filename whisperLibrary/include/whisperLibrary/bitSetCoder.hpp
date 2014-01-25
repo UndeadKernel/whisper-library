@@ -28,21 +28,22 @@ namespace whisper_library {
 		These are returned as a vector of bitsets in order. If you can't divide the bit count by BLOCK_LENGTH, the last bits are filled up with 0's.
 		The bitsets contain the binary representation of ASCI-encoded letters.
 		*/
-		vector<bitset<BLOCK_LENGTH>> encodeMessage(string message) {
+		vector<bitset<BLOCK_LENGTH> > encodeMessage(string message) {
 			string bit_sequence = "";
-			vector<bitset<BLOCK_LENGTH>> ret_vector;
+			vector<bitset<BLOCK_LENGTH> > ret_vector;
+			unsigned int i;
 
 			// do nothing if the message is empty
 			if (message.length() == 0) {
 				return ret_vector;
 			}
 			// convert chars to binary
-			for (unsigned int i = 0; i < message.length(); ++i) {
+			for (i = 0; i < message.length(); ++i) {
 				bitset<8> bit(message[i]);
 				bit_sequence += bit.to_string();
 			}
 			//split binary
-			unsigned int i = 0;
+			i = 0;
 			while (i + BLOCK_LENGTH <= bit_sequence.length()) {
 				bitset<BLOCK_LENGTH> bit(bit_sequence.substr(i, BLOCK_LENGTH));
 				ret_vector.push_back(bit);
@@ -66,16 +67,17 @@ namespace whisper_library {
 		decodeMessage takes bit blocks and converts them to characters returned as a string.
 		The bitsets contain the binary representation of ASCI-encoded letters.
 		*/
-		string decodeMessage(vector<bitset<BLOCK_LENGTH>> vector) {
+		string decodeMessage(vector<bitset<BLOCK_LENGTH> > vector) {
 			string bit_sequence = "";
+			unsigned int i;
 			// append bits to string
-			for (unsigned int i = 0; i < vector.size(); ++i) {
+			for (i = 0; i < vector.size(); ++i) {
 				bit_sequence += vector[i].to_string();
 			}
 
 			// convert binary string to chars
 			string message = "";
-			for (unsigned int i = 0; i + 8 <= bit_sequence.length(); i += 8) {
+			for (i = 0; i + 8 <= bit_sequence.length(); i += 8) {
 				bitset<8> bitset(bit_sequence.substr(i, 8));
 				char c = static_cast<char>(bitset.to_ulong());
 				message.push_back(c);
