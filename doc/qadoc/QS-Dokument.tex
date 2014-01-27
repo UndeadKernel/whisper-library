@@ -54,15 +54,21 @@
 		\section{Reife}
 		Begründung: Unser Projekt soll in anderen Programmen als Bibliothek verfügbar sein. Insbesondere soll es zum Testen eines Tools, mit dem Covert Channels entdeckt werden können, verwendet werden. Der Programmierer verlässt sich darauf, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
 		
-		Maßnahmen: Die Zuverlässigkeit kann durch Testen verbessert werden. Deshalb benutzen wir die boost.test Bibliothek, die automatische Tests in C++ ermöglicht. Diese Tests müssen mindestens Anweisungsabdeckung erreichen.
-		Außerdem führen wir Code Reviews anhand einer Checkliste durch, in der Punkte wie Endlosschleifen und Prüfen von Parametern mit beachtet werden.
+		Maßnahmen: Um die Reife unseres Projekts zu erhöhen, müssen wir versuchen möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns durch zum einen durch Testen, zum anderen durch Code Reviews.
 
-		Prozess: Die automatischen Tests werden mindestens einmal pro Woche auf der aktuellen Version der Software komplett ausgeführt. Liste mit Datum und Betriebssystem. Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung de Sprints mit berücksichtigt. 
+		Zum Schreiben von automatischen Tests in C++ benutzen wir die Boost.test Bibliothek. Wir schreiben sowohl Tests für einzelne Methoden (Unittests), als auch für Funktionen der Bibliothek (Systemtests). Mit den Tests soll mindestens Statement Coverage erreicht werden, wobei Getter/Setter und einfache Wrapperfunktionen ausgenommen sind.
+
+		In unseren Code Reviews untersuchen wir den Codes unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang) zum Beispiel auf Punkte wie Endlosschleifen oder Parameterüberprüfung hin überprüft.
+
+
+		Prozess: Die Unittests werden vor oder während der Entwicklung vom Entwickler geschrieben und unseren automatischen Tests hinzugefügt. Nach der Implementierung einer User Story schreibt der Entwickler die Systemtests für die in der User Story beschriebene Funktion. Dabei stellt er sicher, dass die geforderte Abdeckung erreicht wird. Das Durchlaufen der Tests und die Testabdeckung werden bei den Code Reviews überprüft.
 		
-		 Nach Abschluss einer User Story wird der Code von einem an dieser unbeteiligten Teammitglied anhand einer Checkliste (siehe Anhang) überprüft. Mögliche Fehler müssen noch in der selben Iteration von den Entwicklern behoben werden, sonst gilt die User Story nicht als abgeschlossen. Dieser Vorgang des Überprüfens und Verbesserns wird solange wiederholt, bis alle Punkte auf der Checkliste erfüllt sind.
+		Zusätzlich werden die automatischen Tests am Ende eines Sprints auf der aktuellen Version der Software komplett ausgeführt. Auftetende Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung der Sprints mit berücksichtigt. Das Durchführen wird mit Datum und Betriebssystem, auf dem die Tests durchgeführt wurden, in einer Liste festgehalten. Ein Teammitglied wurde dafür ausgewählt zu überprüfen, ob die Tests durchgeführt wurden.
+		
+		!!Prozess Code Review!!
 		 	
         	\section{Testbarkeit}
-		Für unser Projekt ist vorgesehen, dass es als Open Source veröffentlicht wird. Dardurch können Entwickler die Bibliothek an ihre Ansprüche anpassen, indem sie zum Beispiel eigene Covert Channel implementieren. Um das zu erleichtern, muss unser Projekt anpassbar und erweiterbar sein. Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
+		Begründung: Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
 
     		Maßnahmen: Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen.
     		Außerdem müssen die Schnittstellen und Interfaces gut dokumentiert sein.	
@@ -74,15 +80,18 @@
     		Prozess: Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten. Beleg?
 
 		\section{Erweiterbarkeit}
-		Verständlichkeit + Modifizierbarkeit
-		Auch der hohe Stellenwert der Erweiterbarkeit unserer Bibliothek ergibt sich aus der Veröffentlichung als Open Source Software. Alle Nutzer der Bibliothek sollen in die Lage versetzt werden der Bibliothek so einfach wie möglich eigene Funktionen hinzufügen zu können. Dafür ist die Erweiterbarkeit ein zentrales Qualitätsmerkmal.
-		Begründung: Open Source
+		Begründung: Unser Framework soll nach Abschluss als Open Source Bibliothek veröffentlicht werden, damit andere ihre eigenen Covert Channel schreiben oder die Bibliothek ihren Bedürfnissen anpassen können. Außerdem soll es möglicherweise in weiteren Bachelorpraktika erweitert werden. Um das zu Vereinfachen ist es wichtig, dass unser Code und unser Aufbau der Sofware verständlich ist, und das wir beim Entwurf beachten, dass er modifizierbar ist. Diese beiden Punkte lassen sich unter Erweiterbarkeit zusammenfassen.
+		
 
-		Maßnahme: Dokumentation + Code Conventions
-Das möchten wir durch eine ausführliche Dokumentation aller Module und Funktionen der Bibliothek erreichen. Außerdem haben wir Code Conventions festgelegt, die an die Code Conventions für Google Entwickler angelehnt haben. Damit wollen wir einheitliche Bezeichner und eine einheitliche Struktur des Codes sicherstellen und seine Lesbarkeit verbessern. So sollen Nutzer sich leichter in der Bibliothek zurecht finden wenn sie Änderungen vornehmen möchten.
-		Prozess: automatisch generiert, dann vervollständigt. Im Review beachtet
-		Außerdem müssen die Schnittstellen und Interfaces gut dokumentiert sein.
-Die Dokumentation wird durch die Software Doxygen und entsprechende Kommentierung aller Funktionen und Klassen der Bibliothek automatisch erstellt und von uns durch zusätzliche Informationen ergänzt. Die Einhaltung der Code Conventions wird in den Code Reviews, die nach dem Abschluss einer User Story durchgeführt werden, überprüft und muss gegebenfalls vom Programmierer angepasst werden, sollten Abweichungen festgestellt werden.
+		Maßnahme: Die Verständlichkeit möchten wir durch zwei Maßnahmen erhöhen. Einerseits soll durch die Dokumentation der Funktionen und Klassen der Bibliothek die Funktionsweise verdeutlicht werden. Andererseits sollen einheitliche Bezeichner und eine einheitliche Struktur des Codes die Lesbarkeit verbessern. So sollen Nutzer sich leichter in der Bibliothek zurecht finden, wenn sie Änderungen oder Erweiterungen vornehmen möchten.
+
+		Auch die Modifizierbarkeit wird von diesen beiden Maßnahmen verbessert. Zusätzlich wollen wir durch Modularität und abstrakte Klassen ermöglichen, dass Benutzer Teile der Software leicht austauschen können. Die Aufgaben und Schnittstellen der Module und die Methoden der abstrakten Klassen sind in der Dokumentation festgehalten.
+
+		Prozess: Die Dokumentation der Funktionen und Klassen  wird durch den Einsatz der Software Doxygen und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
+		
+		Eine einheitliche Bezeichung und Formatierung stellen wir durch Code Conventions sicher. Diese wurden zu Beginn des Projekts auf Grundlage der relativ weit verbreiteten Google-Code-Conventions für C++ von uns festgelegt und in unserem Wiki festgehalten. Die Einhaltung der Code Conventions ist ein Punkt auf der Checkliste für die Code Reviews und wird entsprechend mit überprüft. Falls sie nicht eingehalten werden muss, wie bei den anderen Punkten des Code Reviews auch, der Code vom Entwickler entsprechend angepasst und dann erneut überprüft werden.
+		
+		!!Dokumentation Module!!
 	
 %\appendix	
 %	\chapter{Anhang}
