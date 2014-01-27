@@ -65,7 +65,7 @@
 		
 		Zusätzlich werden die automatischen Tests am Ende eines Sprints auf der aktuellen Version der Software komplett ausgeführt. Auftetende Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung der Sprints mit berücksichtigt. Das Durchführen wird mit Datum und Betriebssystem, auf dem die Tests durchgeführt wurden, in einer Liste festgehalten. Ein Teammitglied wurde dafür ausgewählt zu überprüfen, ob die Tests durchgeführt wurden.
 		
-		!!Prozess Code Review!!
+		Die Code Reviews werden am Ende jeder User Story durchgeführt. Dafür wird ein neues Ticket erstellt, wodurch alle Teammitglieder benachrichtigt werden, dass ein Code Review aussteht. Code Reviews haben Priorität und müssen innerhalb von drei Tagen durchgeführt werden. Für das Code Review trägt sich ein an der User Story unbeteiligtes Teammitglied ein. Es geht allen in der User Story geschriebenen Code durch und überprüft dabei die Punkte auf der Checkliste. Wenn ein Punkt nicht erfüllt ist, wird das entsprechend vermerkt und an den Entwickler weitergeleitet. Dieser behebt die Fehler im Code und erstellt dann wieder ein Ticket für ein Review. Dieser Prozess wird solange wiederholt, bis alle Punkte der Checkliste abgehakt sind. Erst dann gilt die User Story als abgeschlossen.
 		 	
         	\section{Testbarkeit}
 		Begründung: Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
@@ -85,13 +85,13 @@
 
 		Maßnahme: Die Verständlichkeit möchten wir durch zwei Maßnahmen erhöhen. Einerseits soll durch die Dokumentation der Funktionen und Klassen der Bibliothek die Funktionsweise verdeutlicht werden. Andererseits sollen einheitliche Bezeichner und eine einheitliche Struktur des Codes die Lesbarkeit verbessern. So sollen Nutzer sich leichter in der Bibliothek zurecht finden, wenn sie Änderungen oder Erweiterungen vornehmen möchten.
 
-		Auch die Modifizierbarkeit wird von diesen beiden Maßnahmen verbessert. Zusätzlich wollen wir durch Modularität und abstrakte Klassen ermöglichen, dass Benutzer Teile der Software leicht austauschen können. Die Aufgaben und Schnittstellen der Module und die Methoden der abstrakten Klassen sind in der Dokumentation festgehalten.
+		Auch die Modifizierbarkeit wird von diesen beiden Maßnahmen verbessert. Zusätzlich ermöglichen wir durch Modularität und abstrakte Klassen, dass Benutzer Teile der Software leicht austauschen können. Die Aufgaben und Schnittstellen der Module und die Methoden der abstrakten Klassen werden in der Dokumentation festgehalten.
 
 		Prozess: Die Dokumentation der Funktionen und Klassen  wird durch den Einsatz der Software Doxygen und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
 		
 		Eine einheitliche Bezeichung und Formatierung stellen wir durch Code Conventions sicher. Diese wurden zu Beginn des Projekts auf Grundlage der relativ weit verbreiteten Google-Code-Conventions für C++ von uns festgelegt und in unserem Wiki festgehalten. Die Einhaltung der Code Conventions ist ein Punkt auf der Checkliste für die Code Reviews und wird entsprechend mit überprüft. Falls sie nicht eingehalten werden muss, wie bei den anderen Punkten des Code Reviews auch, der Code vom Entwickler entsprechend angepasst und dann erneut überprüft werden.
 		
-		!!Dokumentation Module!!
+		Es ist nicht möglich, am Anfang des Projektes schon alle Aufgaben der Module zu erkennen und die Schnittstellen entsprechend zu schreiben und zu dokumentieren. Wie es in agiler Entwicklung üblich ist, werden wir die Module an die Anforderungen anpassen und ihre Schnittstellen entsprechend ändern. In den zwei Wochen gegen Ende des Projektes, die für die Dokumentation vorgesehen sind, werden wir diese dann dokumentieren.
 	
 %\appendix	
 %	\chapter{Anhang}
