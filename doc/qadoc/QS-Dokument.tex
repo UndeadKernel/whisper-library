@@ -33,7 +33,7 @@
 	\tableofcontents 
 	
 	\chapter{Einleitung}
-		Ziel des Projekts ist es, eine Bibliothek zu entwickeln, die es ermöglicht, unentdeckt 	Kommunikationskanäle zu einem oder mehreren anderen Teilnehmern zu öffnen. Um die Kommunikation vor Dritten zu verstecken, werden sogennante Covert Channels verwendet.
+		Ziel des Projekts ist es, eine Bibliothek zu entwickeln, die es ermöglicht, unentdeckt 	Kommunikationskanäle zu einem oder mehreren anderen Teilnehmern zu öffnen. Um die Kommunikation vor Dritten zu verstecken, werden sogenannte Covert Channels verwendet.
 
 		\section*{Covert Channels}
 		Covert Channels sind Kommunikationskanäle, die von Außen nicht als solche erkennbar sind. In der Literatur sind viele unterschiedliche Covert Channels bekannt.
@@ -54,11 +54,11 @@
 		\section{Reife}
 		Begründung: Unser Projekt soll in anderen Programmen als Bibliothek verfügbar sein. Insbesondere soll es zum Testen eines Tools, mit dem Covert Channels entdeckt werden können, verwendet werden. Der Programmierer verlässt sich darauf, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
 		
-		Maßnahmen: Um die Reife unseres Projekts zu erhöhen, müssen wir versuchen möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns durch zum einen durch Testen, zum anderen durch Code Reviews.
+		Maßnahmen: Um die Reife unseres Projekts zu erhöhen, müssen wir versuchen möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns durch zum Einen durch Testen, zum Anderen durch Code Reviews.
 
 		Zum Schreiben von automatischen Tests in C++ benutzen wir die Boost.test Bibliothek. Wir schreiben sowohl Tests für einzelne Methoden (Unittests), als auch für Funktionen der Bibliothek (Systemtests). Mit den Tests soll mindestens Statement Coverage erreicht werden, wobei Getter/Setter und einfache Wrapperfunktionen ausgenommen sind.
 
-		In unseren Code Reviews untersuchen wir den Codes unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang) zum Beispiel auf Punkte wie Endlosschleifen oder Parameterüberprüfung hin überprüft.
+		In unseren Code Reviews untersuchen wir den Code unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang) zum Beispiel auf Punkte wie Endlosschleifen oder Parameterüberprüfung hin überprüft.
 
 
 		Prozess: Die Unittests werden vor oder während der Entwicklung vom Entwickler geschrieben und unseren automatischen Tests hinzugefügt. Nach der Implementierung einer User Story schreibt der Entwickler die Systemtests für die in der User Story beschriebene Funktion. Dabei stellt er sicher, dass die geforderte Abdeckung erreicht wird. Das Durchlaufen der Tests und die Testabdeckung werden bei den Code Reviews überprüft.
@@ -68,16 +68,32 @@
 		!!Prozess Code Review!!
 		 	
         	\section{Testbarkeit}
-		Begründung: Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
+Begründung: Im Anschluss an das Projekt werden wir den Source Code der Bibliothek als Open Source veröffentlichen. Dadurch ist es anderen Entwicklern möglich, die Funktionalität zu verändern, indem sie einzelne Module verändern, erweitern oder ersetzen. So soll es beispielsweise einfach möglich sein, einen weiteren Covert Channel hinzuzufügen.
 
-    		Maßnahmen: Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen.
-    		Außerdem müssen die Schnittstellen und Interfaces gut dokumentiert sein.	
-    		
-    		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Software, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
+Um diesen Vorgang zu vereinfachen, muss schnell feststellbar sein, ob ein neues oder verändertes Modul korrekt funktioniert. Dazu ist es nötig, dass einzelne Module leicht testbar sind.
 
-		Konkrete Maßnahme?
-    		
-    		Prozess: Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten. Beleg?
+Maßnahmen: Die Testbarkeit wird dadurch festgelegt, wie aufwendig es ist, Tests für ein Modul zu schreiben. Um diesen Aufwand zu verringern, haben wir eine Checkliste aufgestellt, die anhand von fünf Kriterien die Testbarkeit bewertet:
+
+\begin{description}
+\item[Beobachtbarkeit:] Das Testergebnis kann beobachtet werden, um es mit dem erwarteten Ergebnis abzugleichen.
+\item[Kontrollierbarkeit:] Das Testobjekt kann in den für den Test erforderlichen Zustand gebracht werden. 
+\item[Isolierbarkeit:] Das Testobjekt kann isoliert getestet werden, damit eine Abhängigkeit des Testresultats von anderen Modulen verhindert wird.
+\item[Trennung der Verantwortlichkeit:] Das Testobjekt hat eine wohldefinierte Verantwortlichkeit, wodurch erleichtert wird, die Schnittstelle zu anderen Modulen zu testen. Die Schnittstellen bzw. Verantwortlichkeiten wurden dazu im Vorfeld festgelegt.
+\item[Automatisierbarkeit:] Die Tests lassen sich automatisieren, damit schnell ein Testergebnis vorliegt.
+\end{description}
+
+Prozess: Die Bewertung der Testbarkeit erfolgt anhand der vorgestellten Checkliste durch den Entwickler selbst, bevor er Tests schreibt. Da dies während oder nach der Entwicklung geschehen kann, ist es auch möglich, mehrfach eine Bewertung durchzuführen. Ist ein Punkt der Liste nicht vollständig erfüllt, ist es die Aufgabe des Entwicklers, das Design entsprechend anzupassen. 
+
+%		Begründung: Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
+%
+%    		Maßnahmen: Damit es einfach ist, diese durchzuführen, wird eine klare Beschreibung und Trennung der Aufgaben benötigt (Seperations of Concerns). Das erreichen wir, indem wir während des Designs alle Aufgaben unserer Software festhalten und einem unserer Module zuweisen.
+%    		Außerdem müssen die Schnittstellen und Interfaces gut dokumentiert sein.	
+%    		
+%    		Es ist sehr schwierig, Testbarkeit durch Werkzeuge sicher zu stellen. Eine gute Testbarkeit ergibt sich durch eine Architektur der Software, die dieses Qualitätsmerkmal beachtet. Es muss beim Entwurf berücksichtigt und während der Entwicklung stets überprüft werden.
+%
+%		Konkrete Maßnahme?
+%    		
+%    		Prozess: Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten. Beleg?
 
 		\section{Erweiterbarkeit}
 		Begründung: Unser Framework soll nach Abschluss als Open Source Bibliothek veröffentlicht werden, damit andere ihre eigenen Covert Channel schreiben oder die Bibliothek ihren Bedürfnissen anpassen können. Außerdem soll es möglicherweise in weiteren Bachelorpraktika erweitert werden. Um das zu Vereinfachen ist es wichtig, dass unser Code und unser Aufbau der Sofware verständlich ist, und das wir beim Entwurf beachten, dass er modifizierbar ist. Diese beiden Punkte lassen sich unter Erweiterbarkeit zusammenfassen.
