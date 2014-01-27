@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.2)  27 JAN 2014 20:55
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.2)  28 JAN 2014 00:02
 entering extended mode
 **E:/Users/Martin/Documents/Martin/CovertChannelBP/scm-ssi-student-whisper-libr
 ary/doc/qadoc/QS-Dokument.tex
@@ -770,28 +770,32 @@ Kapitel 1.
 
 ]
 Kapitel 2.
+LaTeX Font Info:    Font shape `T1/phv/mb/n' in size <12> not available
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 56.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 10.59595pt on input line 56.
 [3
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.59595pt on input line 78.
+(Font)              scaled to size 10.59595pt on input line 79.
  [4] [5]
 (E:\Users\Martin\Documents\Martin\CovertChannelBP\scm-ssi-student-whisper-libra
 ry\doc\qadoc\QS-Dokument.aux) ) 
 Here is how much of TeX's memory you used:
- 7152 strings out of 493921
- 110249 string characters out of 3144874
- 192971 words of memory out of 3000000
- 10259 multiletter control sequences out of 15000+200000
- 51282 words of font info for 62 fonts, out of 3000000 for 9000
+ 7160 strings out of 493921
+ 110360 string characters out of 3144874
+ 193971 words of memory out of 3000000
+ 10266 multiletter control sequences out of 15000+200000
+ 54012 words of font info for 64 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 59i,13n,75p,901b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 59i,12n,75p,901b,464s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvi
 ps/fontname/8r.enc}<C:/Program Files/tuddesign/fonts/type1/softmake/charter/5ch
 r8a.pfb><C:/Program Files/tuddesign/fonts/type1/softmake/charter/5chri8a.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on QS-Dokument.pdf (6 pages, 86524 bytes).
+Output written on QS-Dokument.pdf (6 pages, 84376 bytes).
 PDF statistics:
  45 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

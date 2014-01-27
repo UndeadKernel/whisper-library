@@ -38,7 +38,7 @@
 		\section*{Covert Channels}
 		Covert Channels sind Kommunikationskanäle, die von Außen nicht als solche erkennbar sind. In der Literatur sind viele unterschiedliche Covert Channels bekannt.
 		
-		Im Unterschied zur Kryptographie, die nur die Daten eines Kanals verbirgt, wird der ganze Kanal verborgen. Dadurch wird es Dritten erschwert, die Verkehrsdaten der Verbindung (Zeitpunkt, Dauer) auszuwerten. Ist es möglich die Pakete einer bestehenden Verbindung anderer Teilnehmer des Netzwerks zu verändern, kann damit auch die Identität der Nutzer verborgen werden.
+		Im Unterschied zur Kryptographie, die nur die Daten eines Kanals verbirgt, wird der ganze Kanal verborgen. Dadurch wird es Dritten erschwert, die Verkehrsdaten der Verbindung (Zeitpunkt, Dauer) auszuwerten. Ist es dem Nutzer eines Covert Channels möglich, die Pakete einer bestehenden Verbindung anderer Teilnehmer des Netzwerks zu verändern, so kann damit auch die Identität des Nutzers verschleiert werden.
 
 		Wie bei offenen Kanälen ist es auch bei Covert Channels von großer Bedeutung, wie groß der Datendurchsatz ist und wie zuverlässig die Informationen übertragen werden. Vor allem der Datendurchsatz ist bei Covert Channels üblicherweise stark beschränkt.
 
@@ -47,32 +47,33 @@
 		
 		Neben dem Framework werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Zuerst ein einfacher Channel, der darauf beruht, Informationen im Header eines TCP Pakets zu verstecken. Als Zweites einen komplizierteren Timing Channel, der unterschiedliche Zeitabstände zwischen gesendeten Paketen nutzt, um Informationen zu übertragen. Wenn möglich soll dann noch ein Dritter von uns entwickelter Covert Channel implementiert werden.
 
-		Das Projekt soll als Open-Source veröffentlich werden, um es anderen zu ermöglichen die Bibliothek in ihren Projekten zu verwenden oder die Bibliothek weiterzuentwickeln. Wir werden eine Beispielanwedung in der Art eines Instant Messengers entwickeln, um die Funktionen zu demonstrieren. 
-	
+		Das Projekt soll als Open-Source veröffentlich werden, um es anderen zu ermöglichen die Bibliothek in ihren Projekten zu verwenden oder die Bibliothek weiterzuentwickeln. 
+%Wir werden eine Beispielanwedung in der Art eines Instant Messengers entwickeln, um die Funktionen zu demonstrieren. 
+	Zur beispielhaften Anwendung werden wir ein Plugin für den Instant Messenger \textit{Pidgin} schreiben, welches die Funktionen unserer Bibliothek nutzt.
 	\chapter{Qualitätsziele}
 
 		\section{Reife}
-		\textit{Begründung:} Unser Projekt soll anderen Programmen als Bibliothek zur Verfügung stehen. Insbesondere soll es zum Testen eines Tools, mit dem Covert Channels entdeckt werden können, verwendet werden. Der Programmierer verlässt sich darauf, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
+		\paragraph{Begründung:} Unser Projekt soll anderen Programmen als Bibliothek zur Verfügung stehen. Insbesondere soll es zum Testen eines Tools, mit dem Covert Channels entdeckt werden können, verwendet werden. Der Programmierer verlässt sich darauf, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
 		
-		\textit{Maßnahmen:} Um die Reife unseres Projekts zu erhöhen, müssen wir versuchen möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns zum Einen durch Testen und zum Anderen durch Code Reviews.
+		\paragraph{Maßnahmen:} Um die Reife unseres Projekts zu erhöhen, müssen wir versuchen möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns zum Einen durch Testen und zum Anderen durch Code Reviews.
 
 		Zum Schreiben von automatisierten Tests in C++ benutzen wir das Boost.test-Framework. Wir schreiben sowohl Tests für einzelne Methoden (Unittests), als auch für Funktionen der Bibliothek (Systemtests). Mit den Tests soll mindestens Statement Coverage erreicht werden, wobei Getter-, Setter- und einfache Wrapperfunktionen ausgenommen sind.
 
 		In unseren Code Reviews untersuchen wir den Code unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang) zum Beispiel auf Punkte wie Endlosschleifen oder Arraygrenzen hin überprüft.
 
 
-		\textit{Prozess:} Die Unittests werden vor oder während der Entwicklung vom Entwickler geschrieben und unseren automatischen Tests hinzugefügt. Nach der Implementierung einer User Story schreibt der Entwickler die Systemtests für die in der User Story beschriebene Funktionalität. Dabei stellt er sicher, dass die geforderte Abdeckung erreicht wird. Das Durchlaufen der Tests und die Testabdeckung werden bei den Code Reviews überprüft.
+		\paragraph{Prozess:} Die Unittests werden vor oder während der Entwicklung vom Entwickler geschrieben und unseren automatischen Tests hinzugefügt. Nach der Implementierung einer User Story schreibt der Entwickler die Systemtests für die in der User Story beschriebene Funktionalität. Dabei stellt er sicher, dass die geforderte Abdeckung erreicht wird. Das Durchlaufen der Tests und die Testabdeckung werden bei den Code Reviews überprüft.
 		
 		Zusätzlich werden die automatischen Tests am Ende eines Sprints auf der aktuellen Version der Software komplett ausgeführt. Auftetende Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung der Sprints mit berücksichtigt. Das Durchführen wird mit Datum und Betriebssystem, auf dem die Tests durchgeführt wurden, in einer Liste festgehalten. Ein Teammitglied wurde dafür ausgewählt zu überprüfen, ob die Tests durchgeführt wurden.
 		
 		Die Code Reviews werden am Ende jeder User Story durchgeführt. Dafür wird ein neues Ticket erstellt, wodurch alle Teammitglieder benachrichtigt werden, dass ein Code Review aussteht. Code Reviews haben Priorität und müssen innerhalb von drei Tagen durchgeführt werden. Für das Code Review trägt sich ein an der User Story unbeteiligtes Teammitglied ein. Es geht den in der User Story geschriebenen Code durch und überprüft dabei die Punkte auf der Checkliste. Wenn ein Punkt nicht erfüllt ist, wird das entsprechend vermerkt und an den Entwickler weitergeleitet. Dieser behebt die Fehler im Code und erstellt dann wieder ein Ticket für ein Review. Dieser Prozess wird solange wiederholt, bis alle Punkte der Checkliste abgehakt sind. Erst dann gilt die User Story als abgeschlossen.
 		 	
         	\section{Testbarkeit}
-\textit{Begründung:} Im Anschluss an das Projekt werden wir den Source Code der Bibliothek als Open Source veröffentlichen. Dadurch ist es anderen Entwicklern möglich, die Funktionalität zu verändern, indem sie einzelne Module verändern, erweitern oder ersetzen. So soll es beispielsweise einfach möglich sein, einen weiteren Covert Channel hinzuzufügen.
+\paragraph{Begründung:} Im Anschluss an das Projekt werden wir den Source Code der Bibliothek als Open Source veröffentlichen. Dadurch ist es anderen Entwicklern möglich, die Funktionalität zu verändern, indem sie einzelne Module verändern, erweitern oder ersetzen. So soll es beispielsweise einfach möglich sein, einen weiteren Covert Channel hinzuzufügen.
 
 Um diesen Vorgang zu vereinfachen, muss schnell feststellbar sein, ob ein neues oder verändertes Modul korrekt funktioniert. Dazu ist es nötig, dass einzelne Module leicht testbar sind.
 
-\textit{Maßnahmen:} Die Testbarkeit wird dadurch festgelegt, wie aufwendig es ist, Tests für ein Modul zu schreiben. Um diesen Aufwand zu verringern, haben wir eine Checkliste aufgestellt, die anhand von fünf Kriterien die Testbarkeit bewertet:
+\paragraph{Maßnahmen:} Die Testbarkeit wird dadurch festgelegt, wie aufwendig es ist, Tests für ein Modul zu schreiben. Um diesen Aufwand zu verringern, haben wir eine Checkliste aufgestellt, die anhand von fünf Kriterien die Testbarkeit bewertet:
 
 \begin{description}
 \item[Beobachtbarkeit:] Das Testergebnis kann beobachtet werden, um es mit dem erwarteten Ergebnis abzugleichen.
@@ -82,7 +83,7 @@ Um diesen Vorgang zu vereinfachen, muss schnell feststellbar sein, ob ein neues 
 \item[Automatisierbarkeit:] Die Tests lassen sich automatisieren, damit schnell ein Testergebnis vorliegt.
 \end{description}
 
-\textit{Prozess:} Die Bewertung der Testbarkeit erfolgt anhand der vorgestellten Checkliste durch den Entwickler selbst, bevor er Tests schreibt. Da dies während oder nach der Entwicklung geschehen kann, ist es auch möglich, mehrfach eine Bewertung durchzuführen. Ist ein Punkt der Liste nicht vollständig erfüllt, ist es die Aufgabe des Entwicklers, das Design entsprechend anzupassen. 
+\paragraph{Prozess:} Die Bewertung der Testbarkeit erfolgt anhand der vorgestellten Checkliste durch den Entwickler selbst, bevor er Tests schreibt. Da dies während oder nach der Entwicklung geschehen kann, ist es auch möglich, mehrfach eine Bewertung durchzuführen. Ist ein Punkt der Liste nicht vollständig erfüllt, ist es die Aufgabe des Entwicklers, das Design entsprechend anzupassen. 
 
 %		Begründung: Außerdem ist die Testbarkeit einiger Funktionen des Projekts komplex, weshalb sie in den Projektzielen vom Auftraggeber als Qualitätsziel hervorgehoben wurde.
 %
@@ -96,14 +97,14 @@ Um diesen Vorgang zu vereinfachen, muss schnell feststellbar sein, ob ein neues 
 %    		Prozess: Die einfachste Möglichkeit, die Testbarkeit zu überprüfen, ist es, Tests zu schreiben und dabei festzustellen, wie gut dies möglich ist. Wenn dabei auffällt, dass manche Funktionalitäten nur schwer oder nicht zu testen sind, werden wir dies in unseren Teamtreffen besprechen und eine Lösung durch Anpassen der Architektur ausarbeiten. Beleg?
 
 		\section{Erweiterbarkeit}
-		\textit{Begründung:} Unser Framework soll nach Abschluss als Open Source Bibliothek veröffentlicht werden, damit andere Entwickler ihre eigenen Covert Channels schreiben oder die Bibliothek ihren Bedürfnissen anpassen können. Außerdem soll es möglicherweise in weiteren Bachelorpraktika erweitert werden. Um das zu vereinfachen, ist es wichtig, dass Code und Aufbau unserer Software verständlich sind. Außerdem ist beim Entwurf des Designs zu beachten, dass es modifizierbar ist. Diese beiden Punkte lassen sich unter Erweiterbarkeit zusammenfassen.
+		\paragraph{Begründung:} Unser Framework soll nach Abschluss als Open Source Bibliothek veröffentlicht werden, damit andere Entwickler ihre eigenen Covert Channels schreiben oder die Bibliothek ihren Bedürfnissen anpassen können. Außerdem soll es möglicherweise in weiteren Bachelorpraktika erweitert werden. Um das zu vereinfachen, ist es wichtig, dass Code und Aufbau unserer Software verständlich sind. Außerdem ist beim Entwurf des Designs zu beachten, dass es modifizierbar ist. Diese beiden Punkte lassen sich unter Erweiterbarkeit zusammenfassen.
 		
 
-		\textit{Maßnahme:} Die Verständlichkeit wird durch zwei Maßnahmen verbessert. Einerseits wird durch die Dokumentation der Funktionen und Klassen der Bibliothek die Funktionsweise verdeutlicht. Andererseits verbessern einheitliche Bezeichner und eine einheitliche Struktur des Codes die Lesbarkeit. So können sich Nutzer leichter in der Bibliothek zurechtfinden, wenn sie Änderungen oder Erweiterungen vornehmen möchten.
+		\paragraph{Maßnahme:} Die Verständlichkeit wird durch zwei Maßnahmen verbessert. Einerseits wird durch die Dokumentation der Funktionen und Klassen der Bibliothek die Funktionsweise verdeutlicht. Andererseits verbessern einheitliche Bezeichner und eine einheitliche Struktur des Codes die Lesbarkeit. So können sich Nutzer leichter in der Bibliothek zurechtfinden, wenn sie Änderungen oder Erweiterungen vornehmen möchten.
 
 		Auch die Modifizierbarkeit wird durch diese beiden Maßnahmen verbessert. Zusätzlich ermöglichen wir durch Modularität und abstrakte Klassen, dass Entwickler Teile der Bibliothek leicht austauschen können. Die Aufgaben und Schnittstellen der Module und die Methoden der abstrakten Klassen werden in der Dokumentation festgehalten.
 
-		\textit{Prozess:} Die Dokumentation der Funktionen und Klassen wird durch den Einsatz der Software Doxygen und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
+		\paragraph{Prozess:} Die Dokumentation der Funktionen und Klassen wird durch den Einsatz der Software Doxygen und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
 		
 		Eine einheitliche Bezeichung und Formatierung stellen wir durch Code Conventions sicher. Diese wurden zu Beginn des Projekts auf Grundlage der relativ weit verbreiteten Google-Code-Conventions für C++ von uns festgelegt und in unserem Wiki festgehalten. Die Einhaltung der Code Conventions ist ein Punkt auf der Checkliste für die Code Reviews und wird entsprechend überprüft. Falls sie nicht eingehalten werden, muss, wie bei den anderen Punkten des Code Reviews auch, der Code vom Entwickler entsprechend angepasst und dann erneut überprüft werden.
 		
