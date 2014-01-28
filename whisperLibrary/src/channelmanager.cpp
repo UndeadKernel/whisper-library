@@ -55,6 +55,14 @@ void ChannelManager::selectChannel(unsigned int index) {
 	}
 }
 
+void ChannelManager::selectChannel(string name) {
+	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); it++) {
+		if ((*it)->name().compare(name) == 0) {
+			m_current_channel == (*it);
+		}
+	}
+}
+
 void ChannelManager::setOutputStream(std::ostream* stream) {
 	m_output_stream = stream;
 }
@@ -73,6 +81,19 @@ vector<string> ChannelManager::getChannelNames() {
 		string_vector.push_back((*it)->name());
 	}
 	return string_vector;
+}
+
+string ChannelManager::currentChannel() {
+	if (m_current_channel != NULL) {
+		return m_current_channel->name();
+	}
+}
+
+void ChannelManager::openConnection(string ip, short port) {
+	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
+	if (ip_good) {
+		cout << "ip good" << endl;
+	}
 }
 
 }

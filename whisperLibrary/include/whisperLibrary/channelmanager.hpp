@@ -7,6 +7,7 @@
 #include <iostream>
 #include "tcpheadercovertchannel.hpp"
 #include <functional>
+#include <regex>
 
 namespace whisper_library {
 
@@ -27,18 +28,22 @@ public:
 	~ChannelManager();
 	// Selects the channel for communication at 'index' of m_channels.
 	void selectChannel(unsigned int index);
-	// Writes 'message' to the selected output stream, stored in m_output_stream.
-	void outputMessage(std::string message);
-	// creates a valid tcp packet
-	TcpPacket getTcpPacket();
-	// Is called, when the socket receives a tcp packet of the communication
-	void packetReceived(TcpPacket packet);
+	void selectChannel(string name);
 	// Sends a message through the currently selected covert channel
 	void sendMessage(string message);
 	// Sets the stream, that the covert channel uses as the output for received messages
 	void setOutputStream(std::ostream* stream);
 	vector<string> getChannelInfos();
 	vector<string> getChannelNames();
+	// returns the name of the currently selected channel
+	string currentChannel();
+	void openConnection(string ip, short port);
+	// Writes 'message' to the selected output stream, stored in m_output_stream.
+	void outputMessage(std::string message);
+	// creates a valid tcp packet
+	TcpPacket getTcpPacket();
+	// Is called, when the socket receives a tcp packet of the communication
+	void packetReceived(TcpPacket packet);
 	
 private:
 	// adds a channel to the available channels
