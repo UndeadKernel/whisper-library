@@ -26,7 +26,7 @@
 	\titlerow{Auftraggeber}{Carlos Garcia <carlos.garcia@cased.de>\\
 		FG Telekooperation\\
 		FB 20 - Informatik}
-	\titlerow{Abgabedatum}{15.2.2014}}
+	\titlerow{Abgabedatum}{31.1.2014}}
 \institution{Bachelor-Praktikum WS 2013/2014\\Fachbereich Informatik}
 
 \begin{document}
@@ -34,50 +34,61 @@
 	\tableofcontents 
 	
 	\chapter{Einleitung}
-		Ziel des Projekts ist es, eine Bibliothek zu entwickeln, die es ermöglicht, unentdeckt 	Kommunikationskanäle zu einem oder mehreren anderen Teilnehmern zu öffnen. Um die Kommunikation vor Dritten zu verstecken, werden sogenannte Covert Channels verwendet.
+		Ziel des Projekts ist es, eine Bibliothek zu entwickeln, die es ermöglicht, unentdeckt 	Kommunikationskanäle zu einem oder mehreren anderen Teilnehmern zu öffnen. Die Bibliothek besteht aus einem Framework und Covert Channels als Plugins (siehe Abbildung \ref{fig:module}). Diese werden verwendet, um die Kommunikation vor Dritten zu verstecken.
+		
+		\begin{figure}
+		\centering
+		\label{fig:module}
+		\includegraphics[scale=.5]{module.png}
+		\caption{Aufbau der Bibliothek}
+		\end{figure}
 
 		\section*{Covert Channels}
 		Covert Channels sind Kommunikationskanäle, die von außen nicht als solche erkennbar sind. In der Literatur sind viele unterschiedliche Covert Channels bekannt.
 		
-		Im Unterschied zur Kryptographie, die nur die Daten eines Kanals verbirgt, wird der ganze Kanal verborgen. Dadurch wird es Dritten erschwert, die Verkehrsdaten der Verbindung (Zeitpunkt, Dauer) auszuwerten. Ist es dem Nutzer eines Covert Channels möglich, die Pakete einer bestehenden Verbindung anderer Teilnehmer des Netzwerks zu verändern, so kann damit auch die Identität des Nutzers verschleiert werden.
+		Im Unterschied zur Kryptographie, die nur die Daten eines Kanals verbirgt, wird der ganze Kanal verborgen. Dadurch wird es Dritten erschwert, die Verkehrsdaten einer solchen Verbindung (Zeitpunkt, Dauer) auszuwerten. Dazu kann ein offener Kanal zum Empfänger erstellt werden, in dem die Nachricht versteckt wird. Ist es dem Nutzer eines Covert Channels zudem möglich, die Pakete einer bestehenden Verbindung anderer Teilnehmer des Netzwerks zu verändern, kann auch dieser Kanal verwendet werden. Dadurch besteht keine direkter Kanal zwischen Sender und Empfänger, wodurch die Kommunikation noch besser versteckt ist.
 
 		Wie bei offenen Kanälen ist es auch bei Covert Channels von großer Bedeutung, wie groß der Datendurchsatz ist und wie zuverlässig die Informationen übertragen werden. Vor allem der Datendurchsatz ist bei Covert Channels üblicherweise stark beschränkt.
 
 		\section*{Implementierung}
-		Das Hauptziel ist, ein Framework zu implementieren, das notwendige Funktionen für die Covert Channels bereitstellt. Dazu gehören das Öffnen und Schließen von Covert Channels, das Senden von selbst erstellten Paketen, das Empfangen von Paketen und das Anzeigen von Statistiken der geöffneten Kanäle. Die eigentlichen Covert Channels können als Plugins hinzugefügt werden. So soll sichergestellt werden, dass das Framework für unterschiedliche Covert Channels genutzt werden kann.
+		Das Hauptziel ist, ein Framework zu implementieren, das notwendige Funktionen für Covert Channels bereitstellt. Dazu gehören das Öffnen und Schließen von Covert Channels, das Senden von selbst erstellten Paketen, das Empfangen von Paketen und das Anzeigen von Statistiken der geöffneten Kanäle. Die eigentlichen Covert Channels können als Plugins hinzugefügt werden. So soll sichergestellt werden, dass das Framework für unterschiedliche Covert Channels genutzt werden kann.
 		
-		Neben dem Framework werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Der erste, relativ einfache Channel versteckt die Informationen im Header eines TCP Pakets. Der zweite etwas kompliziertere Channel, ist ein Timing Channel, der unterschiedliche Zeitabstände zwischen gesendeten Paketen nutzt, um Informationen zu übertragen. Wenn möglich soll dann noch ein Dritter von uns entwickelter Covert Channel implementiert werden.
+		Neben dem Framework werden wir im Rahmen des Projekts drei unterschiedliche Covert Channels implementieren. Der erste, relativ einfache, Channel versteckt die Informationen im Header von TCP Paketen. Der zweite, etwas kompliziertere, Channel ist ein Timing Channel, bei dem der Sender Pakete in bestimmten zeitlichen Abständen abschickt. Der Empfänger misst die Abstände zwischen den Paketen, um die Nachricht zu erhalten. Abschließend soll ein dritter, noch zu spezifizierender, Covert Channel implementiert werden.
 
-		Das Projekt soll als Open-Source veröffentlich werden, um es anderen zu ermöglichen die Bibliothek in ihren Projekten zu verwenden oder die Bibliothek weiterzuentwickeln. 
+		Das Projekt soll als Open-Source veröffentlicht werden, um es anderen zu ermöglichen, die Bibliothek in ihren Projekten zu verwenden oder sie weiterzuentwickeln. 
 
 	Zur beispielhaften Anwendung werden wir ein Plugin für den Instant Messenger Pidgin\footnote{http://www.pidgin.im} schreiben, welches die Funktionen unserer Bibliothek nutzt.
 	
 	\chapter{Qualitätsziele}
 		\section{Reife}
-		Unser Projekt soll anderen Programmen als Bibliothek zur Verfügung stehen. Insbesondere soll es zum Testen eines Tools, mit dem Covert Channels entdeckt werden können, verwendet werden. Der Programmierer verlässt sich darauf, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
+		Die in unserem Projekt entstandene Bibliothek soll in anderen Projekten eingebunden werden können. Andere Entwickler müssen sich darauf verlassen können, dass die Bibliothek nicht der Grund für Fehlverhalten oder Abstürze ist, sondern fehlerfrei funktioniert. 
 		
 		Um die Reife unseres Projekts zu erhöhen, versuchen wir möglichst viele Fehler zu finden und zu beheben. Das geschieht bei uns durch Testen und durch Code Reviews.
 
-		Zum Schreiben von automatisierten Tests in C++ benutzen wir die boost.test-Bibliothek\footnote{http://www.boost.org/doc/libs/1\_55\_0/libs/test/doc/html/index.html}. Wir schreiben sowohl Tests für einzelne Methoden (Unittests), als auch für Funktionen der Bibliothek (Systemtests). Mit den Tests soll mindestens Statement Coverage erreicht werden, wobei Getter-, Setter- und einfache Wrapperfunktionen ausgenommen sind.
+		Zum Schreiben von automatisierten Tests in C++ benutzen wir die boost.test-Bibliothek\footnote{http://www.boost.org/doc/libs/1\_55\_0/libs/test/doc/html/index.html}. Wir schreiben sowohl Tests für einzelne Methoden (Unittests), als auch für Funktionen der Bibliothek (Systemtests). Mit den Tests soll vollständige Statement Coverage erreicht werden, wobei Getter-, Setter- und einfache Wrapperfunktionen ausgenommen sind.
 
-		In unseren Code Reviews untersuchen wir den Code unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang) zum Beispiel auf Punkte wie Endlosschleifen oder Feldgrenzen hin überprüft.
+		In unseren Code Reviews untersuchen wir den Code unter bestimmten Aspekten auf typische Fehlerquellen. Dabei wird der Code anhand einer Checkliste (siehe Anhang \ref{sec:checkList}) zum Beispiel auf Punkte wie Endlosschleifen oder Feldgrenzen hin überprüft.
 
 		Die Unittests werden vor oder während der Entwicklung vom Entwickler geschrieben und unseren automatischen Tests hinzugefügt. Nach der Implementierung einer User Story schreibt der Entwickler die Systemtests für die in der User Story beschriebene Funktionalität. Dabei stellt er sicher, dass die geforderte Abdeckung erreicht wird. Das Durchlaufen der Tests und die Testabdeckung werden bei den Code Reviews überprüft.
 		
-		Zusätzlich werden die automatischen Tests am Ende eines Sprints auf der aktuellen Version der Software komplett ausgeführt. Auftetende Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung der Sprints mit berücksichtigt. Das Durchführen wird mit Datum und Betriebssystem, auf dem die Tests durchgeführt wurden, in einer Liste festgehalten. Ein Teammitglied wurde dafür ausgewählt zu überprüfen, ob die Tests durchgeführt wurden.
+		Zusätzlich werden die automatischen Tests am Ende eines Sprints auf der aktuellen Version der Software komplett ausgeführt. Auftretende Fehler werden im Ticketsystem unseres SCM-Servers eingetragen und bei der Planung der Sprints mit berücksichtigt. Das Durchführen wird mit Datum und Betriebssystem, auf dem die Tests durchgeführt wurden, in einer Liste festgehalten. Ein Teammitglied wurde dafür ausgewählt zu überprüfen, ob die Tests durchgeführt wurden.
 		
 		Die Code Reviews werden am Ende jeder User Story durchgeführt. Dafür wird ein neues Ticket erstellt, wodurch alle Teammitglieder benachrichtigt werden, dass ein Code Review aussteht. Code Reviews haben Priorität und müssen innerhalb von drei Tagen durchgeführt werden. Für das Code Review trägt sich ein an der User Story unbeteiligtes Teammitglied ein. Es geht den in der User Story geschriebenen Code durch und überprüft dabei die Punkte auf der Checkliste. Wenn ein Punkt nicht erfüllt ist, wird das entsprechend vermerkt und an den Entwickler weitergeleitet. Dieser behebt die Fehler im Code und erstellt dann wieder ein Ticket für ein Review. Dieser Prozess wird solange wiederholt, bis alle Punkte der Checkliste abgehakt sind. Erst dann gilt die User Story als abgeschlossen.
+		
+		\newpage
 		 	
         	\section{Testbarkeit}
-        	Unser Framework soll nach Abschluss als Open Source Bibliothek veröffentlicht werden, damit andere Entwickler ihre eigenen Covert Channels schreiben oder die Bibliothek ihren Bedürfnissen anpassen können. Außerdem soll es möglicherweise in weiteren Bachelorpraktika erweitert werden. Es soll leicht möglich sein, einzelne Module der Sofware auszutauschen oder zu verändern. Um diesen Vorgang zu vereinfachen, muss schnell feststellbar sein, ob ein neues oder verändertes Modul korrekt funktioniert. Dazu ist es nötig, dass einzelne Module leicht und unabhängig von anderen Modulen auf ihre Funktionalität zu testen sind.
+        	Unsere Bibliothek soll nach Abschluss als Open-Source-Projekt veröffentlicht werden, damit andere Entwickler ihre eigenen Covert Channels hinzufügen oder die Bibliothek ihren Bedürfnissen entsprechend anpassen können. Außerdem soll sie möglicherweise in weiteren Bachelorpraktika erweitert werden. Deshalb soll es leicht möglich sein, einzelne Module der Software auszutauschen oder zu verändern.
+        	
+        	Um dies zu vereinfachen, muss schnell feststellbar sein, ob ein neues oder verändertes Modul korrekt funktioniert. Dazu ist es nötig, dass einzelne Module leicht und unabhängig von anderen Modulen testbar sind.
 
-		Wir wollen den Aufwand ein Modul zu testen gering halten, indem wir eine Checkliste aufgestellt haben, mit der wir anhand von fünf Kriterien die Testbarkeit bewerten:
+		Wir wollen den Aufwand ein Modul zu testen gering halten. Um dies zu bewerten, haben wir eine Checkliste mit fünf für die Testbarkeit relevanten Kriterien aufgestellt:
 
 	\begin{enumerate}
 		\item Beobachtbarkeit: Das Testergebnis kann beobachtet werden, um es mit dem erwarteten Ergebnis abzugleichen.
 		\item Kontrollierbarkeit:  Das Testobjekt kann in den für den Test erforderlichen Zustand gebracht werden. 
 		\item Isolierbarkeit:  Das Testobjekt kann isoliert getestet werden, damit eine Abhängigkeit des Testresultats von anderen Modulen 			verhindert wird.
-		\item Trennung der Verantwortlichkeit:  Das Testobjekt hat eine wohldefinierte Verantwortlichkeit, wodurch erleichtert wird, die 				Schnittstelle zu anderen Modulen zu testen. Die Schnittstellen bzw. Verantwortlichkeiten wurden dazu im Vorfeld festgelegt.
+		\item Trennung der Verantwortlichkeit:  Das Testobjekt hat eine wohldefinierte Verantwortlichkeit, wodurch erleichtert wird, die Schnittstelle zu anderen Modulen zu testen. Die Schnittstellen beziehungsweise Verantwortlichkeiten wurden dazu im Vorfeld festgelegt.
 		\item Automatisierbarkeit:  Die Tests lassen sich automatisieren, damit schnell ein Testergebnis vorliegt.
 	\end{enumerate}
 
@@ -90,15 +101,16 @@
 
 		Auch die Modifizierbarkeit wird durch diese beiden Maßnahmen verbessert. Zusätzlich ermöglichen wir durch Modularität und abstrakte Klassen, dass Entwickler Teile der Bibliothek leicht austauschen können. Die Aufgaben und Schnittstellen der Module und die Methoden der abstrakten Klassen werden in der Dokumentation festgehalten.
 
-		Die Dokumentation der Funktionen und Klassen wird durch den Einsatz der Software Doxygen\footnote{http://www.stack.nl/~dimitri/doxygen} und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
+		Die Dokumentation der Funktionen und Klassen wird durch den Einsatz der Software Doxygen\footnote{http://www.stack.nl/\~{}dimitri/doxygen} und entsprechend formatierten Kommentaren im Quellcode automatisch erstellt. Gegen Ende des Projekts (Anfang März) sind zwei Wochen vorgesehen, in denen die erzeugte Dokumentation überprüft und erweitert wird.
 		
-		Eine einheitliche Bezeichung und Formatierung stellen wir durch Code Conventions sicher. Diese wurden zu Beginn des Projekts auf Grundlage der relativ weit verbreiteten Google-Code-Conventions für C++ von uns festgelegt und in unserem Wiki festgehalten. Die Einhaltung der Code Conventions ist ein Punkt auf der Checkliste für die Code Reviews und wird entsprechend überprüft. Falls sie nicht eingehalten werden, muss, wie bei den anderen Punkten des Code Reviews auch, der Code vom Entwickler entsprechend angepasst und dann erneut überprüft werden.
+		Eine einheitliche Bezeichnung und Formatierung stellen wir durch Code Conventions sicher. Diese wurden zu Beginn des Projekts auf Grundlage der relativ weit verbreiteten Google-Code-Conventions für C++ von uns festgelegt und in unserem Wiki festgehalten. Die Einhaltung der Code Conventions ist ein Punkt auf der Checkliste für die Code Reviews und wird entsprechend überprüft. Falls sie nicht eingehalten werden, muss, wie bei den anderen Punkten des Code Reviews auch, der Code vom Entwickler entsprechend angepasst und dann erneut überprüft werden.
 		
-		Es ist nicht möglich, am Anfang des Projektes schon alle Aufgaben der Module zu erkennen und die Schnittstellen entsprechend zu schreiben und zu dokumentieren. Wie es in agiler Entwicklung üblich ist, werden wir die Module an die Anforderungen anpassen und ihre Schnittstellen entsprechend ändern. In den zwei Wochen gegen Ende des Projektes, die für die Dokumentation vorgesehen sind, werden wir diese dann dokumentieren.
+		Wie es in agiler Entwicklung üblich ist, werden wir die Module an die sich erweiternden Anforderungen anpassen und ihre Schnittstellen entsprechend ändern. In den zwei Wochen gegen Ende des Projektes, die für die Dokumentation vorgesehen sind, werden wir diese dann dokumentieren.
 	
 \appendix	
 	\chapter{Anhang}	
-	\section{Code Review check list}	
+	\section{Code Review check list}
+	\label{sec:checkList}	
 	\includegraphics[scale=0.71]{code-review-checklist.pdf}
 		
 	
