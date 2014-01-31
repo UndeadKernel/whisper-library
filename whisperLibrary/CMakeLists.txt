@@ -7,6 +7,7 @@ set(SOURCES
 	src/channelmanager.cpp
 	src/tcpheadercovertchannel.cpp
 	src/tcppacket.cpp
+	src/morseCoder.cpp
 )
 
 set(HEADERS
@@ -17,6 +18,7 @@ set(HEADERS
 	include/whisperLibrary/tcpheadercovertchannel.hpp
 	include/whisperLibrary/bitSetCoder.hpp
 	src/tcppacket.hpp
+	include/whisperLibrary/morseCoder.hpp
 )
 
 set(TESTS
