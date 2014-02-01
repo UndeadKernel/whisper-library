@@ -31,7 +31,7 @@ set(TESTS
 # Boost library
 set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
+find_package(Boost 1.55.0 REQUIRED QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
 
 include_directories(
 		include/whisperLibrary
