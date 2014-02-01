@@ -27,13 +27,11 @@ void ChannelManager::addChannel(CovertChannel* channel) {
 
 //callback method for CC
 void ChannelManager::outputMessage(std::string message){
-	cout << "ChannelManager: message output '" << message << "'" << endl;
 	(*m_output_stream) << message;
 }
 
 void ChannelManager::sendMessage(string message) {
 	if (m_current_channel != NULL) {
-		cout << "ChannelManager: sending message '" << message << "'" << endl;
 		m_current_channel->sendMessage(message);
 	}
 }
