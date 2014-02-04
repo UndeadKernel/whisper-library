@@ -4,7 +4,6 @@
 
 
 using namespace std;
-typedef bitset<6> bitset6;
 
 int main(int argc, char* argv[]){
 	whisper_library::ChannelManager channelmanager;

@@ -28,6 +28,10 @@ namespace whisper_library {
 		*/
 		MorseCoder(unsigned int delay_short, unsigned int delay_long, unsigned int delay_letter, unsigned int delay_space);
 
+		void displayDelays() {
+			cout << m_delay_short << " " << m_delay_long << " " << m_delay_letter << " " << m_delay_space << endl;
+		}
+
 		/*
 			encodeMessage takes a message as a string and converts it into a sequence of delays using morse.
 			Unsupported characters are encoded as '#'.
@@ -59,13 +63,13 @@ namespace whisper_library {
 		char decodeLetter(vector<bool> morse_code);
 
 		// Represents a short signal
-		const unsigned int m_delay_short;
+		unsigned int m_delay_short;
 		// Represents a long signal
-		const unsigned int m_delay_long;
+		unsigned int m_delay_long;
 		// Represents a short pause
-		const unsigned int m_delay_letter;
+		unsigned int m_delay_letter;
 		// Represents a long pause
-		const unsigned int m_delay_space;
+		unsigned int m_delay_space;
 
 		// Contains the mapping between characters and morse.
 		morse_map m_morse_map;

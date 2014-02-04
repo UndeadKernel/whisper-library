@@ -8,6 +8,7 @@ set(SOURCES
 	src/tcpheadercovertchannel.cpp
 	src/tcppacket.cpp
 	src/morseCoder.cpp
+	src/timingcovertchannel.cpp
 )
 
 set(HEADERS
@@ -19,6 +20,7 @@ set(HEADERS
 	include/whisperLibrary/bitSetCoder.hpp
 	src/tcppacket.hpp
 	include/whisperLibrary/morseCoder.hpp
+	include/whisperLibrary/timingcovertchannel.hpp
 )
 
 set(TESTS
@@ -27,6 +29,7 @@ set(TESTS
 	tests/tcpHeaderCovertChannelTest.cpp
 	tests/bitSetCoderTest.cpp
 	tests/morseCoderTest.cpp
+	tests/timingCovertChannelTest.cpp
 )
 
 # Boost library
