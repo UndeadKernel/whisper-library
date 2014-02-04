@@ -10,6 +10,7 @@ namespace whisper_library {
 		m_delay_letter(delay_letter),
 		m_delay_space(delay_space) {
 
+		// 0 <-> short, 1 <-> long
 		m_morse_map.insert(morse('A', "01"));
 		m_morse_map.insert(morse('B', "1000"));
 		m_morse_map.insert(morse('C', "1010"));
