@@ -1,4 +1,5 @@
 #include "whisperLibrary/channelmanager.hpp"
+#include "whisperLibrary/morseCoder.hpp"
 #include <iostream>
 
 
@@ -12,5 +13,5 @@ int main(int argc, char* argv[]){
 
 	for (unsigned int i = 0; i < channels.size(); i++) {
 		cout << "[" << i << "] " << channels[i] << ": " << channel_infos[i] << endl;
-	}
+	} 
 }
