@@ -6,40 +6,55 @@
 using namespace std;
 
 struct MorseCoderFixture {
-
+	string message;
+	string message_decoded;
 };
 
 BOOST_FIXTURE_TEST_SUITE(morseCoder, MorseCoderFixture)
 
 BOOST_AUTO_TEST_CASE(morse_encode_word) {
-	string word = "Hello";
+	message = "Hello";
 
-	whisper_library::MorseCoder morsecoder(0.1, 0.3, 0.7, 1);
-	vector<float> delays = morsecoder.encodeMessage(word);
-	string word_decoded = morsecoder.decodeMessage(delays);
+	whisper_library::MorseCoder morsecoder(1, 3, 7, 10);
+	vector<unsigned int> delays = morsecoder.encodeMessage(message);
+	message_decoded = morsecoder.decodeMessage(delays);
 
-	BOOST_CHECK_EQUAL(boost::to_upper_copy(word), word_decoded);
+	BOOST_CHECK_EQUAL(boost::to_upper_copy(message), message_decoded);
 }
 
 BOOST_AUTO_TEST_CASE(morse_encode_sentence) {
-	string word = "Hello, this is a test.";
+	message = "Hello, this is a test.";
 
-	whisper_library::MorseCoder morsecoder(0.1, 0.3, 0.7, 1);
-	vector<float> delays = morsecoder.encodeMessage(word);
-	string word_decoded = morsecoder.decodeMessage(delays);
+	whisper_library::MorseCoder morsecoder(1, 3, 7, 10);
+	vector<unsigned int> delays = morsecoder.encodeMessage(message);
+	message_decoded = morsecoder.decodeMessage(delays);
 
-	BOOST_CHECK_EQUAL(boost::to_upper_copy(word), word_decoded);
+	BOOST_CHECK_EQUAL(boost::to_upper_copy(message), message_decoded);
 }
 
 BOOST_AUTO_TEST_CASE(morse_encode_unsupported_symbols) {
-	string word = "Hellô, á";
+	message = "Hellô, á";
 
-	whisper_library::MorseCoder morsecoder(0.1, 0.3, 0.7, 1);
-	vector<float> delays = morsecoder.encodeMessage(word);
-	string word_decoded = morsecoder.decodeMessage(delays);
+	whisper_library::MorseCoder morsecoder(1, 3, 7, 10);
+	vector<unsigned int> delays = morsecoder.encodeMessage(message);
+	message_decoded = morsecoder.decodeMessage(delays);
 
 	string result = "HELL#, #";
-	BOOST_CHECK_EQUAL(result, word_decoded);
+	BOOST_CHECK_EQUAL(result, message_decoded);
+}
+
+BOOST_AUTO_TEST_CASE(morse_check_unsupported_symbols) {
+	message = "Dîes ist â ein Tést!";
+	string check_unsupported_symbols = "îâé!";
+
+	whisper_library::MorseCoder morsecoder(1, 3, 7, 10);
+	vector<char> vec_unsupported_symbols = morsecoder.checkString(message);
+	string unsupported_symbols = "";
+	for (vector<char>::iterator it = vec_unsupported_symbols.begin(); it != vec_unsupported_symbols.end(); it++) {
+		unsupported_symbols += (*it);
+	}
+	BOOST_CHECK_EQUAL(check_unsupported_symbols, unsupported_symbols);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

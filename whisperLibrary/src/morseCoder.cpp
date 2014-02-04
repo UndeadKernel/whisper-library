@@ -4,7 +4,7 @@
 #include <boost/algorithm/string.hpp>
 
 namespace whisper_library {
-	MorseCoder::MorseCoder(float delay_short, float delay_long, float delay_letter, float delay_space) :
+	MorseCoder::MorseCoder(unsigned int delay_short, unsigned int delay_long, unsigned int delay_letter, unsigned int delay_space) :
 		m_delay_short(delay_short),
 		m_delay_long(delay_long),
 		m_delay_letter(delay_letter),
@@ -63,13 +63,12 @@ namespace whisper_library {
 		m_morse_map.insert(morse('#', "000110")); // Addition for unsupported symbols
 	}
 
-	vector<float> MorseCoder::encodeMessage(string message) {
+	vector<unsigned int> MorseCoder::encodeMessage(string message) {
 		// split message into words
 		vector<string> words;
 		boost::split(words, message, boost::is_any_of(" "), boost::token_compress_on);
 
-
-		vector<float> delays;
+		vector<unsigned int> delays;
 		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
 			string word = (*it);
 			// encode and push word
@@ -91,20 +90,20 @@ namespace whisper_library {
 			}
 			// push long pause between words
 			delays.push_back(m_delay_space);
-
 		}
-
 		return delays;
 	}
 
 	vector<char> MorseCoder::checkString(string message) {
 		vector<char> unsupported_letters;
-		for (int i = 0; i < message.length; i++) {
-			try {
-				m_morse_map.left.at(message[i]);
-			}
-			catch (const out_of_range& e) {
-				unsupported_letters.push_back(message[i]);
+		for (int i = 0; i < message.length(); i++) {
+			if (message[i] != ' ') {
+				try {
+					m_morse_map.left.at(toupper(message[i]));
+				}
+				catch (const out_of_range& e) {
+					unsupported_letters.push_back(message[i]);
+				}
 			}
 		}
 		return unsupported_letters;
@@ -112,12 +111,12 @@ namespace whisper_library {
 
 	vector<bool>  MorseCoder::encodeLetter(char letter) {
 		char uppercase_letter = toupper(letter);
-		string encoding = "000110"; // #
+		string encoding;
 		try {
 			encoding = m_morse_map.left.at(uppercase_letter);
 		}
 		catch (const out_of_range& e) {
-			cout << "Symbol " << uppercase_letter << " not supported." << e.what() << endl;
+			encoding = "000110"; // #
 		}
 
 		vector<bool> encoding_vector;
@@ -129,11 +128,11 @@ namespace whisper_library {
 
 
 
-	string MorseCoder::decodeMessage(vector<float> delays) {
+	string MorseCoder::decodeMessage(vector<unsigned int> delays) {
 		string message = "";
 		vector<bool> morse_code;
-		for (vector<float>::iterator it = delays.begin(); it != delays.end(); it++) {
-			float delay = (*it);
+		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
+			unsigned int delay = (*it);
 			if (delay == m_delay_short) {
 				morse_code.push_back(false);
 			}
@@ -155,7 +154,7 @@ namespace whisper_library {
 	}
 
 	char MorseCoder::decodeLetter(vector<bool> morse_code) {
-		char letter = '?';
+		char letter;
 		string morse_code_string = "";
 		for (vector<bool>::iterator it = morse_code.begin(); it != morse_code.end(); it++) {
 			if ((*it)) {
@@ -169,9 +168,8 @@ namespace whisper_library {
 			letter = m_morse_map.right.at(morse_code_string);
 		}
 		catch (const out_of_range& e) {
-			cout << "Morse code not found." << e.what() << endl;
+			letter = '#';
 		}
-
 		return letter;
 	}
 }
