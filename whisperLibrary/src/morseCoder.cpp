@@ -57,7 +57,6 @@ namespace whisper_library {
 		m_morse_map.insert(morse('(', "10110"));
 		m_morse_map.insert(morse(')', "101101"));
 		m_morse_map.insert(morse('\'', "011110"));
-		//m_morse_map.insert(morse('=', "100001")); For some reason, '=' can't be used as a key. Can't fix that.
 		m_morse_map.insert(morse('+', "01010"));
 		m_morse_map.insert(morse('/', "10010"));
 		m_morse_map.insert(morse('@', "011010"));
@@ -117,7 +116,7 @@ namespace whisper_library {
 			encoding = m_morse_map.left.at(uppercase_letter);
 		}
 		catch (const out_of_range& e) {
-			encoding = "000110"; // #
+			encoding = m_morse_map.left.at('#');
 		}
 
 		vector<bool> encoding_vector;
