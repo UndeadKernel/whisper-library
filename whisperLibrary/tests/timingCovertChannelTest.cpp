@@ -13,7 +13,7 @@ void outputMessage(string message) {
 
 void sendPacket(chrono::high_resolution_clock::time_point start, whisper_library::TcpPacket & packet) {
 	chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-	chrono::duration<double, milli> time_elapsed = chrono::duration_cast<chrono::duration<double, milli>>(end - start);
+	chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - start);
 	cout << time_elapsed.count() << "ms" << endl;
 }
 
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(timing_send_simple_message) {
 	timing_cc.sendMessage("a");
 
 	chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-	chrono::duration<double, milli> time_elapsed = chrono::duration_cast<chrono::duration<double, milli>>(end - start);
+	chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - start);
 
 	cout << "test ended after: " << time_elapsed.count()<< "ms" << endl;
 }

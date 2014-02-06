@@ -1,5 +1,4 @@
 #include <timingcovertchannel.hpp>
-#include <thread>
 
 namespace whisper_library {
 	void TimingCovertChannel::sendMessage(string message) {
@@ -19,7 +18,32 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::receiveMessage(TcpPacket& packet){
-		
+		if (!m_receiving) {
+			m_start_time = chrono::high_resolution_clock::now();
+			std::thread timeout(bind(&TimingCovertChannel::startTimeoutTimer, this, 7000));
+		}
+		else {
+			m_receiving = true;
+			chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
+			chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - m_start_time);
+			uint delay = time_elapsed.count();
+			if (delay < m_delay_long) {
+				m_received_delays.push_back(m_delay_short);
+			}
+			else {
+				if (delay < m_delay_letter) {
+					m_received_delays.push_back(m_delay_long);
+				}
+				else {
+					if (delay < m_delay_space) {
+						m_received_delays.push_back(m_delay_letter);
+					}
+					else {
+						m_received_delays.push_back(m_delay_space);
+					}
+				}
+			}
+		}
 	}
 
 	string TimingCovertChannel::name() {
@@ -28,5 +52,10 @@ namespace whisper_library {
 
 	string TimingCovertChannel::info() {
 		return "blub";
+	}
+
+	void TimingCovertChannel::startTimeoutTimer(uint timeout_ms) {
+		this_thread::sleep_for(chrono::milliseconds(timeout_ms));
+		m_receiving = false;
 	}
 }

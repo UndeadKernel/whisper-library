@@ -7,6 +7,8 @@
 #include "../../src/tcppacket.hpp"
 #include "morseCoder.hpp"
 #include <functional>
+#include <thread>
+#include <atomic>
 
 using namespace std;
 
@@ -18,7 +20,8 @@ namespace whisper_library {
 			m_output(output),
 			m_send(send),
 			m_getPacket(getPacket),
-			m_coder(100, 300, 500, 700)
+			m_coder(100, 300, 500, 700),
+			m_receiving(0)
 			{};
 
 		void sendMessage(string message);
@@ -29,10 +32,18 @@ namespace whisper_library {
 		string info();
 
 	private:
+		void startTimeoutTimer(uint timeout_ms);
 		MorseCoder m_coder;
 		function<void(string)> m_output;
 		function<void(TcpPacket)> m_send;
 		function<TcpPacket(void)> m_getPacket;
+		chrono::high_resolution_clock::time_point m_start_time;
+		vector<uint> m_received_delays;
+		std::atomic<bool> m_receiving;
+		const uint m_delay_short = 100;
+		const uint m_delay_long = 300;
+		const uint m_delay_letter = 500;
+		const uint m_delay_space = 700;
 	};
 }
 
