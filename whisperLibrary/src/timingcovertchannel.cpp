@@ -18,28 +18,37 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::receiveMessage(TcpPacket& packet){
+		cout << "TimingCovertChannel: packet received: ";
+		m_timeout_changed = true;
+		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(2);
 		if (!m_receiving) {
+			cout << "first packet" << endl;
+			m_receiving = true;
 			m_start_time = chrono::high_resolution_clock::now();
-			std::thread timeout(bind(&TimingCovertChannel::startTimeoutTimer, this, 7000));
+			std::thread timeout(bind(&TimingCovertChannel::startTimeoutTimer, this));
+			timeout.detach();
 		}
 		else {
-			m_receiving = true;
 			chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
 			chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - m_start_time);
 			uint delay = time_elapsed.count();
 			if (delay < m_delay_long) {
 				m_received_delays.push_back(m_delay_short);
+				cout << "delay short" << endl;
 			}
 			else {
 				if (delay < m_delay_letter) {
 					m_received_delays.push_back(m_delay_long);
+					cout << "delay long" << endl;
 				}
 				else {
 					if (delay < m_delay_space) {
 						m_received_delays.push_back(m_delay_letter);
+						cout << "delay letter" << endl;
 					}
 					else {
 						m_received_delays.push_back(m_delay_space);
+						cout << "delay space" << endl;
 					}
 				}
 			}
@@ -54,8 +63,17 @@ namespace whisper_library {
 		return "blub";
 	}
 
-	void TimingCovertChannel::startTimeoutTimer(uint timeout_ms) {
-		this_thread::sleep_for(chrono::milliseconds(timeout_ms));
+	void TimingCovertChannel::startTimeoutTimer() {
+		cout << "timeout started" << endl;
+		while (m_timeout_changed) {
+			m_timeout_changed = false;
+			this_thread::sleep_until(m_timeout_end);
+		}
+		cout << "timeout finished!" << endl;
 		m_receiving = false;
+		string message = m_coder.decodeMessage(m_received_delays);
+		m_received_delays.clear();
+		cout << "Timing Covert Channel: Received Message: ";
+		m_output(message);
 	}
 }

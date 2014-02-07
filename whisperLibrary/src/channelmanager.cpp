@@ -9,9 +9,12 @@ ChannelManager::ChannelManager(){
 
 	using namespace std::placeholders;
 	// TcpHeaderCovertChannel
-	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, _1),
-										   std::bind(&SocketConnector::sendPacket, m_socket, _1), 
+	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+										   std::bind(&SocketConnector::sendPacket, m_socket, std::placeholders::_1),
 										   std::bind(&ChannelManager::getTcpPacket, this))));
+	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+									   std::bind(&SocketConnector::sendPacket, m_socket, std::placeholders::_1),
+									   std::bind(&ChannelManager::getTcpPacket, this)));
 	m_current_channel = m_channels[0];
 }
 ChannelManager::~ChannelManager() {
@@ -50,6 +53,7 @@ void ChannelManager::packetReceived(TcpPacket packet) {
 void ChannelManager::selectChannel(unsigned int index) {
 	if (index >= 0 && index < m_channels.size()) {
 		m_current_channel = m_channels[index];
+		cout << m_current_channel->name() << " selected." << endl;
 	}
 }
 

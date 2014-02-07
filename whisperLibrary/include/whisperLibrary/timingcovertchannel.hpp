@@ -32,12 +32,14 @@ namespace whisper_library {
 		string info();
 
 	private:
-		void startTimeoutTimer(uint timeout_ms);
+		void startTimeoutTimer();
 		MorseCoder m_coder;
 		function<void(string)> m_output;
 		function<void(TcpPacket)> m_send;
 		function<TcpPacket(void)> m_getPacket;
 		chrono::high_resolution_clock::time_point m_start_time;
+		chrono::high_resolution_clock::time_point m_timeout_end;
+		atomic<bool> m_timeout_changed;
 		vector<uint> m_received_delays;
 		std::atomic<bool> m_receiving;
 		const uint m_delay_short = 100;

@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include <timingcovertchannel.hpp>
+#include <channelmanager.hpp>
 #include <chrono>
 
 struct timingCovertChannelFixture {
@@ -23,7 +24,7 @@ whisper_library::TcpPacket getTcpPacket() {
 
 
 BOOST_AUTO_TEST_CASE(timing_send_simple_message) {
-	using namespace std::placeholders;
+/*	using namespace std::placeholders;
 
 	chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 	whisper_library::TimingCovertChannel timing_cc(&outputMessage, std::bind(&sendPacket, start, std::placeholders::_1), &getTcpPacket);
@@ -33,6 +34,17 @@ BOOST_AUTO_TEST_CASE(timing_send_simple_message) {
 	chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - start);
 
 	cout << "test ended after: " << time_elapsed.count()<< "ms" << endl;
+*/
+}
+
+BOOST_AUTO_TEST_CASE(timing_receive_simple_message) {
+	whisper_library::ChannelManager channelmanager;
+	channelmanager.selectChannel(1);
+	channelmanager.setOutputStream(&cout);
+	channelmanager.sendMessage("B");
+
+	//Wait for end of timeout
+	this_thread::sleep_for(chrono::seconds(3));
 }
 
 

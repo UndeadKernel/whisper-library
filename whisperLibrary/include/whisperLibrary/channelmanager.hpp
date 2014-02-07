@@ -6,6 +6,7 @@
 #include "../../src/tcppacket.hpp"
 #include <iostream>
 #include "tcpheadercovertchannel.hpp"
+#include "timingcovertchannel.hpp"
 #include <functional>
 
 namespace whisper_library {
