@@ -90,91 +90,74 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00010"></a>00010 
 <a name="l00011"></a>00011 <span class="keyword">using namespace </span>std;
 <a name="l00012"></a>00012 <span class="keyword">namespace </span>whisper_library {
-<a name="l00013"></a>00013         <span class="comment">/*</span>
-<a name="l00014"></a>00014 <span class="comment">        BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a message.</span>
-<a name="l00015"></a>00015 <span class="comment">        BLOCK_LENGTH sets the length of these bit-blocks.</span>
-<a name="l00016"></a>00016 <span class="comment">        To use this class, call the function &#39;encodeMessage&#39; with the message as a string or &#39;decodeMessage&#39; with the message-blocks in a vector.</span>
-<a name="l00017"></a>00017 <span class="comment">        */</span>
-<a name="l00018"></a><a class="code" href="classwhisper__library_1_1BitSetCoder.html">00018</a>         <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> BLOCK_LENGTH&gt; <span class="keyword">class </span><a class="code" href="classwhisper__library_1_1BitSetCoder.html">BitSetCoder</a> {
-<a name="l00019"></a>00019         <span class="keyword">public</span>:
-<a name="l00020"></a>00020                 <span class="comment">/*</span>
-<a name="l00021"></a>00021 <span class="comment">                Returns the size of a message block (number of bits).</span>
-<a name="l00022"></a>00022 <span class="comment">                */</span>
-<a name="l00023"></a>00023                 <span class="keywordtype">size_t</span> blockLength() {
-<a name="l00024"></a>00024                         <span class="keywordflow">return</span> BLOCK_LENGTH;
-<a name="l00025"></a>00025                 }
-<a name="l00026"></a>00026                 <span class="comment">/*</span>
-<a name="l00027"></a>00027 <span class="comment">                encodeMessage takes a string and splits it into parts.</span>
-<a name="l00028"></a>00028 <span class="comment">                These are returned as a vector of bitsets in order. If you can&#39;t divide the bit count by BLOCK_LENGTH, the last bits are filled up with 0&#39;s.</span>
-<a name="l00029"></a>00029 <span class="comment">                The bitsets contain the binary representation of ASCI-encoded letters.</span>
-<a name="l00030"></a>00030 <span class="comment">                */</span>
-<a name="l00031"></a>00031                 vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; encodeMessage(<span class="keywordtype">string</span> message) {
-<a name="l00032"></a>00032                         <span class="keywordtype">string</span> bit_sequence = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l00033"></a>00033                         vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; ret_vector;
-<a name="l00034"></a>00034                         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;
-<a name="l00035"></a>00035 
-<a name="l00036"></a>00036                         <span class="comment">// do nothing if the message is empty</span>
-<a name="l00037"></a>00037                         <span class="keywordflow">if</span> (message.length() == 0) {
-<a name="l00038"></a>00038                                 <span class="keywordflow">return</span> ret_vector;
-<a name="l00039"></a>00039                         }
-<a name="l00040"></a>00040                         <span class="comment">// convert chars to binary</span>
-<a name="l00041"></a>00041                         <span class="keywordflow">for</span> (i = 0; i &lt; message.length(); ++i) {
-<a name="l00042"></a>00042                                 bitset&lt;8&gt; bit(message[i]);
-<a name="l00043"></a>00043                                 bit_sequence += bit.to_string();
-<a name="l00044"></a>00044                         }
-<a name="l00045"></a>00045                         <span class="comment">//split binary</span>
-<a name="l00046"></a>00046                         i = 0;
-<a name="l00047"></a>00047                         <span class="keywordflow">while</span> (i + BLOCK_LENGTH &lt;= bit_sequence.length()) {
-<a name="l00048"></a>00048                                 bitset&lt;BLOCK_LENGTH&gt; bit(bit_sequence.substr(i, BLOCK_LENGTH));
-<a name="l00049"></a>00049                                 ret_vector.push_back(bit);
-<a name="l00050"></a>00050                                 i += BLOCK_LENGTH;
-<a name="l00051"></a>00051                         }
-<a name="l00052"></a>00052                         <span class="comment">// build trailing zeroes if bit_sequence length didn&#39;t match the bit block size</span>
-<a name="l00053"></a>00053                         <span class="keywordflow">if</span> (i != bit_sequence.length()) {
-<a name="l00054"></a>00054                                 <span class="keywordtype">string</span> zeroes = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l00055"></a>00055                                 <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> j = 0; j &lt; BLOCK_LENGTH - (bit_sequence.length() - i); j++) {
-<a name="l00056"></a>00056                                         zeroes += <span class="stringliteral">&quot;0&quot;</span>;
-<a name="l00057"></a>00057                                 }
-<a name="l00058"></a>00058                                 <span class="comment">// add trailing zeroes</span>
-<a name="l00059"></a>00059                                 <span class="keywordflow">if</span> (zeroes != <span class="stringliteral">&quot;&quot;</span>) {
-<a name="l00060"></a>00060                                         ret_vector.push_back(bitset&lt;BLOCK_LENGTH&gt;(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
-<a name="l00061"></a>00061                                 }
-<a name="l00062"></a>00062                         }
-<a name="l00063"></a>00063                         <span class="keywordflow">return</span> ret_vector;
-<a name="l00064"></a>00064                 }
-<a name="l00065"></a>00065 
-<a name="l00066"></a>00066                 <span class="comment">/*</span>
-<a name="l00067"></a>00067 <span class="comment">                decodeMessage takes bit blocks and converts them to characters returned as a string.</span>
-<a name="l00068"></a>00068 <span class="comment">                The bitsets contain the binary representation of ASCI-encoded letters.</span>
-<a name="l00069"></a>00069 <span class="comment">                */</span>
-<a name="l00070"></a>00070                 <span class="keywordtype">string</span> decodeMessage(vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; vector) {
-<a name="l00071"></a>00071                         <span class="keywordtype">string</span> bit_sequence = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l00072"></a>00072                         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;
-<a name="l00073"></a>00073                         <span class="comment">// append bits to string</span>
-<a name="l00074"></a>00074                         <span class="keywordflow">for</span> (i = 0; i &lt; vector.size(); ++i) {
-<a name="l00075"></a>00075                                 bit_sequence += vector[i].to_string();
-<a name="l00076"></a>00076                         }
-<a name="l00077"></a>00077 
-<a name="l00078"></a>00078                         <span class="comment">// convert binary string to chars</span>
-<a name="l00079"></a>00079                         <span class="keywordtype">string</span> message = <span class="stringliteral">&quot;&quot;</span>;
-<a name="l00080"></a>00080                         <span class="keywordflow">for</span> (i = 0; i + 8 &lt;= bit_sequence.length(); i += 8) {
-<a name="l00081"></a>00081                                 bitset&lt;8&gt; bitset(bit_sequence.substr(i, 8));
-<a name="l00082"></a>00082                                 <span class="keywordtype">char</span> c = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(bitset.to_ulong());
-<a name="l00083"></a>00083                                 message.push_back(c);
+<a name="l00020"></a><a class="code" href="classwhisper__library_1_1BitSetCoder.html">00020</a>         <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> BLOCK_LENGTH&gt; <span class="keyword">class </span><a class="code" href="classwhisper__library_1_1BitSetCoder.html" title="BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a mes...">BitSetCoder</a> {
+<a name="l00021"></a>00021         <span class="keyword">public</span>:
+<a name="l00026"></a><a class="code" href="classwhisper__library_1_1BitSetCoder.html#a78072e1d098b177ac51a7007564e8eb6">00026</a>                 <span class="keywordtype">size_t</span> <a class="code" href="classwhisper__library_1_1BitSetCoder.html#a78072e1d098b177ac51a7007564e8eb6">blockLength</a>() {
+<a name="l00027"></a>00027                         <span class="keywordflow">return</span> BLOCK_LENGTH;
+<a name="l00028"></a>00028                 }
+<a name="l00037"></a><a class="code" href="classwhisper__library_1_1BitSetCoder.html#a04977549fac58c4750df77a75d4452d8">00037</a>                 vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; <a class="code" href="classwhisper__library_1_1BitSetCoder.html#a04977549fac58c4750df77a75d4452d8" title="encodeMessage takes a string and splits it into parts.">encodeMessage</a>(<span class="keywordtype">string</span> message) {
+<a name="l00038"></a>00038                         <span class="keywordtype">string</span> bit_sequence = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00039"></a>00039                         vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; ret_vector;
+<a name="l00040"></a>00040                         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;
+<a name="l00041"></a>00041 
+<a name="l00042"></a>00042                         <span class="comment">// do nothing if the message is empty</span>
+<a name="l00043"></a>00043                         <span class="keywordflow">if</span> (message.length() == 0) {
+<a name="l00044"></a>00044                                 <span class="keywordflow">return</span> ret_vector;
+<a name="l00045"></a>00045                         }
+<a name="l00046"></a>00046                         <span class="comment">// convert chars to binary</span>
+<a name="l00047"></a>00047                         <span class="keywordflow">for</span> (i = 0; i &lt; message.length(); ++i) {
+<a name="l00048"></a>00048                                 bitset&lt;8&gt; bit(message[i]);
+<a name="l00049"></a>00049                                 bit_sequence += bit.to_string();
+<a name="l00050"></a>00050                         }
+<a name="l00051"></a>00051                         <span class="comment">//split binary</span>
+<a name="l00052"></a>00052                         i = 0;
+<a name="l00053"></a>00053                         <span class="keywordflow">while</span> (i + BLOCK_LENGTH &lt;= bit_sequence.length()) {
+<a name="l00054"></a>00054                                 bitset&lt;BLOCK_LENGTH&gt; bit(bit_sequence.substr(i, BLOCK_LENGTH));
+<a name="l00055"></a>00055                                 ret_vector.push_back(bit);
+<a name="l00056"></a>00056                                 i += BLOCK_LENGTH;
+<a name="l00057"></a>00057                         }
+<a name="l00058"></a>00058                         <span class="comment">// build trailing zeroes if bit_sequence length didn&#39;t match the bit block size</span>
+<a name="l00059"></a>00059                         <span class="keywordflow">if</span> (i != bit_sequence.length()) {
+<a name="l00060"></a>00060                                 <span class="keywordtype">string</span> zeroes = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00061"></a>00061                                 <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> j = 0; j &lt; BLOCK_LENGTH - (bit_sequence.length() - i); j++) {
+<a name="l00062"></a>00062                                         zeroes += <span class="stringliteral">&quot;0&quot;</span>;
+<a name="l00063"></a>00063                                 }
+<a name="l00064"></a>00064                                 <span class="comment">// add trailing zeroes</span>
+<a name="l00065"></a>00065                                 <span class="keywordflow">if</span> (zeroes != <span class="stringliteral">&quot;&quot;</span>) {
+<a name="l00066"></a>00066                                         ret_vector.push_back(bitset&lt;BLOCK_LENGTH&gt;(bit_sequence.substr(i, bit_sequence.length() - i) + zeroes));
+<a name="l00067"></a>00067                                 }
+<a name="l00068"></a>00068                         }
+<a name="l00069"></a>00069                         <span class="keywordflow">return</span> ret_vector;
+<a name="l00070"></a>00070                 }
+<a name="l00071"></a>00071 
+<a name="l00078"></a><a class="code" href="classwhisper__library_1_1BitSetCoder.html#a96721c4d4f5e5faf36873972634a03fc">00078</a>                 <span class="keywordtype">string</span> <a class="code" href="classwhisper__library_1_1BitSetCoder.html#a96721c4d4f5e5faf36873972634a03fc">decodeMessage</a>(vector&lt;bitset&lt;BLOCK_LENGTH&gt; &gt; vector) {
+<a name="l00079"></a>00079                         <span class="keywordtype">string</span> bit_sequence = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00080"></a>00080                         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i;
+<a name="l00081"></a>00081                         <span class="comment">// append bits to string</span>
+<a name="l00082"></a>00082                         <span class="keywordflow">for</span> (i = 0; i &lt; vector.size(); ++i) {
+<a name="l00083"></a>00083                                 bit_sequence += vector[i].to_string();
 <a name="l00084"></a>00084                         }
-<a name="l00085"></a>00085                         <span class="keywordflow">return</span> message;
-<a name="l00086"></a>00086                 }
-<a name="l00087"></a>00087         };
-<a name="l00088"></a>00088 }
-<a name="l00089"></a>00089 
-<a name="l00090"></a>00090 <span class="preprocessor">#endif //BITSET_CODER</span>
+<a name="l00085"></a>00085 
+<a name="l00086"></a>00086                         <span class="comment">// convert binary string to chars</span>
+<a name="l00087"></a>00087                         <span class="keywordtype">string</span> message = <span class="stringliteral">&quot;&quot;</span>;
+<a name="l00088"></a>00088                         <span class="keywordflow">for</span> (i = 0; i + 8 &lt;= bit_sequence.length(); i += 8) {
+<a name="l00089"></a>00089                                 bitset&lt;8&gt; bitset(bit_sequence.substr(i, 8));
+<a name="l00090"></a>00090                                 <span class="keywordtype">char</span> c = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(bitset.to_ulong());
+<a name="l00091"></a>00091                                 message.push_back(c);
+<a name="l00092"></a>00092                         }
+<a name="l00093"></a>00093                         <span class="keywordflow">return</span> message;
+<a name="l00094"></a>00094                 }
+<a name="l00095"></a>00095         };
+<a name="l00096"></a>00096 }
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098 <span class="preprocessor">#endif //BITSET_CODER</span>
 </pre></div></div><!-- contents -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -186,7 +169,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 6 2014 12:25:40 for Whisper Library by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 6 2014 17:05:34 for Whisper Library by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

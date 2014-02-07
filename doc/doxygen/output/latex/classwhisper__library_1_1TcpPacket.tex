@@ -1,12 +1,23 @@
 \hypertarget{classwhisper__library_1_1TcpPacket}{\section{whisper\-\_\-library\-:\-:\-Tcp\-Packet \-Class \-Reference}
 \label{classwhisper__library_1_1TcpPacket}\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}}
 }
+
+
+\-This class represents a tcp packet. \-All fields are accessable.  
+
+
+
+
+{\ttfamily \#include $<$tcppacket.\-hpp$>$}
+
 \subsection*{\-Public \-Member \-Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}{{\bfseries \-Tcp\-Packet} (uint in\-Source\-Port, uint in\-Dest\-Port, ulong in\-Sequence\-Number, ulong in\-Ack\-Number, bitset$<$ 4 $>$ in\-Data\-Offset, uint in\-Window\-Size, vector$<$ bool $>$ in\-Options)}\label{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}
+\hypertarget{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}{\hyperlink{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}{\-Tcp\-Packet} ()}\label{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}
 
-\item 
+\begin{DoxyCompactList}\small\item\em \-The empty constructor creates an empty tcp packet. \end{DoxyCompactList}\item 
+\hyperlink{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}{\-Tcp\-Packet} (uint in\-Source\-Port, uint in\-Dest\-Port, ulong in\-Sequence\-Number, ulong in\-Ack\-Number, bitset$<$ 4 $>$ in\-Data\-Offset, uint in\-Window\-Size, vector$<$ bool $>$ in\-Options)
+\begin{DoxyCompactList}\small\item\em \-This constructor is used to fill in some of the important fields beforehand. \end{DoxyCompactList}\item 
 \hypertarget{classwhisper__library_1_1TcpPacket_a234bca8357dac29382195f9837363d0c}{uint {\bfseries source\-Port} () const }\label{classwhisper__library_1_1TcpPacket_a234bca8357dac29382195f9837363d0c}
 
 \item 
@@ -139,9 +150,76 @@
 \hypertarget{classwhisper__library_1_1TcpPacket_a0b0a67dddb600b642b0499c4714981ea}{void {\bfseries set\-Packet} (vector$<$ bool $>$ val)}\label{classwhisper__library_1_1TcpPacket_a0b0a67dddb600b642b0499c4714981ea}
 
 \item 
-\hypertarget{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}{void {\bfseries calculate\-Checksum} (ulong source\-Ip, ulong dest\-Ip, uint reserved\-Bits, uint protocol)}\label{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}
+void \hyperlink{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}{calculate\-Checksum} (ulong source\-Ip, ulong dest\-Ip, uint reserved\-Bits, uint protocol)
+\begin{DoxyCompactList}\small\item\em \-This function is used to calculate the tcp checksum. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
-\end{DoxyCompactItemize}
+
+\subsection{\-Detailed \-Description}
+\-This class represents a tcp packet. \-All fields are accessable. 
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}{\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}!\-Tcp\-Packet@{\-Tcp\-Packet}}
+\index{\-Tcp\-Packet@{\-Tcp\-Packet}!whisper_library::TcpPacket@{whisper\-\_\-library\-::\-Tcp\-Packet}}
+\subsubsection[{\-Tcp\-Packet}]{\setlength{\rightskip}{0pt plus 5cm}{\bf whisper\-\_\-library\-::\-Tcp\-Packet\-::\-Tcp\-Packet} (
+\begin{DoxyParamCaption}
+\item[{uint}]{in\-Source\-Port, }
+\item[{uint}]{in\-Dest\-Port, }
+\item[{ulong}]{in\-Sequence\-Number, }
+\item[{ulong}]{in\-Ack\-Number, }
+\item[{bitset$<$ 4 $>$}]{in\-Data\-Offset, }
+\item[{uint}]{in\-Window\-Size, }
+\item[{vector$<$ bool $>$}]{in\-Options}
+\end{DoxyParamCaption}
+)}}\label{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}
+
+
+\-This constructor is used to fill in some of the important fields beforehand. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em in\-Source\-Port} & the source port as integer \\
+\hline
+{\em in\-Dest\-Port} & the destination port as integer \\
+\hline
+{\em in\-Sequence\-Number} & the sequence number of the packet \\
+\hline
+{\em in\-Ack\-Number} & the acknowladgement number of the packet \\
+\hline
+{\em in\-Data\-Offset} & the length of the options field in bytes \\
+\hline
+{\em in\-Window\-Size} & the size of the packet in bytes \\
+\hline
+{\em in\-Options} & the options as a vector of boolean values \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}{\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}!calculate\-Checksum@{calculate\-Checksum}}
+\index{calculate\-Checksum@{calculate\-Checksum}!whisper_library::TcpPacket@{whisper\-\_\-library\-::\-Tcp\-Packet}}
+\subsubsection[{calculate\-Checksum}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf whisper\-\_\-library\-::\-Tcp\-Packet\-::calculate\-Checksum} (
+\begin{DoxyParamCaption}
+\item[{ulong}]{source\-Ip, }
+\item[{ulong}]{dest\-Ip, }
+\item[{uint}]{reserved\-Bits, }
+\item[{uint}]{protocol}
+\end{DoxyParamCaption}
+)}}\label{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}
+
+
+\-This function is used to calculate the tcp checksum. 
+
+\-To do this it needs some additional information of the \-I\-P header as parameters. 
+\begin{DoxyParams}{\-Parameters}
+{\em source\-Ip} & \-I\-P adress of the sender as integer \\
+\hline
+{\em dest\-Ip} & \-I\-P adress of the reciever as integer \\
+\hline
+{\em reserved\-Bits} & the value of the reserved bits of the \-I\-P header as integer \\
+\hline
+{\em protocol} & the protocol used to send the data as integer value \\
+\hline
+\end{DoxyParams}
 
 
 \-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}

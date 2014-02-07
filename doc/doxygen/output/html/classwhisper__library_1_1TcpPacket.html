@@ -72,6 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
       <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -79,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -102,11 +103,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">whisper_library::TcpPacket Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<!-- doxytag: class="whisper_library::TcpPacket" --><table class="memberdecls">
+<!-- doxytag: class="whisper_library::TcpPacket" -->
+<p>This class represents a tcp packet. All fields are accessable.  
+ <a href="classwhisper__library_1_1TcpPacket.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tcppacket_8hpp_source.html">tcppacket.hpp</a>&gt;</code></p>
+<table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6e80d2107091af927ded7f07ebe7764"></a><!-- doxytag: member="whisper_library::TcpPacket::TcpPacket" ref="ae6e80d2107091af927ded7f07ebe7764" args="(uint inSourcePort, uint inDestPort, ulong inSequenceNumber, ulong inAckNumber, bitset&lt; 4 &gt; inDataOffset, uint inWindowSize, vector&lt; bool &gt; inOptions)" -->
-&#160;</td><td class="memItemRight" valign="bottom"><b>TcpPacket</b> (uint inSourcePort, uint inDestPort, ulong inSequenceNumber, ulong inAckNumber, bitset&lt; 4 &gt; inDataOffset, uint inWindowSize, vector&lt; bool &gt; inOptions)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82b91f3c55a8893c49102c0cfc40a433"></a><!-- doxytag: member="whisper_library::TcpPacket::TcpPacket" ref="a82b91f3c55a8893c49102c0cfc40a433" args="()" -->
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwhisper__library_1_1TcpPacket.html#a82b91f3c55a8893c49102c0cfc40a433">TcpPacket</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">The empty constructor creates an empty tcp packet. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwhisper__library_1_1TcpPacket.html#ae6e80d2107091af927ded7f07ebe7764">TcpPacket</a> (uint inSourcePort, uint inDestPort, ulong inSequenceNumber, ulong inAckNumber, bitset&lt; 4 &gt; inDataOffset, uint inWindowSize, vector&lt; bool &gt; inOptions)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor is used to fill in some of the important fields beforehand.  <a href="#ae6e80d2107091af927ded7f07ebe7764"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a234bca8357dac29382195f9837363d0c"></a><!-- doxytag: member="whisper_library::TcpPacket::sourcePort" ref="a234bca8357dac29382195f9837363d0c" args="() const " -->
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>sourcePort</b> () const </td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7909f3bae44646ebd02930ee8e1d0fb1"></a><!-- doxytag: member="whisper_library::TcpPacket::destPort" ref="a7909f3bae44646ebd02930ee8e1d0fb1" args="() const " -->
@@ -195,9 +204,135 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setOptions</b> (vecto
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setData</b> (vector&lt; bool &gt; val)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b0a67dddb600b642b0499c4714981ea"></a><!-- doxytag: member="whisper_library::TcpPacket::setPacket" ref="a0b0a67dddb600b642b0499c4714981ea" args="(vector&lt; bool &gt; val)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setPacket</b> (vector&lt; bool &gt; val)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3461c1b760853c1e6c5e859f9a642a6d"></a><!-- doxytag: member="whisper_library::TcpPacket::calculateChecksum" ref="a3461c1b760853c1e6c5e859f9a642a6d" args="(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calculateChecksum</b> (ulong sourceIp, ulong destIp, uint reservedBits, uint protocol)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwhisper__library_1_1TcpPacket.html#a3461c1b760853c1e6c5e859f9a642a6d">calculateChecksum</a> (ulong sourceIp, ulong destIp, uint reservedBits, uint protocol)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is used to calculate the tcp checksum.  <a href="#a3461c1b760853c1e6c5e859f9a642a6d"></a><br/></td></tr>
 </table>
+<hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
+<div class="textblock"><p>This class represents a tcp packet. All fields are accessable. </p>
+</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ae6e80d2107091af927ded7f07ebe7764"></a><!-- doxytag: member="whisper_library::TcpPacket::TcpPacket" ref="ae6e80d2107091af927ded7f07ebe7764" args="(uint inSourcePort, uint inDestPort, ulong inSequenceNumber, ulong inAckNumber, bitset&lt; 4 &gt; inDataOffset, uint inWindowSize, vector&lt; bool &gt; inOptions)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwhisper__library_1_1TcpPacket.html#a82b91f3c55a8893c49102c0cfc40a433">whisper_library::TcpPacket::TcpPacket</a> </td>
+          <td>(</td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>inSourcePort</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>inDestPort</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>inSequenceNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>inAckNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bitset&lt; 4 &gt;&#160;</td>
+          <td class="paramname"><em>inDataOffset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>inWindowSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; bool &gt;&#160;</td>
+          <td class="paramname"><em>inOptions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>This constructor is used to fill in some of the important fields beforehand. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inSourcePort</td><td>the source port as integer </td></tr>
+    <tr><td class="paramname">inDestPort</td><td>the destination port as integer </td></tr>
+    <tr><td class="paramname">inSequenceNumber</td><td>the sequence number of the packet </td></tr>
+    <tr><td class="paramname">inAckNumber</td><td>the acknowladgement number of the packet </td></tr>
+    <tr><td class="paramname">inDataOffset</td><td>the length of the options field in bytes </td></tr>
+    <tr><td class="paramname">inWindowSize</td><td>the size of the packet in bytes </td></tr>
+    <tr><td class="paramname">inOptions</td><td>the options as a vector of boolean values </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a3461c1b760853c1e6c5e859f9a642a6d"></a><!-- doxytag: member="whisper_library::TcpPacket::calculateChecksum" ref="a3461c1b760853c1e6c5e859f9a642a6d" args="(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classwhisper__library_1_1TcpPacket.html#a3461c1b760853c1e6c5e859f9a642a6d">whisper_library::TcpPacket::calculateChecksum</a> </td>
+          <td>(</td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>sourceIp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>destIp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>reservedBits</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>protocol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>This function is used to calculate the tcp checksum. </p>
+<p>To do this it needs some additional information of the IP header as parameters. </p>
+<dl class="params"><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sourceIp</td><td>IP adress of the sender as integer </td></tr>
+    <tr><td class="paramname">destIp</td><td>IP adress of the reciever as integer </td></tr>
+    <tr><td class="paramname">reservedBits</td><td>the value of the reserved bits of the IP header as integer </td></tr>
+    <tr><td class="paramname">protocol</td><td>the protocol used to send the data as integer value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/home/simon/git/whisperLibrary/scm-ssi-student-whisper-library/whisperLibrary/src/<a class="el" href="tcppacket_8hpp_source.html">tcppacket.hpp</a></li>
 <li>/home/simon/git/whisperLibrary/scm-ssi-student-whisper-library/whisperLibrary/src/tcppacket.cpp</li>
@@ -208,7 +343,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>calculateChecksum</b>
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -220,7 +355,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>calculateChecksum</b>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 6 2014 12:25:41 for Whisper Library by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 6 2014 17:05:34 for Whisper Library by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

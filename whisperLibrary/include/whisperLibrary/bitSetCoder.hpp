@@ -10,23 +10,29 @@
 
 using namespace std;
 namespace whisper_library {
-	/*
-	BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a message.
-	BLOCK_LENGTH sets the length of these bit-blocks.
+	/**
+	\brief BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a message.
+	
 	To use this class, call the function 'encodeMessage' with the message as a string or 'decodeMessage' with the message-blocks in a vector.
+	\class BitSetCoder bitSetCoder.hpp
+	\tparam BLOCK_LENGTH sets the length of the bit-blocks.
 	*/
 	template <size_t BLOCK_LENGTH> class BitSetCoder {
 	public:
-		/*
-		Returns the size of a message block (number of bits).
+		/**
+			Returns the size of a message block.
+			\return the size of a message block as number of bits
 		*/
 		size_t blockLength() {
 			return BLOCK_LENGTH;
 		}
-		/*
-		encodeMessage takes a string and splits it into parts.
+		/**
+		\brief encodeMessage takes a string and splits it into parts.
+		
 		These are returned as a vector of bitsets in order. If you can't divide the bit count by BLOCK_LENGTH, the last bits are filled up with 0's.
 		The bitsets contain the binary representation of ASCI-encoded letters.
+		\param message the message to be encoded
+		\return the message as a vector of bitsets with the size of BLOCK_LENGTH
 		*/
 		vector<bitset<BLOCK_LENGTH> > encodeMessage(string message) {
 			string bit_sequence = "";
@@ -63,9 +69,11 @@ namespace whisper_library {
 			return ret_vector;
 		}
 
-		/*
+		/**
 		decodeMessage takes bit blocks and converts them to characters returned as a string.
-		The bitsets contain the binary representation of ASCI-encoded letters.
+		
+		\param vector a vector of bitsets with the bitsets containing the binary representation of ASCII-encoded letters.
+		\return the message as string
 		*/
 		string decodeMessage(vector<bitset<BLOCK_LENGTH> > vector) {
 			string bit_sequence = "";
