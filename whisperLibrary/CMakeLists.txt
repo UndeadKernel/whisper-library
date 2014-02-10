@@ -9,6 +9,7 @@ set(SOURCES
 	src/tcppacket.cpp
 	src/morseCoder.cpp
 	src/timingcovertchannel.cpp
+	src/genericpacket.cpp
 )
 
 set(HEADERS
@@ -21,6 +22,7 @@ set(HEADERS
 	src/tcppacket.hpp
 	include/whisperLibrary/morseCoder.hpp
 	include/whisperLibrary/timingcovertchannel.hpp
+	include/whisperLibrary/genericpacket.hpp
 )
 
 set(TESTS

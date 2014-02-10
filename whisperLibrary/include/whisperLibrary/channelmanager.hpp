@@ -8,6 +8,7 @@
 #include "tcpheadercovertchannel.hpp"
 #include "timingcovertchannel.hpp"
 #include <functional>
+#include <genericpacket.hpp>
 
 namespace whisper_library {
 
@@ -33,7 +34,7 @@ public:
 	// creates a valid tcp packet
 	TcpPacket getTcpPacket();
 	// Is called, when the socket receives a tcp packet of the communication
-	void packetReceived(TcpPacket packet);
+	void packetReceived(GenericPacket packet);
 	// Sends a message through the currently selected covert channel
 	void sendMessage(string message);
 	// Sets the stream, that the covert channel uses as the output for received messages

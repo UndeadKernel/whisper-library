@@ -3,7 +3,7 @@
 #define COVERT_CHANNEL
 
 #include "common.hpp"
-#include "../../src/tcppacket.hpp"
+#include <genericpacket.hpp>
 
 
 namespace whisper_library {
@@ -21,7 +21,7 @@ public:
 	// Call this function to send a message using the covert channel.
 	virtual void sendMessage(std::string message) = 0;
 	// This function is called, when a new packet arrived. The argument is a reference to this packet.
-	virtual void receiveMessage(TcpPacket& packet) = 0;
+	virtual void receiveMessage(GenericPacket& packet) = 0;
 	// Displays the name of the covert channel
 	virtual string name() = 0;
 	// Displays information about the covert channel

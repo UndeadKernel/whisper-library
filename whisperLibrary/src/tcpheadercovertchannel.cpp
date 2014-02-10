@@ -22,8 +22,10 @@ namespace whisper_library {
 		}
 	}
 
-	void TcpHeaderCovertChannel::receiveMessage(whisper_library::TcpPacket& packet) {
-		bitset<3> data = extractData(packet);
+	void TcpHeaderCovertChannel::receiveMessage(whisper_library::GenericPacket& packet) {
+		TcpPacket tcp_packet;
+		tcp_packet.setPacket(packet.content());
+		bitset<3> data = extractData(tcp_packet);
 		if (m_remaining_packets == 0) {					// no message received yet
 			m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
 			return;

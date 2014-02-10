@@ -44,7 +44,7 @@ TcpPacket ChannelManager::getTcpPacket(){
 	return TcpPacket();
 }
 
-void ChannelManager::packetReceived(TcpPacket packet) {
+void ChannelManager::packetReceived(GenericPacket packet) {
 	if (m_current_channel != NULL) {
 		m_current_channel->receiveMessage(packet);
 	}

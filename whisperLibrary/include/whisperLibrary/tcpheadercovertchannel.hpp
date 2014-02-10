@@ -5,6 +5,7 @@
 
 #include "common.hpp"
 #include "../../src/tcppacket.hpp"
+#include <genericpacket.hpp>
 #include <string>
 #include <vector>
 #include <bitset>
@@ -43,7 +44,7 @@ namespace whisper_library {
 			This function is called, when a new packet arrives at the socket. 
 			It collects them and returns the message via the callback function "m_output".
 		*/
-		void receiveMessage(TcpPacket& packet);
+		void receiveMessage(GenericPacket& packet);
 
 		// Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		string name();

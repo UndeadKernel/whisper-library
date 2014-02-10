@@ -5,6 +5,7 @@
 
 #include "covertchannel.hpp" 
 #include "../../src/tcppacket.hpp"
+#include <genericpacket.hpp>
 #include "morseCoder.hpp"
 #include <functional>
 #include <thread>
@@ -26,18 +27,19 @@ namespace whisper_library {
 
 		void sendMessage(string message);
 
-		void receiveMessage(TcpPacket& packet);
+		void receiveMessage(GenericPacket& packet);
 
 		string name();
 		string info();
 
 	private:
 		void startTimeoutTimer();
+		void sendDelays(vector<uint> delays);
 		MorseCoder m_coder;
 		function<void(string)> m_output;
 		function<void(TcpPacket)> m_send;
 		function<TcpPacket(void)> m_getPacket;
-		chrono::high_resolution_clock::time_point m_start_time;
+		chrono::high_resolution_clock::time_point m_receive_start;
 		chrono::high_resolution_clock::time_point m_timeout_end;
 		atomic<bool> m_timeout_changed;
 		vector<uint> m_received_delays;
