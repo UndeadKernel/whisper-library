@@ -21,16 +21,12 @@ namespace whisper_library {
 	public:
 		/*
 			Constructor
-			delay_short is used to encode a short signal
-			delay_long is used to encode a long signal
-			delay_letter is used to encode the end of a letter
-			delay_space is used to encode space between words
+			delay_short is used to encode a short signal (in milliseconds)
+			delay_long is used to encode a long signal (in milliseconds)
+			delay_letter is used to encode the end of a letter (in milliseconds)
+			delay_space is used to encode space between words (in milliseconds)
 		*/
 		MorseCoder(unsigned int delay_short, unsigned int delay_long, unsigned int delay_letter, unsigned int delay_space);
-
-		void displayDelays() {
-			cout << m_delay_short << " " << m_delay_long << " " << m_delay_letter << " " << m_delay_space << endl;
-		}
 
 		/*
 			encodeMessage takes a message as a string and converts it into a sequence of delays using morse.
@@ -62,13 +58,13 @@ namespace whisper_library {
 		*/
 		char decodeLetter(vector<bool> morse_code);
 
-		// Represents a short signal
+		// Represents a short signal (in milliseconds)
 		unsigned int m_delay_short;
-		// Represents a long signal
+		// Represents a long signal (in milliseconds)
 		unsigned int m_delay_long;
-		// Represents a short pause
+		// Represents a short pause (in milliseconds)
 		unsigned int m_delay_letter;
-		// Represents a long pause
+		// Represents a long pause (in milliseconds)
 		unsigned int m_delay_space;
 
 		// Contains the mapping between characters and morse.

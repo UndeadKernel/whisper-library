@@ -1,7 +1,18 @@
 #include <timingcovertchannel.hpp>
 
 namespace whisper_library {
+	string TimingCovertChannel::name() {
+		return "Timing Covert Channel";
+	}
+
+	string TimingCovertChannel::info() {
+		return "This covert channel uses inter-packet delays to transmit morse code.";
+	}
+
 	void TimingCovertChannel::sendMessage(string message) {
+		if (message.empty()) {
+			return;
+		}
 		vector<unsigned int> delays = m_coder.encodeMessage(message);
 		thread send_delays(bind(&TimingCovertChannel::sendDelays,this,delays));
 		send_delays.detach();
@@ -51,14 +62,6 @@ namespace whisper_library {
 				}
 			}
 		}
-	}
-
-	string TimingCovertChannel::name() {
-		return "Timing Covert Channel";
-	}
-
-	string TimingCovertChannel::info() {
-		return "blub";
 	}
 
 	void TimingCovertChannel::startTimeoutTimer() {

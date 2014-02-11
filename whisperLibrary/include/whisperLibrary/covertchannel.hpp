@@ -3,7 +3,7 @@
 #define COVERT_CHANNEL
 
 #include "common.hpp"
-#include <genericpacket.hpp>
+#include "genericpacket.hpp"
 
 
 namespace whisper_library {
