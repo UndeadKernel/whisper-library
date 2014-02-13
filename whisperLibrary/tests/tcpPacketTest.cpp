@@ -1,9 +1,10 @@
 #include "../src/tcppacket.hpp"
 #include <boost/test/unit_test.hpp>
 
-#include<string>
-#include<vector>
-#include<bitset>
+#include <string>
+#include <vector>
+#include <bitset>
+#include <iostream>
 
 using namespace std;
 
@@ -21,27 +22,32 @@ BOOST_FIXTURE_TEST_SUITE(tcpPacketTest, TcpPacketFixture)
 
 
 BOOST_AUTO_TEST_CASE(testIntHeaderField) {
-	dut->setDestPort(50);
-	BOOST_CHECK_EQUAL(dut->destPort(), 50);
-
+	vector<bool> packet = dut->packet();
+	dut->setDestPort(32);
+	BOOST_CHECK_EQUAL(dut->destPort(), 32);
+	packet = dut->packet();
+	BOOST_CHECK_EQUAL(packet[26], 1);
+	dut->setDestPort(8080);
+	BOOST_CHECK_EQUAL(dut->destPort(), 8080);
 }
 
 
 BOOST_AUTO_TEST_CASE(testBoolHeaderFields) {
 	dut->setUrgentFlag(true);
-	BOOST_CHECK_EQUAL(dut->urgentFlag(), true);
+	bitset<9> ret = dut->flags();
+	BOOST_CHECK_EQUAL(ret[3], true);
 } 
 
 BOOST_AUTO_TEST_CASE(testBitsetHeaderFields) {
-	std::bitset<3> inbit (std::string("101"));
+	std::bitset<3> inbit (std::string("100"));
 	dut->setReserved(inbit);
 	std::bitset<3> retbit = dut->reserved();
 	std::string retstring = retbit.to_string();
-	BOOST_CHECK_EQUAL(retstring, std::string("101"));
-}
-
-BOOST_AUTO_TEST_CASE(testPrivateFunctions) {
-
+	BOOST_CHECK_EQUAL(retstring, std::string("100"));
+	vector<bool> packet = dut->packet();
+	BOOST_CHECK_EQUAL(packet[100], 0);
+	BOOST_CHECK_EQUAL(packet[101], 0);
+	BOOST_CHECK_EQUAL(packet[102], 1);
 }
 
 BOOST_AUTO_TEST_CASE(testPacketGeneration) {

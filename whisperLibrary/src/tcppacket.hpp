@@ -130,7 +130,7 @@ private:
      * \return A vector of booleans with a binary representation of the value
      * \tparam T The type of the value to be converted
      */
-    template <class T> vector<bool> intToBoolVector(T val);
+    template <class T> vector<bool> intToBoolVector(T val, int size);
 
     /** 
 		\brief This function uses the one complement addition to add two 16 bit boolean vectors.

@@ -271,18 +271,20 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 	*/
 	vector<vector<bool> > split;
 	split = splitHeaderTo16Bit();
+	
+	
 	for (int i = 0; i < split.size(); i++){
 		sum = oneComplementAdd(sum, split[i]);
 	}
 	// split the source IP into 16bit values and add them to the sum
-	vector<bool> temp (intToBoolVector(sourceIp));
+	vector<bool> temp (intToBoolVector(sourceIp, 32));
 	reverse(temp.begin(), temp.end());
 	split = split32BitVector(temp);
 	for (int i = 0; i < split.size(); i++){
 		sum = oneComplementAdd(sum, split[i]);
 	}
 	// split the destination IP into 16bit values and add them to the sum
-	temp = intToBoolVector(destIp);
+	temp = intToBoolVector(destIp, 32);
 	reverse(temp.begin(), temp.end());
 	split = split32BitVector(temp);
 	for (int i = 0; i < split.size(); i++){
@@ -293,16 +295,16 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 		the protocol used and the size of the tcp packet in bytes into a
 		new vector, split it into 16bit values and add them to the sum
 	*/ 
-	vector<bool> combine (intToBoolVector(reservedBits));
+	vector<bool> combine (intToBoolVector(reservedBits, 4));
 	reverse(combine.begin(), combine.end());
 	combine = trimBigEndianVector(combine, 8);
-	temp = intToBoolVector(protocol);
+	temp = intToBoolVector(protocol, 4);
 	reverse(temp.begin(), temp.end());
 	temp = trimBigEndianVector(temp, 8);
 	for (int i = 0; i < temp.size(); i++){
 		combine.push_back(temp[i]);
 	}
-    vector<bool> temp2(intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8));
+    vector<bool> temp2(intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
     reverse(temp2.begin(), temp2.end());
     temp2 = (trimBigEndianVector(temp2, 16));
     for (int i = 0; i < temp2.size(); i++){
@@ -331,20 +333,24 @@ ulong TcpPacket::vectorToULong(int start, int end, const vector<bool> &vec) cons
 	int ret = 0;
 	for (int i = start; i <= end; i++){
 		if 	(vec[i])
-            ret += 1 << (end -i);
+            ret += (1 << (end-i));
 	}
 	return ret;
 }
      
 template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
-    vector<bool> ins (intToBoolVector(val));
+    vector<bool> ins (intToBoolVector(val, (end - start + 1)));
 	for (int i = end; i >= start; i--){
 		vec[i] = ins[end-i];
 	}
 }
     
-template <class T> vector<bool> TcpPacket::intToBoolVector(T val){
+template <class T> vector<bool> TcpPacket::intToBoolVector(T val, int size){
     vector<bool> ret;
+    if (val < 0){
+		ret = vector<bool>(size,false);
+		return ret;
+	}
     for(int i = 0; i<32; i++){
         if (val % 2 == 1){
             ret.push_back(true);
@@ -447,6 +453,10 @@ vector<bool> TcpPacket::trimBigEndianVector(vector<bool> vec, int size){
 	for (int i = vec.size()-size; i < vec.size(); i++){
 		ret.push_back(vec[i]);
 	}
+	if (ret.size() < size)
+		vec.resize(size);
+	
 	return ret;
 }
+
 } //whisper_library

@@ -27,6 +27,7 @@ set(TESTS
 	tests/tcpHeaderCovertChannelTest.cpp
 	tests/bitSetCoderTest.cpp
 	tests/morseCoderTest.cpp
+	tests/tcpPacketTestWrapper.hpp
 )
 
 # Boost library
