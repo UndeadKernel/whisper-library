@@ -266,66 +266,54 @@ void TcpPacket::setPacket(vector<bool> val){
 void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
     vector<bool> sum;
 	/* 
-		split the tcp packet into 16bit values and add all of them up
-		using the one complement addition
+		split the tcp packet into 16bit values and add them to 
+		a vector.
 	*/
 	vector<vector<bool> > split;
 	split = splitHeaderTo16Bit();
 	
-	
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
-	}
 	// split the source IP into 16bit values and add them to the sum
-	vector<bool> temp (intToBoolVector(sourceIp, 32));
-	reverse(temp.begin(), temp.end());
-	split = split32BitVector(temp);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
+	vector<bool> vec (intToBoolVector(sourceIp, 32));
+	reverse(vec.begin(), vec.end());
+	vector< vector<bool> > temp = split32BitVector(vec);
+	for (vector< vector<bool> >::iterator it = temp.begin(); it != temp.end(); it++){
+		split.push_back(*it);
 	}
+	
 	// split the destination IP into 16bit values and add them to the sum
-	temp = intToBoolVector(destIp, 32);
-	reverse(temp.begin(), temp.end());
-	split = split32BitVector(temp);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
-	}
-	/*
-		combine the remaining values for the IP headers reserved bits, 
-		the protocol used and the size of the tcp packet in bytes into a
-		new vector, split it into 16bit values and add them to the sum
-	*/ 
-	vector<bool> combine (intToBoolVector(reservedBits, 4));
+	vec = intToBoolVector(destIp, 32);
+	reverse(vec.begin(), vec.end());
+	temp = split32BitVector(vec);
+	for (vector< vector<bool> >::iterator it = temp.begin(); it != temp.end(); it++){
+		split.push_back(*it);
+	} 
+	
+	// combine reserved bits and protocoll
+	vector<bool> combine (intToBoolVector(reservedBits, 8));
 	reverse(combine.begin(), combine.end());
 	combine = trimBigEndianVector(combine, 8);
-	temp = intToBoolVector(protocol, 4);
+	temp = intToBoolVector(protocol, 8);
 	reverse(temp.begin(), temp.end());
 	temp = trimBigEndianVector(temp, 8);
-	for (int i = 0; i < temp.size(); i++){
-		combine.push_back(temp[i]);
+	for (vector<bool>::iterator it = temp.begin(); it != temp.end(); it++){
+		combine.push_back(*it);
 	}
-    vector<bool> temp2(intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
-    reverse(temp2.begin(), temp2.end());
-    temp2 = (trimBigEndianVector(temp2, 16));
-    for (int i = 0; i < temp2.size(); i++){
-        combine.push_back(temp2[i]);
+	split.push_back(combine);
+	
+	// calculate tcp packet size in bytes and add it to the vector
+    vector<bool> temp(intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
+    reverse(temp.begin(), temp.end());
+    temp = (trimBigEndianVector(temp, 16));
+	split.push_back(temp);
+	
+	// ones complement add all the values to the sum
+	for (vector<bool>::iterator it = split.begin(); it != split.end(); it++){
+		sum = oneComplementAdd(sum, *it);
 	}
-	split = split32BitVector(combine);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
-	}
-	// if the resulting sum vector exeeds 16 bits add the exeeding bits as carry to the sum
-    if (sum.size()>16){
-        vector<bool> remainder;
-        for (int i = 0; i < 16; i++){
-            remainder.push_back(sum.back());
-            sum.pop_back();
-        }
-        sum = oneComplementAdd(sum,remainder);
-    }
+
     // compute the one complement of the sum and store it as the new checksum
     sum.flip();
-    setChecksum(vectorToULong(0, sum.size()-1, sum));
+    setChecksum(vectorToULong(128, 143, sum));
 }
 	
     
@@ -366,6 +354,8 @@ vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
     // convert the vectors to little endian to make the addition easier
     reverse(vec1.begin(), vec1.end());
     reverse(vec2.begin(), vec2.end());
+    vec1.resize(16);
+    vec2.resize(16);
     vector<bool> result;
 	bool carry = false;
 	int sum = 0;
