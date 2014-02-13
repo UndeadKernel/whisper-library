@@ -130,7 +130,7 @@ private:
      * \return A vector of booleans with a binary representation of the value
      * \tparam T The type of the value to be converted
      */
-    template <class T> vector<bool> intToBoolVector(T val, int size);
+    template <class T> vector<bool> intToBoolVector(T val, uint size);
 
     /** 
 		\brief This function uses the one complement addition to add two 16 bit boolean vectors.
@@ -159,7 +159,7 @@ private:
      * \param size The new size of the vector.
      * \return The vector trimmed to the given size.
      */
-	vector<bool> trimBigEndianVector(vector<bool> vec, int size);
+	vector<bool> trimBigEndianVector(vector<bool> vec, uint size);
 
 
 	vector<bool> m_header;
