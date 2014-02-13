@@ -292,28 +292,28 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 	vector<bool> combine (intToBoolVector(reservedBits, 8));
 	reverse(combine.begin(), combine.end());
 	combine = trimBigEndianVector(combine, 8);
-	temp = intToBoolVector(protocol, 8);
-	reverse(temp.begin(), temp.end());
-	temp = trimBigEndianVector(temp, 8);
-	for (vector<bool>::iterator it = temp.begin(); it != temp.end(); it++){
+	vec = intToBoolVector(protocol, 8);
+	reverse(vec.begin(), vec.end());
+	vec = trimBigEndianVector(vec, 8);
+	for (vector<bool>::iterator it = vec.begin(); it != vec.end(); it++){
 		combine.push_back(*it);
 	}
 	split.push_back(combine);
 	
 	// calculate tcp packet size in bytes and add it to the vector
-    vector<bool> temp(intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
-    reverse(temp.begin(), temp.end());
-    temp = (trimBigEndianVector(temp, 16));
-	split.push_back(temp);
+    vec = (intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
+    reverse(vec.begin(), vec.end());
+    vec = (trimBigEndianVector(vec, 16));
+	split.push_back(vec);
 	
 	// ones complement add all the values to the sum
-	for (vector<bool>::iterator it = split.begin(); it != split.end(); it++){
+	for (vector< vector<bool> >::iterator it = split.begin(); it != split.end(); it++){
 		sum = oneComplementAdd(sum, *it);
 	}
 
     // compute the one complement of the sum and store it as the new checksum
     sum.flip();
-    setChecksum(vectorToULong(128, 143, sum));
+    setChecksum(vectorToULong(0, (sum.size()-1), sum));
 }
 	
     
@@ -339,7 +339,7 @@ template <class T> vector<bool> TcpPacket::intToBoolVector(T val, int size){
 		ret = vector<bool>(size,false);
 		return ret;
 	}
-    for(int i = 0; i<32; i++){
+    for(int i = 0; i<size; i++){
         if (val % 2 == 1){
             ret.push_back(true);
         }
@@ -354,8 +354,8 @@ vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
     // convert the vectors to little endian to make the addition easier
     reverse(vec1.begin(), vec1.end());
     reverse(vec2.begin(), vec2.end());
-    vec1.resize(16);
-    vec2.resize(16);
+    vec1.resize(16, false);
+    vec2.resize(16, false);
     vector<bool> result;
 	bool carry = false;
 	int sum = 0;

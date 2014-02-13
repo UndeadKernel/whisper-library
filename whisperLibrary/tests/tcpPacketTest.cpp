@@ -51,7 +51,15 @@ BOOST_AUTO_TEST_CASE(testBitsetHeaderFields) {
 }
 
 BOOST_AUTO_TEST_CASE(testPacketGeneration) {
-	
+	dut->setSourcePort(1645);
+	dut->setDestPort(80);
+	dut->setSequenceNumber(1);
+	dut->setAcknowlageNumber(1);
+	dut->setDataOffset(bitset<4> ("1010"));
+	dut->setSynchronisationFlag(1);
+	dut->setWindowSize(128);
+    dut->calculateChecksum(3225692929, 179307042, 0, 6);
+    BOOST_CHECK_EQUAL(dut->checksum(), 45196);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
