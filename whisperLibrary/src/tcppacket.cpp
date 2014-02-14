@@ -29,6 +29,9 @@ TcpPacket::TcpPacket(	uint inSourcePort,
     setOptions(inOptions);
 }
 	
+	TcpPacket::TcpPacket(vector<bool> packet){
+		setPacket(packet);
+	}
 /* 	
 	Locations of the header informations:
 	0-15 Source port, 16-31 Destination port

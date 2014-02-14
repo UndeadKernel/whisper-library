@@ -27,13 +27,13 @@ public:
 	
     /**
      * \brief This constructor is used to fill in some of the important fields beforehand.
-     * \param inSourcePort the source port as integer
-     * \param inDestPort the destination port as integer
-     * \param inSequenceNumber the sequence number of the packet
-     * \param inAckNumber the acknowladgement number of the packet
-     * \param inDataOffset the length of the options field in bytes
-     * \param inWindowSize the size of the packet in bytes
-     * \param inOptions the options as a vector of boolean values
+     * \param inSourcePort The source port as integer. Max value 2^16.
+     * \param inDestPort The destination port as integer. Max value 2^16.
+     * \param inSequenceNumber The sequence number of the packet. Max value 2^32.
+     * \param inAckNumber The acknowladgement number of the packet. Max value 2^32.
+     * \param inDataOffset The length of the options field in bytes. Max value 2^4.
+     * \param inWindowSize The size of the packet in bytes. Max value 2^16.
+     * \param inOptions The options as a vector of boolean values. Max size .
      */
     TcpPacket(uint inSourcePort, 
 				uint inDestPort, 
@@ -67,28 +67,98 @@ public:
     vector<bool> packet() const;
     vector<bool> data() const;
 
+    /** 
+     * \brief Create a packet based of a given boolean vector.
+     * \param packet The packet to convert.
+     */
+    TcpPacket(vector<bool> packet);
+    
     // start of the setters
+    /** \param val The port that is used to send the packet. \n
+     * 	Max value is 2^16.
+     */  
 	void setSourcePort(uint val);
+	/** \param val The port at which the packet is recieved. \n
+     * 	Max value is 2^16.
+     */
 	void setDestPort(uint val);
+	/** \param val The sequence number of the packet. \n
+     * 	- If the syn flag is set this is the initial sequence number. And the actual first sequence number and
+     *  acknowledgement number are this number + 1.\n
+     * 	- Else this is the accumulated sequence number of all the data packets based on the initial sequence number.
+     */
 	void setSequenceNumber(ulong val);
+	/** \param val The acknowledgement number of the packet. \n
+     * 	If the acknowledgement number is set, this is the next packet the reciever is expecting.\n
+     *  All packets prior the acknowledgement number have been recieved.\n
+     * 	The first ACK sent by each end acknowledges the initial sequence number, but no data.
+     */
 	void setAcknowlageNumber(ulong val);
+	/** \param val The size of the tcp header in 32-bit words. \n
+	 *  The smallest size without options is 5.\n
+	 * 	The maximum size is 15.
+     */
 	void setDataOffset(bitset<4> val);
+	/** \param val The reserved bits of the tcp header.
+     */
 	void setReserved(bitset<3> val);
+    /** \param val Set all the flags of the tcp header with one bitset.
+     */
     void setFlags(bitset<9> val);
+    /** \param val ECN-nounce concealment protection. (RFC 3540)
+     */
     void setNonceSumFlag(bool val);
+    /** \param val This flag is set by the sending host to indicate that it recieved a
+     * 	TCP segment with the ECE flag set and had responded in congestion control
+     * 	mechanism. (RFC 3168)
+     */
     void setCongestionWindowReducedFlag(bool val);
+    /** \param val - If the SYN flag is set, the TCP peer is ECN capable.\n
+     * 	- If the SYN flag is clear, that a packet with Congestion Experienced flag in the IP header
+     * 	set is recieved during normal transmission (RFC 3168).
+     */
     void setEcnEchoFlag(bool val);
+    /** \param val Indicates, that the urgent pointer field is significant.
+     */
     void setUrgentFlag(bool val);
+    /** \param val Indicates, that the acknowledgement field is significant.\n
+     * 	All packets after the initial SYN packet sent by the client should have this flag set.
+     */
     void setAcknowledgementFlag(bool val);
+    /** \param val Asks to push the buffered data to the recieving application.
+     */
     void setPushFlag(bool val);
+    /** \param val Reset the connection.
+     */
     void setResetFlag(bool val);
+    /** \param val Synchronize sequence numbers. Only the first packet sent from each end
+     * 	should have this flag set. Some other flags change the meaning based on this flag
+     * 	and some are only valid for when it is set and others when it´s clear.
+     */
     void setSynchronisationFlag(bool val);
+    /** \param val No more data from sender.
+     */
     void setFinishFlag(bool val);
+	/** \param val The size of the recieve window, which specifies the number of 
+	 * 	window size units (by default, bytes) (beyond the sequence number in the acknowledgement field)
+	 * 	that the sender of this segment is currently willing to recieve.
+     */
 	void setWindowSize(uint val);
+	/** \param val The 16-bit checksum field is used for error checking of the header and data.
+     */
 	void setChecksum(uint val);
+    /** \param val If the URG flag is set, then this 16-bit field is an offset from the sequence number indicating
+     * 	the last urgent data byte.
+     */
     void setUrgentPointer(uint val);
+    /** \param val A set of options. The size has to be dividable by 32.
+     */
     void setOptions(vector<bool> val);
+    /** \param val Set the data of the packet.
+     */
     void setData(vector<bool> val);
+    /** \param val Convert a boolean vector into the packet object.
+     */
     void setPacket(vector<bool> val);
         
     // other public functions
