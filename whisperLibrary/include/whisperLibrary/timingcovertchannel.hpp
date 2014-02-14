@@ -96,6 +96,7 @@ namespace whisper_library {
 		// delay_short is used to encode a short signal (in milliseconds)
 		const unsigned int m_delay_short = 100;
 
+		// delay_long is used to encode a long signal (in milliseconds)
 		const unsigned int m_delay_long = 300;
 
 		// delay_letter is used to encode the end of a letter (in milliseconds)
