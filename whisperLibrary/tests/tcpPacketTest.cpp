@@ -60,6 +60,9 @@ BOOST_AUTO_TEST_CASE(testPacketGeneration) {
 	dut->setWindowSize(128);
     dut->calculateChecksum(3225692929, 179307042, 0, 6);
     BOOST_CHECK_EQUAL(dut->checksum(), 45196);
+    vector<bool> packet(dut->packet());
+    whisper_library::TcpPacket test(packet);
+    BOOST_CHECK_EQUAL(test.checksum(), 45196);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

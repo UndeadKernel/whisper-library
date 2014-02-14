@@ -251,18 +251,23 @@ void TcpPacket::setData(vector<bool> val){
 }
 // packet
 void TcpPacket::setPacket(vector<bool> val){
-	for (int i = 0; i < 160; i++){
-		m_header[i] = val[i];
-	}
-	int offset = dataOffset().to_ulong();
-	int lengthopt = (offset*8) - 160;
-	m_options.empty();
-	for (int i = 160; i < lengthopt+160; i++){
-		m_options.push_back(val[i]);
-	} 
-	m_data.empty();
-	for (uint i = lengthopt + 160; i < val.size(); i++){
-		m_data.push_back(val[i]);
+	if (val.size() >= 160) {
+        m_header.empty();
+        for (int i = 0; i < 160; i++){
+            m_header.push_back(val[i]);
+		}
+        int offset = vectorToULong(96, 99, m_header);
+		int lengthopt = (offset*32) - 160;
+		if (offset > 5){
+			m_options.empty();
+			for (int i = 160; i < lengthopt+160; i++){
+				m_options.push_back(val[i]);
+			} 
+		}
+		m_data.empty();
+		for (int i = lengthopt + 160; i < val.size(); i++){
+			m_data.push_back(val[i]);
+		}
 	}
 }
     

@@ -21,7 +21,8 @@ class TcpPacket {
 
 public:
     /** 
-     * \brief The empty constructor creates an empty tcp packet.
+     * \brief The empty constructor creates an empty tcp packet. Keep in mind that
+     * 	all information that is passed in binary format uses big endian notation.
      */
     TcpPacket();
 	
@@ -100,6 +101,7 @@ public:
      */
 	void setDataOffset(bitset<4> val);
 	/** \param val The reserved bits of the tcp header.
+	 * 	Keep in mind that this is, like all information in the header, in big endian notation.
      */
 	void setReserved(bitset<3> val);
     /** \param val Set all the flags of the tcp header with one bitset.
