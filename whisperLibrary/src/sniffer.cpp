@@ -243,7 +243,7 @@ namespace whisper_library {
 		return applyFilter(adapter_id, NULL);
 	}
 
-	Sniffer::PcapPacket Sniffer::getPackage(unsigned int adapter_id) {
+	Sniffer::PcapPacket Sniffer::retrievePacket(unsigned int adapter_id) {
 		PcapPacket packet = { NULL, NULL };
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
@@ -255,44 +255,44 @@ namespace whisper_library {
 				bpf_u_int32		caplen;
 				bpf_u_int32		len;
 		*/
-		struct pcap_pkthdr 	package_header;
-		const u_char*		package_data;
+		struct pcap_pkthdr 	packet_header;
+		const u_char*		packet_data;
 		pcap_t*				handle = NULL;
 		if (m_adapter_handles.size() > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
 		if (!handle) {
-			fprintf(stderr, "Error: getPackage() called on unopened adapter.\n");
+			fprintf(stderr, "Error: retrievePacket() called on unopened adapter.\n");
 			RETURN_VALUE(RC(ACCESS_ON_UNOPENED_HANDLE), packet);
 		}
 		/* Note: 
-			packageData can contain NULL if
+			packet_data can contain NULL if
 			1. an error occured
 			2. no packets were read from live capture (read timeout)
 			3. no packet passed the filter
 			Quote from winpcap doc: "Unfortunately, there is no way to determine whether an error occured or not."
 			( http://www.winpcap.org/docs/docs_412/html/group__wpcapfunc.html#gadf60257f650aaf869671e0a163611fc3 )
 		*/
-		package_data  = pcap_next(handle, &package_header); // returns pointer to the package data (pcap header not included)
-		packet.header = package_header;
-		DEBUG(3, "Package data: %d - length: %d\n", (package_data ? reinterpret_cast<const unsigned int*>(package_data) : 0), package_header.len);
-		if (package_data) {
-			packet.payload = package_data;
+		packet_data  = pcap_next(handle, &packet_header); // returns pointer to the packet data (pcap header not included)
+		packet.header = packet_header;
+		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header.len);
+		if (packet_data) {
+			packet.payload = packet_data;
 			RETURN_VALUE(RC(NORMAL_EXECUTION), packet);
 		} else {
-			RETURN_VALUE(RC(EMPTY_PACKAGE_DATA), packet);
+			RETURN_VALUE(RC(EMPTY_PACKET_DATA), packet);
 		}
 	}
 
-	Sniffer::PcapPacket Sniffer::getPackage(char* adapter_name) {
-		return getPackage(adapterId(adapter_name, ADAPTER_NAME));
+	Sniffer::PcapPacket Sniffer::retrievePacket(char* adapter_name) {
+		return retrievePacket(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
-	std::vector<bool> Sniffer::getPackageAsVector(unsigned int adapter_id) {
+	std::vector<bool> Sniffer::retrievePacketAsVector(unsigned int adapter_id) {
 		std::vector<bool> bitVector;
-		PcapPacket packet			= getPackage(adapter_id);
+		PcapPacket packet			= retrievePacket(adapter_id);
 		if (packet.payload == NULL) {
-			RETURN_VALUE(RC(EMPTY_PACKAGE_DATA), bitVector);
+			RETURN_VALUE(RC(EMPTY_PACKET_DATA), bitVector);
 		}
 		unsigned int packet_size	= packet.header.len;
 		const unsigned char* it		= packet.payload;
@@ -307,8 +307,8 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), bitVector);
 	}
 
-	std::vector<bool> Sniffer::getPackageAsVector(char* adapter_name) {
-		return getPackageAsVector(adapterId(adapter_name, ADAPTER_NAME));
+	std::vector<bool> Sniffer::retrievePacketAsVector(char* adapter_name) {
+		return retrievePacketAsVector(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
 	char* Sniffer::ipToString(struct sockaddr* socket_address, char* buffer, size_t buffer_length) {
