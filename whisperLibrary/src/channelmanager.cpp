@@ -7,11 +7,11 @@ namespace whisper_library {
 ChannelManager::ChannelManager(){
 	m_socket = new SocketConnector(this);
 
-	using namespace std::placeholders;
 	// TcpHeaderCovertChannel
 	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 										   std::bind(&SocketConnector::sendTcpPacket, m_socket, std::placeholders::_1),
 										   std::bind(&ChannelManager::getTcpPacket, this))));
+	// TimingChannel
 	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 									   std::bind(&SocketConnector::sendUdpPacket, m_socket, std::placeholders::_1),
 									   std::bind(&ChannelManager::getUdpPacket, this)));
@@ -57,7 +57,6 @@ void ChannelManager::packetReceived(GenericPacket packet) {
 void ChannelManager::selectChannel(unsigned int index) {
 	if (index >= 0 && index < m_channels.size()) {
 		m_current_channel = m_channels[index];
-		cout << m_current_channel->name() << " selected." << endl;
 	}
 }
 

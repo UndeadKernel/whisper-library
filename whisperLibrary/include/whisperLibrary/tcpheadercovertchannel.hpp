@@ -5,7 +5,7 @@
 
 #include "common.hpp"
 #include "../../src/tcppacket.hpp"
-#include <genericpacket.hpp>
+#include "genericpacket.hpp"
 #include <string>
 #include <vector>
 #include <bitset>
