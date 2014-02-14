@@ -84,7 +84,7 @@ namespace whisper_library {
 
 			enum RC{
 				NORMAL_EXECUTION			= 0,
-				EMPTY_PACKAGE_DATA			= 1,
+				EMPTY_PACKET_DATA			= 1,
 				CLOSE_ON_UNOPENED_HANDLE	= 2,
 				NO_ADAPTERS_FOUND			= 255,
 				UNSPECIFIED_ERROR_OCCURED	= -1,
@@ -146,10 +146,10 @@ namespace whisper_library {
 				\brief Opens a live capture handle to the given device
 				\param char*	adapterName		- Name of the adapter (pcap_if_t->name) to open
 				\param int		maxPacketSize	- Maximum number of bytes that should be captured from each packet. 
-				65535 is enough for the whole package in most networks.
+				65535 is enough for the whole packet in most networks.
 				\param int		promiscuous 	- Open in promiscuous mode? 0: No, 1: Yes (PCAP_OPENFLAG_PROMISCUOUS).
-				promiscuous mode: capture all packages
-				non-promiscuous:  capture only packages directed to the application
+				promiscuous mode: capture all packets
+				non-promiscuous:  capture only packets directed to the application
 				\return 0 - normal execution,
 				-1 - Error occured
 			*/
@@ -183,23 +183,23 @@ namespace whisper_library {
 			int									removeFilter	(char* adapter_name);
 
 			/**
-			\fn const u_char* getPackage(unsigned int adapter_id)
-			\brief Retrieves the next package from the capture device
+			\fn const u_char* retrievePacket(unsigned int adapter_id)
+			\brief Retrieves the next packet from the capture device
 			\return PcapPacket{NULL, NULL} if adapter was not found or if the specified adapter had no open handle \n
-			or PcapPacket{pcap_pkthdr, NULL} if no package passed through the configured filter\n
-			or PcapPacket{pcap_pkthdr, NULL} if no package arrived in a system dependent time window (timeout)\n
+			or PcapPacket{pcap_pkthdr, NULL} if no packet passed through the configured filter\n
+			or PcapPacket{pcap_pkthdr, NULL} if no packet arrived in a system dependent time window (timeout)\n
 			or PcapPacket{pcap_pkthdr, const u_char*} where  const u_char* is the pointer to the packet data with the maximum size configured in openAdapter()
 			*/
-			PcapPacket							getPackage(unsigned int adapter_id);
-			PcapPacket							getPackage(char* adapter_name);
+			PcapPacket							retrievePacket(unsigned int adapter_id);
+			PcapPacket							retrievePacket(char* adapter_name);
 
 			/**
-			\fn std::vector<bool> getPackageAsVector(unsigned int adapter_id)
-			\brief Calls getPackage(adapter_id) and converts the retrieved packet payload in a std::vector<bool>
-			\return bitwise representation of the packet payload from getPackage() as a std::vector<bool> 
+			\fn std::vector<bool> retrievePacketAsVector(unsigned int adapter_id)
+			\brief Calls retrievePacket(adapter_id) and converts the retrieved packet payload in a std::vector<bool>
+			\return bitwise representation of the packet payload from retrievePacket() as a std::vector<bool> 
 			*/
-			std::vector<bool>					getPackageAsVector	(unsigned int adapter_id);
-			std::vector<bool>					getPackageAsVector	(char* adapter_name);
+			std::vector<bool>					retrievePacketAsVector	(unsigned int adapter_id);
+			std::vector<bool>					retrievePacketAsVector	(char* adapter_name);
 
 
 	protected:
