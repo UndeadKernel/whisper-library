@@ -9,6 +9,7 @@
 #include "timingcovertchannel.hpp"
 #include <functional>
 #include <genericpacket.hpp>
+#include <udppacket.hpp>
 
 namespace whisper_library {
 
@@ -33,6 +34,8 @@ public:
 	void outputMessage(std::string message);
 	// creates a valid tcp packet
 	TcpPacket getTcpPacket();
+	UdpPacket getUdpPacket();
+
 	// Is called, when the socket receives a tcp packet of the communication
 	void packetReceived(GenericPacket packet);
 	// Sends a message through the currently selected covert channel

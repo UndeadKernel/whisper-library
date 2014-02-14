@@ -4,19 +4,19 @@
 #define TIMING_COVERT_CHANNEL
 
 #include "covertchannel.hpp" 
-#include "../../src/tcppacket.hpp"
 #include <genericpacket.hpp>
 #include "morseCoder.hpp"
 #include <functional>
 #include <thread>
 #include <atomic>
+#include <udppacket.hpp>
 
 using namespace std;
 
 namespace whisper_library {
 	class TimingCovertChannel : public CovertChannel {
 	public:
-		TimingCovertChannel(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket)
+		TimingCovertChannel(function<void(string)> output, function<void(UdpPacket)> send, function<UdpPacket(void)> getPacket)
 			: CovertChannel(),
 			m_output(output),
 			m_send(send),
@@ -34,20 +34,20 @@ namespace whisper_library {
 
 	private:
 		void startTimeoutTimer();
-		void sendDelays(vector<uint> delays);
+		void sendDelays(vector<unsigned int> delays);
 		MorseCoder m_coder;
 		function<void(string)> m_output;
-		function<void(TcpPacket)> m_send;
-		function<TcpPacket(void)> m_getPacket;
+		function<void(UdpPacket)> m_send;
+		function<UdpPacket(void)> m_getPacket;
 		chrono::high_resolution_clock::time_point m_receive_start;
 		chrono::high_resolution_clock::time_point m_timeout_end;
 		atomic<bool> m_timeout_changed;
-		vector<uint> m_received_delays;
+		vector<unsigned int> m_received_delays;
 		std::atomic<bool> m_receiving;
-		const uint m_delay_short = 100;
-		const uint m_delay_long = 300;
-		const uint m_delay_letter = 500;
-		const uint m_delay_space = 700;
+		const unsigned int m_delay_short = 100;
+		const unsigned int m_delay_long = 300;
+		const unsigned int m_delay_letter = 500;
+		const unsigned int m_delay_space = 700;
 	};
 }
 

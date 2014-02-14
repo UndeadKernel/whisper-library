@@ -7,12 +7,12 @@ namespace whisper_library {
 		send_delays.detach();
 	}
 
-	void TimingCovertChannel::sendDelays(vector<uint> delays) {
+	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
 		chrono::high_resolution_clock::time_point sending_time;
 		m_send(m_getPacket());
 		chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
-			TcpPacket packet = m_getPacket();
+			UdpPacket packet = m_getPacket();
 			sending_time = start + chrono::milliseconds(*it);
 			this_thread::sleep_until(sending_time);
 			m_send(packet);
@@ -31,9 +31,9 @@ namespace whisper_library {
 		}
 		else {
 			chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-			chrono::duration<uint, milli> time_elapsed = chrono::duration_cast<chrono::duration<uint, milli>>(end - m_receive_start);
+			chrono::duration<unsigned int, milli> time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
-			uint delay = time_elapsed.count();
+			unsigned int delay = time_elapsed.count();
 			if (delay < m_delay_long) {
 				m_received_delays.push_back(m_delay_short);
 			}

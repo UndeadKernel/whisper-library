@@ -12,9 +12,8 @@ public:
 	SocketConnector(ChannelManager * channelmanager)
 		: m_channelmanager(channelmanager) {};
 	void openConnection(int protokoll);
-	void sendPacket(TcpPacket packet);
-	//void send(TcpPackage package);
-	//void send(UdpPackage package);
+	void sendTcpPacket(TcpPacket packet);
+	void sendUdpPacket(UdpPacket packet);
 private:
 	ChannelManager* m_channelmanager;
 };

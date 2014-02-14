@@ -10,11 +10,11 @@ ChannelManager::ChannelManager(){
 	using namespace std::placeholders;
 	// TcpHeaderCovertChannel
 	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-										   std::bind(&SocketConnector::sendPacket, m_socket, std::placeholders::_1),
+										   std::bind(&SocketConnector::sendTcpPacket, m_socket, std::placeholders::_1),
 										   std::bind(&ChannelManager::getTcpPacket, this))));
 	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-									   std::bind(&SocketConnector::sendPacket, m_socket, std::placeholders::_1),
-									   std::bind(&ChannelManager::getTcpPacket, this)));
+									   std::bind(&SocketConnector::sendUdpPacket, m_socket, std::placeholders::_1),
+									   std::bind(&ChannelManager::getUdpPacket, this)));
 	m_current_channel = m_channels[0];
 }
 ChannelManager::~ChannelManager() {
@@ -42,6 +42,10 @@ void ChannelManager::sendMessage(string message) {
 
 TcpPacket ChannelManager::getTcpPacket(){
 	return TcpPacket();
+}
+
+UdpPacket ChannelManager::getUdpPacket() {
+	return UdpPacket();
 }
 
 void ChannelManager::packetReceived(GenericPacket packet) {
