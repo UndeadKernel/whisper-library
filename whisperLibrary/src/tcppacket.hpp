@@ -16,6 +16,11 @@ namespace whisper_library {
 
 /** 
  * \brief This class represents a tcp packet. All fields are accessable.
+ * 	
+ * 	All the different fields of the TCP packet can be accessed using getter and setter 
+ * 	methods. To make the TCP packet valid, you must invoke calculate checksum first, after
+ * 	setting all the fields. Keep in mind that
+ * 	all information that is passed in binary format uses big endian notation.
  */
 class TcpPacket {
 
@@ -104,14 +109,16 @@ public:
 	 * 	Keep in mind that this is, like all information in the header, in big endian notation.
      */
 	void setReserved(bitset<3> val);
-    /** \param val Set all the flags of the tcp header with one bitset.
+    /** \param val Set all the flags of the tcp header with one bitset.\n
+     * 	Their order is: NS, CWR, ECN, URG, ACK, PSH, SYN, FIN.
+     * 	For more detailed information see the corresponding setters.
      */
     void setFlags(bitset<9> val);
     /** \param val ECN-nounce concealment protection. (RFC 3540)
      */
     void setNonceSumFlag(bool val);
-    /** \param val This flag is set by the sending host to indicate that it recieved a
-     * 	TCP segment with the ECE flag set and had responded in congestion control
+    /** \param val This flag is set by the sending host, to indicate that it recieved a
+     * 	TCP segment with the ECE flag set and that it responded using a congestion control
      * 	mechanism. (RFC 3168)
      */
     void setCongestionWindowReducedFlag(bool val);
@@ -233,9 +240,17 @@ private:
      */
 	vector<bool> trimBigEndianVector(vector<bool> vec, uint size);
 
-
+	/**
+	 * \brief This vector stores the bits 0-159 of the TCP header. These are fields but the options.
+	 */
 	vector<bool> m_header;
+    /**
+	 * \brief This vector stores the options field of the TCP header.
+	 */
     vector<bool> m_options;
+    /**
+	 * \brief This vector stores data carrying bits of the TCP packet.
+	 */
     vector<bool> m_data;	
 };
 }
