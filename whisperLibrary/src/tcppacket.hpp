@@ -84,7 +84,7 @@ public:
      * 	Max value is 2^16.
      */  
 	void setSourcePort(uint val);
-	/** \param val The port at which the packet is recieved. \n
+	/** \param val The port at which the packet is received. \n
      * 	Max value is 2^16.
      */
 	void setDestPort(uint val);
@@ -96,7 +96,7 @@ public:
 	void setSequenceNumber(ulong val);
 	/** \param val The acknowledgement number of the packet. \n
      * 	If the acknowledgement number is set, this is the next packet the reciever is expecting.\n
-     *  All packets prior the acknowledgement number have been recieved.\n
+     *  All packets prior the acknowledgement number have been received.\n
      * 	The first ACK sent by each end acknowledges the initial sequence number, but no data.
      */
 	void setAcknowlageNumber(ulong val);
@@ -117,14 +117,14 @@ public:
     /** \param val ECN-nounce concealment protection. (RFC 3540)
      */
     void setNonceSumFlag(bool val);
-    /** \param val This flag is set by the sending host, to indicate that it recieved a
+    /** \param val This flag is set by the sending host, to indicate that it received a
      * 	TCP segment with the ECE flag set and that it responded using a congestion control
      * 	mechanism. (RFC 3168)
      */
     void setCongestionWindowReducedFlag(bool val);
     /** \param val - If the SYN flag is set, the TCP peer is ECN capable.\n
      * 	- If the SYN flag is clear, that a packet with Congestion Experienced flag in the IP header
-     * 	set is recieved during normal transmission (RFC 3168).
+     * 	set is received during normal transmission (RFC 3168).
      */
     void setEcnEchoFlag(bool val);
     /** \param val Indicates, that the urgent pointer field is significant.
@@ -191,7 +191,7 @@ private:
 		\param vec the vector the value is stored in
 		\return the value of the bits as integer
     */
-    ulong vectorToULong(int start, int end, const vector<bool> &vec) const;
+    ulong vectorToULong(uint start, uint end, const vector<bool> &vec) const;
 
     /** 
 		\brief This function is used to insert an unsigned integer value into a given boolean vector.
@@ -201,7 +201,7 @@ private:
 		\param val The value to be inserted
 		\tparam T The type of value to be inserted into the vector
     */
-    template <class T> void uIntToVector(int start, int end, vector<bool> &vec, T val);
+    template <class T> void uIntToVector(uint start, uint end, vector<bool> &vec, T val);
 
     /** 
      * \brief This function is used to convert a given integer value into a boolean vector.

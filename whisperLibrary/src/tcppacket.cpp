@@ -255,16 +255,16 @@ void TcpPacket::setPacket(vector<bool> val){
         for (int i = 0; i < 160; i++){
             m_header.push_back(val[i]);
 		}
-        int offset = vectorToULong(96, 99, m_header);
-		int option_length = (offset*32) - 160;
+        uint offset = vectorToULong(96, 99, m_header);
+		uint option_length = (offset*32) - 160;
 		if (offset > 5){
 			m_options.empty();
-			for (int i = 160; i < option_length+160; i++){
+			for (uint i = 160; i < option_length+160; i++){
 				m_options.push_back(val[i]);
 			} 
 		}
 		m_data.empty();
-		for (int i = option_length + 160; i < val.size(); i++){
+		for (uint i = option_length + 160; i < val.size(); i++){
 			m_data.push_back(val[i]);
 		}
 	}
@@ -324,10 +324,10 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 }
 	
     
-ulong TcpPacket::vectorToULong(int start, int end, const vector<bool> &vec) const{
-	int ret = 0;
-	if (start >= 0 && end >= 0 && start <= end && end < vec.size()){
-		for (int i = start; i <= end; i++){
+ulong TcpPacket::vectorToULong(uint start, uint end, const vector<bool> &vec) const{
+	ulong ret = 0;
+	if (start <= end && end < vec.size()){
+		for (uint i = start; i <= end; i++){
 			if 	(vec[i])
 				ret += (1 << (end-i));
 		}
@@ -335,11 +335,12 @@ ulong TcpPacket::vectorToULong(int start, int end, const vector<bool> &vec) cons
 	return ret;
 }
      
-template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
-	if (start >= 0 && end >= 0 && start <= end && end < vec.size()){
-		vector<bool> insert (intToBoolVector(val, (end - start + 1)));
-		for (int i = end; i >= start; i--){
-			vec[i] = insert[end-i];
+template <class T> void TcpPacket::uIntToVector(uint start, uint end, vector<bool> &vec, T val){
+	if (start <= end && end < vec.size()){
+        vector<bool> insert (intToBoolVector(val, (end - start + 1)));
+        reverse(insert.begin(), insert.end());
+        for (uint i = start; i <= end; i++){
+            vec[i] = insert[i-start];
 		}
 	}
 }
