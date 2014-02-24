@@ -1,11 +1,11 @@
 #include <timingcovertchannel.hpp>
 
 namespace whisper_library {
-	string TimingCovertChannel::name() {
+	string TimingCovertChannel::name() const {
 		return "Timing Covert Channel";
 	}
 
-	string TimingCovertChannel::info() {
+	string TimingCovertChannel::info() const {
 		return "This covert channel uses inter-packet delays to transmit morse code.";
 	}
 
