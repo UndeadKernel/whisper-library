@@ -64,9 +64,6 @@ else(PCAP_LIBRARIES)
 	MESSAGE(FATAL " pcap library not found.")
 endif(PCAP_LIBRARIES)
 
-#if(WIN32)
-#	find_library(WS2_32_LIBRARY ws2_32)
-#endif(WIND32)
 
 include_directories(
 		include/whisperLibrary
@@ -99,6 +96,12 @@ target_link_libraries(tests
 		${Boost_LIBRARIES}
 		${PCAP_LIBRARIES}
 )
+
+#ws2_32
+if (WIN32)
+	 target_link_libraries(whisperLibrary ws2_32)
+	 target_link_libraries(tests ws2_32)
+endif()
 
 add_definitions(-DWHISPER_BUILD)
 
