@@ -33,7 +33,7 @@ public:
 		m_output(output),
 		m_send(send),
 		m_getPacket(getPacket),
-		m_coder(100, 300, 500, 700),
+		m_coder(DELAY_SHORT, DELAY_LONG, DELAY_LETTER, DELAY_SPACE),
 		m_receiving(0)
 		{};
 
@@ -93,17 +93,20 @@ private:
 	// indicates, if the channel is currently receiving a message
 	atomic<bool> m_receiving;
 
+	/*
+		TODO: calculate delays based on connection
+	*/
 	// delay_short is used to encode a short signal (in milliseconds)
-	static const unsigned int m_delay_short = 100;
+	static const unsigned int DELAY_SHORT = 10;
 
 	// delay_long is used to encode a long signal (in milliseconds)
-	static const unsigned int m_delay_long = 300;
+	static const unsigned int DELAY_LONG = 30;
 
 	// delay_letter is used to encode the end of a letter (in milliseconds)
-	static const unsigned int m_delay_letter = 500;
+	static const unsigned int DELAY_LETTER = 50;
 
 	// delay_space is used to encode space between words (in milliseconds)
-	static const unsigned int m_delay_space = 700;
+	static const unsigned int DELAY_SPACE = 70;
 };
 }
 #endif // TIMING_COVERT_CHANNEL

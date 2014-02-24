@@ -1,11 +1,11 @@
 #include <timingcovertchannel.hpp>
 
 namespace whisper_library {
-	string TimingCovertChannel::name() const {
+	string TimingCovertChannel::name() const{
 		return "Timing Covert Channel";
 	}
 
-	string TimingCovertChannel::info() const {
+	string TimingCovertChannel::info() const{
 		return "This covert channel uses inter-packet delays to transmit morse code.";
 	}
 
@@ -32,32 +32,37 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
-		m_timeout_changed = true;
+		// update timeout point
+		m_timeout_changed = true;	
 		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(2);
 		if (!m_receiving) {
+			// first packet arrived
 			m_receive_start = chrono::high_resolution_clock::now();
 			m_receiving = true;
+			// start timeout
 			std::thread timeout(bind(&TimingCovertChannel::startTimeoutTimer, this));
 			timeout.detach();
 		}
 		else {
+			// measure time since last packet
 			chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
 			chrono::duration<unsigned int, milli> time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
-			if (delay < m_delay_long) {
-				m_received_delays.push_back(m_delay_short);
+			// check which delay was received
+			if (delay < DELAY_LONG) {
+				m_received_delays.push_back(DELAY_SHORT);
 			}
 			else {
-				if (delay < m_delay_letter) {
-					m_received_delays.push_back(m_delay_long);
+				if (delay < DELAY_LETTER) {
+					m_received_delays.push_back(DELAY_LONG);
 				}
 				else {
-					if (delay < m_delay_space) {
-						m_received_delays.push_back(m_delay_letter);
+					if (delay < DELAY_SPACE) {
+						m_received_delays.push_back(DELAY_LETTER);
 					}
 					else {
-						m_received_delays.push_back(m_delay_space);
+						m_received_delays.push_back(DELAY_SPACE);
 					}
 				}
 			}
@@ -65,10 +70,12 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::startTimeoutTimer() {
+		// wait until timeout point, repeat if timeout was changed during sleep
 		while (m_timeout_changed) {
 			m_timeout_changed = false;
 			this_thread::sleep_until(m_timeout_end);
 		}
+		// all packets received (timed out)
 		m_receiving = false;
 		string message = m_coder.decodeMessage(m_received_delays);
 		m_received_delays.clear();

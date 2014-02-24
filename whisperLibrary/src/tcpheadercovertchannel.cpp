@@ -4,11 +4,11 @@
 using namespace std;
 
 namespace whisper_library {
-	string TcpHeaderCovertChannel::name() {
+	string TcpHeaderCovertChannel::name() const{
 		return "TCP Header Covert Channel";
 	}
 
-	string TcpHeaderCovertChannel::info() {
+	string TcpHeaderCovertChannel::info() const{
 		return	"The TCP Header Covert Channel uses unused bits in the TCP Header to hide data. 3 bits are sent per packet.";
 	}
 

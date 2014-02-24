@@ -47,10 +47,10 @@ namespace whisper_library {
 		void receiveMessage(GenericPacket& packet);
 
 		// Returns a string with the name of the covert channel "TCP Header Covert Channel"
-		string name();
+		string name() const;
 
 		// Returns a string with basic information about the tcp header covert channel
-		string info();
+		string info() const;
 
 	private:
 		//	encodeMessageWithLength splits the message into parts of 3 bits and adds length blocks inbetween.
