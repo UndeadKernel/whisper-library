@@ -46,7 +46,8 @@ namespace whisper_library {
 		else {
 			// measure time since last packet
 			chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-			chrono::duration<unsigned int, milli> time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
+			chrono::duration<unsigned int, milli> time_elapsed;
+			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
 			// check which delay was received
