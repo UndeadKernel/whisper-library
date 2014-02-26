@@ -251,19 +251,19 @@ void TcpPacket::setData(vector<bool> val){
 // packet
 void TcpPacket::setPacket(vector<bool> val){
 	if (val.size() >= 160) {
-        m_header.empty();
+		m_header.clear();
         for (int i = 0; i < 160; i++){
             m_header.push_back(val[i]);
 		}
         uint offset = vectorToULong(96, 99, m_header);
 		uint option_length = (offset*32) - 160;
 		if (offset > 5){
-			m_options.empty();
+			m_options.clear();
 			for (uint i = 160; i < option_length+160; i++){
 				m_options.push_back(val[i]);
 			} 
 		}
-		m_data.empty();
+		m_data.clear();
 		for (uint i = option_length + 160; i < val.size(); i++){
 			m_data.push_back(val[i]);
 		}
