@@ -1,0 +1,87 @@
+\hypertarget{classwhisper__library_1_1BitSetCoder}{\section{whisper\-\_\-library\-:\-:\-Bit\-Set\-Coder$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$ \-Class \-Template \-Reference}
+\label{classwhisper__library_1_1BitSetCoder}\index{whisper\-\_\-library\-::\-Bit\-Set\-Coder$<$ B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$@{whisper\-\_\-library\-::\-Bit\-Set\-Coder$<$ B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$}}
+}
+
+
+\hyperlink{classwhisper__library_1_1BitSetCoder}{\-Bit\-Set\-Coder} converts the message, that we want to send, into bit-\/blocks and reassembles them to a message.  
+
+
+
+
+{\ttfamily \#include $<$bit\-Set\-Coder.\-hpp$>$}
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+size\-\_\-t \hyperlink{classwhisper__library_1_1BitSetCoder_a78072e1d098b177ac51a7007564e8eb6}{block\-Length} ()
+\item 
+vector$<$ bitset$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$ $>$ \hyperlink{classwhisper__library_1_1BitSetCoder_a04977549fac58c4750df77a75d4452d8}{encode\-Message} (string message)
+\begin{DoxyCompactList}\small\item\em encode\-Message takes a string and splits it into parts. \end{DoxyCompactList}\item 
+string \hyperlink{classwhisper__library_1_1BitSetCoder_a96721c4d4f5e5faf36873972634a03fc}{decode\-Message} (vector$<$ bitset$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$ $>$ vector)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\subsubsection*{template$<$size\-\_\-t \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H$>$class whisper\-\_\-library\-::\-Bit\-Set\-Coder$<$ B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$}
+
+\hyperlink{classwhisper__library_1_1BitSetCoder}{\-Bit\-Set\-Coder} converts the message, that we want to send, into bit-\/blocks and reassembles them to a message. 
+
+\-To use this class, call the function 'encode\-Message' with the message as a string or 'decode\-Message' with the message-\/blocks in a vector. 
+\begin{DoxyTemplParams}{\-Template Parameters}
+{\em \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H} & sets the length of the bit-\/blocks. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classwhisper__library_1_1BitSetCoder_a78072e1d098b177ac51a7007564e8eb6}{\index{whisper\-\_\-library\-::\-Bit\-Set\-Coder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}!block\-Length@{block\-Length}}
+\index{block\-Length@{block\-Length}!whisper_library::BitSetCoder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}}
+\subsubsection[{block\-Length}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H$>$ size\-\_\-t {\bf whisper\-\_\-library\-::\-Bit\-Set\-Coder}$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$\-::{\bf block\-Length} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classwhisper__library_1_1BitSetCoder_a78072e1d098b177ac51a7007564e8eb6}
+\-Returns the size of a message block. \begin{DoxyReturn}{\-Returns}
+the size of a message block as number of bits 
+\end{DoxyReturn}
+\hypertarget{classwhisper__library_1_1BitSetCoder_a96721c4d4f5e5faf36873972634a03fc}{\index{whisper\-\_\-library\-::\-Bit\-Set\-Coder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}!decode\-Message@{decode\-Message}}
+\index{decode\-Message@{decode\-Message}!whisper_library::BitSetCoder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}}
+\subsubsection[{decode\-Message}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H$>$ string {\bf whisper\-\_\-library\-::\-Bit\-Set\-Coder}$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$\-::{\bf decode\-Message} (
+\begin{DoxyParamCaption}
+\item[{vector$<$ bitset$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$ $>$}]{vector}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classwhisper__library_1_1BitSetCoder_a96721c4d4f5e5faf36873972634a03fc}
+decode\-Message takes bit blocks and converts them to characters returned as a string.
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em vector} & a vector of bitsets with the bitsets containing the binary representation of \-A\-S\-C\-I\-I-\/encoded letters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+the message as string 
+\end{DoxyReturn}
+\hypertarget{classwhisper__library_1_1BitSetCoder_a04977549fac58c4750df77a75d4452d8}{\index{whisper\-\_\-library\-::\-Bit\-Set\-Coder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}!encode\-Message@{encode\-Message}}
+\index{encode\-Message@{encode\-Message}!whisper_library::BitSetCoder@{whisper\-\_\-library\-::\-Bit\-Set\-Coder}}
+\subsubsection[{encode\-Message}]{\setlength{\rightskip}{0pt plus 5cm}template$<$size\-\_\-t \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H$>$ vector$<$bitset$<$\-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H$>$ $>$ {\bf whisper\-\_\-library\-::\-Bit\-Set\-Coder}$<$ \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H $>$\-::{\bf encode\-Message} (
+\begin{DoxyParamCaption}
+\item[{string}]{message}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{classwhisper__library_1_1BitSetCoder_a04977549fac58c4750df77a75d4452d8}
+
+
+encode\-Message takes a string and splits it into parts. 
+
+\-These are returned as a vector of bitsets in order. \-If you can't divide the bit count by \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H, the last bits are filled up with 0's. \-The bitsets contain the binary representation of \-A\-S\-C\-I-\/encoded letters. 
+\begin{DoxyParams}{\-Parameters}
+{\em message} & the message to be encoded \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+the message as a vector of bitsets with the size of \-B\-L\-O\-C\-K\-\_\-\-L\-E\-N\-G\-T\-H 
+\end{DoxyReturn}
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/home/simon/git/whisper\-Library/scm-\/ssi-\/student-\/whisper-\/library/whisper\-Library/include/whisper\-Library/bit\-Set\-Coder.\-hpp\end{DoxyCompactItemize}

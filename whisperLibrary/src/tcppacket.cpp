@@ -10,7 +10,7 @@ TcpPacket::TcpPacket(){
     m_header.resize(160);
 }
 
-TcpPacket::TcpPacket(uint inSourcePort, 
+TcpPacket::TcpPacket(	uint inSourcePort, 
 						uint inDestPort, 
 						ulong inSequenceNumber,
 						ulong inAckNumber,
@@ -29,6 +29,9 @@ TcpPacket::TcpPacket(uint inSourcePort,
     setOptions(inOptions);
 }
 	
+	TcpPacket::TcpPacket(vector<bool> packet){
+		setPacket(packet);
+	}
 /* 	
 	Locations of the header informations:
 	0-15 Source port, 16-31 Destination port
@@ -141,10 +144,10 @@ vector<bool> TcpPacket::options() const{
 // packet
 vector<bool> TcpPacket::packet() const{
     vector<bool> ret (m_header);
-    for (int i = 0; i < m_options.size(); i++){
+    for (uint i = 0; i < m_options.size(); i++){
         ret.push_back(m_options[i]);
     }
-    for (int i = 0; i < m_data.size(); i++){
+    for (uint i = 0; i < m_data.size(); i++){
         ret.push_back(m_data[i]);
     }
     return ret;
@@ -152,8 +155,7 @@ vector<bool> TcpPacket::packet() const{
 
 // data
 vector<bool> TcpPacket::data() const{
-    vector<bool> ret (m_data);
-    return ret;
+    return m_data;
 }
 
 // header: bits 0-15  
@@ -248,104 +250,108 @@ void TcpPacket::setData(vector<bool> val){
 }
 // packet
 void TcpPacket::setPacket(vector<bool> val){
-	for (int i = 0; i < 160; i++){
-		m_header[i] = val[i];
-	}
-	int offset = dataOffset().to_ulong();
-	int lengthopt = (offset*8) - 160;
-	m_options.empty();
-	for (int i = 160; i < lengthopt+160; i++){
-		m_options.push_back(val[i]);
-	} 
-	m_data.empty();
-	for (int i = lengthopt + 160; i < val.size(); i++){
-		m_data.push_back(val[i]);
+	if (val.size() >= 160) {
+        m_header.empty();
+        for (int i = 0; i < 160; i++){
+            m_header.push_back(val[i]);
+		}
+        uint offset = vectorToULong(96, 99, m_header);
+		uint option_length = (offset*32) - 160;
+		if (offset > 5){
+			m_options.empty();
+			for (uint i = 160; i < option_length+160; i++){
+				m_options.push_back(val[i]);
+			} 
+		}
+		m_data.empty();
+		for (uint i = option_length + 160; i < val.size(); i++){
+			m_data.push_back(val[i]);
+		}
 	}
 }
     
 void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
     vector<bool> sum;
 	/* 
-		split the tcp packet into 16bit values and add all of them up
-		using the one complement addition
+		split the tcp packet into 16bit values and add them to 
+		a vector.
 	*/
-	vector<vector<bool> > split;
-	split = splitHeaderTo16Bit();
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
-	}
+	vector<vector<bool> > vector_of_words;
+	vector_of_words = splitHeaderTo16Bit();
+	
 	// split the source IP into 16bit values and add them to the sum
-	vector<bool> temp (intToBoolVector(sourceIp));
-	reverse(temp.begin(), temp.end());
-	split = split32BitVector(temp);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
+	vector<bool> temporary_vector (intToBoolVector(sourceIp, 32));
+	reverse(temporary_vector.begin(), temporary_vector.end());
+	vector< vector<bool> > words_to_append = split32BitVector(temporary_vector);
+	for (vector< vector<bool> >::iterator it = words_to_append.begin(); it != words_to_append.end(); it++){
+		vector_of_words.push_back(*it);
 	}
+	
 	// split the destination IP into 16bit values and add them to the sum
-	temp = intToBoolVector(destIp);
-	reverse(temp.begin(), temp.end());
-	split = split32BitVector(temp);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
+	temporary_vector = intToBoolVector(destIp, 32);
+	reverse(temporary_vector.begin(), temporary_vector.end());
+	words_to_append = split32BitVector(temporary_vector);
+	for (vector< vector<bool> >::iterator it = words_to_append.begin(); it != words_to_append.end(); it++){
+		vector_of_words.push_back(*it);
+	} 
+	
+	// combine reserved bits and protocoll
+	vector<bool> combine_vectors (intToBoolVector(reservedBits, 8));
+	reverse(combine_vectors.begin(), combine_vectors.end());
+	combine_vectors = trimBigEndianVector(combine_vectors, 8);
+	temporary_vector = intToBoolVector(protocol, 8);
+	reverse(temporary_vector.begin(), temporary_vector.end());
+	temporary_vector = trimBigEndianVector(temporary_vector, 8);
+	for (vector<bool>::iterator it = temporary_vector.begin(); it != temporary_vector.end(); it++){
+		combine_vectors.push_back(*it);
 	}
-	/*
-		combine the remaining values for the IP headers reserved bits, 
-		the protocol used and the size of the tcp packet in bytes into a
-		new vector, split it into 16bit values and add them to the sum
-	*/ 
-	vector<bool> combine (intToBoolVector(reservedBits));
-	reverse(combine.begin(), combine.end());
-	combine = trimBigEndianVector(combine, 8);
-	temp = intToBoolVector(protocol);
-	reverse(temp.begin(), temp.end());
-	temp = trimBigEndianVector(temp, 8);
-	for (int i = 0; i < temp.size(); i++){
-		combine.push_back(temp[i]);
+	vector_of_words.push_back(combine_vectors);
+	
+	// calculate tcp packet size in bytes and add it to the vector
+    temporary_vector = (intToBoolVector(((m_header.size() + m_options.size() + m_data.size()) / 8), 16));
+    reverse(temporary_vector.begin(), temporary_vector.end());
+    temporary_vector = (trimBigEndianVector(temporary_vector, 16));
+	vector_of_words.push_back(temporary_vector);
+	
+	// ones complement add all the values to the sum
+	for (vector< vector<bool> >::iterator it = vector_of_words.begin(); it != vector_of_words.end(); it++){
+		sum = oneComplementAdd(sum, *it);
 	}
-    vector<bool> temp2(intToBoolVector((m_header.size() + m_options.size() + m_data.size()) / 8));
-    reverse(temp2.begin(), temp2.end());
-    temp2 = (trimBigEndianVector(temp2, 16));
-    for (int i = 0; i < temp2.size(); i++){
-        combine.push_back(temp2[i]);
-	}
-	split = split32BitVector(combine);
-	for (int i = 0; i < split.size(); i++){
-		sum = oneComplementAdd(sum, split[i]);
-	}
-	// if the resulting sum vector exeeds 16 bits add the exeeding bits as carry to the sum
-    if (sum.size()>16){
-        vector<bool> remainder;
-        for (int i = 0; i < 16; i++){
-            remainder.push_back(sum.back());
-            sum.pop_back();
-        }
-        sum = oneComplementAdd(sum,remainder);
-    }
+
     // compute the one complement of the sum and store it as the new checksum
     sum.flip();
-    setChecksum(vectorToULong(0, sum.size()-1, sum));
+    setChecksum(vectorToULong(0, (sum.size()-1), sum));
 }
 	
     
-ulong TcpPacket::vectorToULong(int start, int end, const vector<bool> &vec) const{
-	int ret = 0;
-	for (int i = start; i <= end; i++){
-		if 	(vec[i])
-            ret += 1 << (end -i);
+ulong TcpPacket::vectorToULong(uint start, uint end, const vector<bool> &vec) const{
+	ulong ret = 0;
+	if (start <= end && end < vec.size()){
+		for (uint i = start; i <= end; i++){
+			if 	(vec[i])
+				ret += (1 << (end-i));
+		}
 	}
 	return ret;
 }
      
-template <class T> void TcpPacket::uIntToVector(int start, int end, vector<bool> &vec, T val){
-    vector<bool> ins (intToBoolVector(val));
-	for (int i = end; i >= start; i--){
-		vec[i] = ins[end-i];
+template <class T> void TcpPacket::uIntToVector(uint start, uint end, vector<bool> &vec, T val){
+	if (start <= end && end < vec.size()){
+        vector<bool> insert (intToBoolVector(val, (end - start + 1)));
+        reverse(insert.begin(), insert.end());
+        for (uint i = start; i <= end; i++){
+            vec[i] = insert[i-start];
+		}
 	}
 }
     
-template <class T> vector<bool> TcpPacket::intToBoolVector(T val){
+template <class T> vector<bool> TcpPacket::intToBoolVector(T val, uint size){
     vector<bool> ret;
-    for(int i = 0; i<32; i++){
+    if (val < 0){
+		ret = vector<bool>(size,false);
+		return ret;
+	}
+    for(uint i = 0; i<size; i++){
         if (val % 2 == 1){
             ret.push_back(true);
         }
@@ -360,11 +366,13 @@ vector<bool> TcpPacket::oneComplementAdd(vector<bool> vec1, vector<bool> vec2){
     // convert the vectors to little endian to make the addition easier
     reverse(vec1.begin(), vec1.end());
     reverse(vec2.begin(), vec2.end());
+    vec1.resize(16, false);
+    vec2.resize(16, false);
     vector<bool> result;
 	bool carry = false;
 	int sum = 0;
 	//compute the bitwise one complement addition of the two vectors
-    for (int i = 0; i < 16; i++){
+    for (uint i = 0; i < 16; i++){
 		sum = 0;
 		// computing carry and value of the sum at position i
 		if (carry)
@@ -403,9 +411,11 @@ vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
 	vector<bool> vec1;
 	vector<bool> vec2;
 	vector< vector<bool> > result;
-	for (int i = 0; i < 16; i++){
-		vec1.push_back(vec[i]);
-		vec2.push_back(vec[i+16]);
+	for (vector<bool>::iterator it = vec.begin(); it != vec.end(); it++){
+		if (vec1.size() < 16)
+			vec1.push_back(*it);
+		else
+			vec2.push_back(*it);
 	}
 	result.push_back(vec1);
 	result.push_back(vec2);
@@ -414,7 +424,7 @@ vector<vector<bool> > TcpPacket::split32BitVector(vector<bool> vec){
 	
 vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
 	vector< vector<bool> > result;
-	for (int i = 0; i < (m_header.size()/16); i++){
+	for (uint i = 0; i < (m_header.size()/16); i++){
         vector<bool> temp;
 		for (int j = 0; j < 16; j++){
 			temp.push_back(m_header[(i*16)+j]);
@@ -422,7 +432,7 @@ vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
 		result.push_back(temp);
 	}
 	if (m_options.empty() == false){
-		for (int i = 0; i < (m_options.size()/16); i++){
+		for (uint i = 0; i < (m_options.size()/16); i++){
 			vector<bool> temp;
 			for (int j = 0; j < 16; j++){
 				temp.push_back(m_options[(i*16)+j]);
@@ -431,7 +441,7 @@ vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
 		}
 	}
 	if (m_data.empty() == false){
-		for (int i = 0; i < (m_data.size()/16); i++){
+		for (uint i = 0; i < (m_data.size()/16); i++){
 			vector<bool> temp;
 			for (int j = 0; j < 16; j++){
 				temp.push_back(m_data[(i*16)+j]);
@@ -442,11 +452,15 @@ vector<vector<bool> > TcpPacket::splitHeaderTo16Bit(){
 	return result;
 }
 	
-vector<bool> TcpPacket::trimBigEndianVector(vector<bool> vec, int size){
+vector<bool> TcpPacket::trimBigEndianVector(vector<bool> vec, uint size){
 	vector<bool> ret;
-	for (int i = vec.size()-size; i < vec.size(); i++){
+	for (uint i = vec.size()-size; i < vec.size(); i++){
 		ret.push_back(vec[i]);
 	}
+	if (ret.size() < size)
+		vec.resize(size);
+	
 	return ret;
 }
+
 } //whisper_library

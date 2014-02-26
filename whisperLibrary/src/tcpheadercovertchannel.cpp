@@ -14,7 +14,7 @@ namespace whisper_library {
 
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
-		for (int i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets
+		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets
 			whisper_library::TcpPacket packet = m_getPacket();	// get valid tcp packet
 			modifyTcpPacket(packet, bit_blocks[i]);
 			

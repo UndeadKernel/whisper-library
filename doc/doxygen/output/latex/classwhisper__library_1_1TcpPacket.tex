@@ -1,0 +1,228 @@
+\hypertarget{classwhisper__library_1_1TcpPacket}{\section{whisper\-\_\-library\-:\-:\-Tcp\-Packet \-Class \-Reference}
+\label{classwhisper__library_1_1TcpPacket}\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}}
+}
+
+
+\-This class represents a tcp packet. \-All fields are accessable.  
+
+
+
+
+{\ttfamily \#include $<$tcppacket.\-hpp$>$}
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}{\hyperlink{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}{\-Tcp\-Packet} ()}\label{classwhisper__library_1_1TcpPacket_a82b91f3c55a8893c49102c0cfc40a433}
+
+\begin{DoxyCompactList}\small\item\em \-The empty constructor creates an empty tcp packet. \end{DoxyCompactList}\item 
+\hyperlink{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}{\-Tcp\-Packet} (uint in\-Source\-Port, uint in\-Dest\-Port, ulong in\-Sequence\-Number, ulong in\-Ack\-Number, bitset$<$ 4 $>$ in\-Data\-Offset, uint in\-Window\-Size, vector$<$ bool $>$ in\-Options)
+\begin{DoxyCompactList}\small\item\em \-This constructor is used to fill in some of the important fields beforehand. \end{DoxyCompactList}\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a234bca8357dac29382195f9837363d0c}{uint {\bfseries source\-Port} () const }\label{classwhisper__library_1_1TcpPacket_a234bca8357dac29382195f9837363d0c}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a7909f3bae44646ebd02930ee8e1d0fb1}{uint {\bfseries dest\-Port} () const }\label{classwhisper__library_1_1TcpPacket_a7909f3bae44646ebd02930ee8e1d0fb1}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a959a01e2dedde0b62cae354a8ebad1a3}{ulong {\bfseries sequence\-Number} () const }\label{classwhisper__library_1_1TcpPacket_a959a01e2dedde0b62cae354a8ebad1a3}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ac088334e95fa850fc11491c5e0b51ee5}{ulong {\bfseries acknowlage\-Number} () const }\label{classwhisper__library_1_1TcpPacket_ac088334e95fa850fc11491c5e0b51ee5}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a42d4d2907a5b77c5da1613b64b335c30}{bitset$<$ 4 $>$ {\bfseries data\-Offset} () const }\label{classwhisper__library_1_1TcpPacket_a42d4d2907a5b77c5da1613b64b335c30}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ad247c3ff6f70cf53c6d3961606688c80}{bitset$<$ 3 $>$ {\bfseries reserved} () const }\label{classwhisper__library_1_1TcpPacket_ad247c3ff6f70cf53c6d3961606688c80}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ab1307b9a0d500b8896bb575caf070d6b}{bitset$<$ 9 $>$ {\bfseries flags} () const }\label{classwhisper__library_1_1TcpPacket_ab1307b9a0d500b8896bb575caf070d6b}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a0d6925d1a301ea4f1cd8e2184deb4d16}{bool {\bfseries nonce\-Sum\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a0d6925d1a301ea4f1cd8e2184deb4d16}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a8356604d79d4fff7b152a226d8763bb2}{bool {\bfseries congestion\-Window\-Reduced\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a8356604d79d4fff7b152a226d8763bb2}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ae23b09a219d3ca637ca17ec6fd86bfb4}{bool {\bfseries ecn\-Echo\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_ae23b09a219d3ca637ca17ec6fd86bfb4}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ad759342e930503f344800cd5ad66c6d4}{bool {\bfseries urgent\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_ad759342e930503f344800cd5ad66c6d4}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a212337e365a3ea97d14a6bc1c29b084a}{bool {\bfseries acknowledement\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a212337e365a3ea97d14a6bc1c29b084a}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a78a90a178dc7c8984eb6f87b4e511508}{bool {\bfseries push\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a78a90a178dc7c8984eb6f87b4e511508}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a61ede132f1ac05195bc66c7aeaa91347}{bool {\bfseries reset\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a61ede132f1ac05195bc66c7aeaa91347}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ad5bdabc68a1503f9873f6df70dec2f6c}{bool {\bfseries synchronisation\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_ad5bdabc68a1503f9873f6df70dec2f6c}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a643e000d90905ab4624b8c97cc7ba5f1}{bool {\bfseries finish\-Flag} () const }\label{classwhisper__library_1_1TcpPacket_a643e000d90905ab4624b8c97cc7ba5f1}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a9ae620d22506629ee6656a7ffa46c195}{uint {\bfseries window\-Size} () const }\label{classwhisper__library_1_1TcpPacket_a9ae620d22506629ee6656a7ffa46c195}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a7c940dc83c280297d5a501dd936c5d35}{uint {\bfseries checksum} () const }\label{classwhisper__library_1_1TcpPacket_a7c940dc83c280297d5a501dd936c5d35}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_adca72abfece3db3d31624d228ff443f9}{uint {\bfseries urgent\-Pointer} () const }\label{classwhisper__library_1_1TcpPacket_adca72abfece3db3d31624d228ff443f9}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_aad2ce58641b9a060b1050a89a61a955d}{vector$<$ bool $>$ {\bfseries options} () const }\label{classwhisper__library_1_1TcpPacket_aad2ce58641b9a060b1050a89a61a955d}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a7ed85fa5632c042edf00f883d8982ad3}{vector$<$ bool $>$ {\bfseries packet} () const }\label{classwhisper__library_1_1TcpPacket_a7ed85fa5632c042edf00f883d8982ad3}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a4cca4599bb78fd1a562d940bda3804bc}{vector$<$ bool $>$ {\bfseries data} () const }\label{classwhisper__library_1_1TcpPacket_a4cca4599bb78fd1a562d940bda3804bc}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ad376af1ae7f6a28d95fc7428b25096b5}{void {\bfseries set\-Source\-Port} (uint val)}\label{classwhisper__library_1_1TcpPacket_ad376af1ae7f6a28d95fc7428b25096b5}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_aa46587d82255938026c680ae7f1ebb4d}{void {\bfseries set\-Dest\-Port} (uint val)}\label{classwhisper__library_1_1TcpPacket_aa46587d82255938026c680ae7f1ebb4d}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a4206184f0f44c0e0bec96981731028d3}{void {\bfseries set\-Sequence\-Number} (ulong val)}\label{classwhisper__library_1_1TcpPacket_a4206184f0f44c0e0bec96981731028d3}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a1711e85c6c854e5cb0d62407937444b5}{void {\bfseries set\-Acknowlage\-Number} (ulong val)}\label{classwhisper__library_1_1TcpPacket_a1711e85c6c854e5cb0d62407937444b5}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a7eb16c5a0a5ca42aaf58a4778a773f23}{void {\bfseries set\-Data\-Offset} (bitset$<$ 4 $>$ val)}\label{classwhisper__library_1_1TcpPacket_a7eb16c5a0a5ca42aaf58a4778a773f23}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_abaee2fa0893733ab11f8474cc6ff5937}{void {\bfseries set\-Reserved} (bitset$<$ 3 $>$ val)}\label{classwhisper__library_1_1TcpPacket_abaee2fa0893733ab11f8474cc6ff5937}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ac07e1a77d993bcbcaf19c45d6f8d1b24}{void {\bfseries set\-Flags} (bitset$<$ 9 $>$ val)}\label{classwhisper__library_1_1TcpPacket_ac07e1a77d993bcbcaf19c45d6f8d1b24}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ae5a20d3192aea8652484cce0418241a2}{void {\bfseries set\-Nonce\-Sum\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_ae5a20d3192aea8652484cce0418241a2}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_abf531b06fc13babbdde152d84dc95d58}{void {\bfseries set\-Congestion\-Window\-Reduced\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_abf531b06fc13babbdde152d84dc95d58}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a62797c60cac6bf5193267b97fee5130f}{void {\bfseries set\-Ecn\-Echo\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_a62797c60cac6bf5193267b97fee5130f}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a768b8920eb82550a54fc31f1769a5163}{void {\bfseries set\-Urgent\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_a768b8920eb82550a54fc31f1769a5163}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_aecb40e2ed15068c4170d733f731c50b6}{void {\bfseries set\-Acknowledgement\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_aecb40e2ed15068c4170d733f731c50b6}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ab710fcf43297c7fb27a8459863e704d2}{void {\bfseries set\-Push\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_ab710fcf43297c7fb27a8459863e704d2}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a19eabffa25a7ee769f8a1287010f7d52}{void {\bfseries set\-Reset\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_a19eabffa25a7ee769f8a1287010f7d52}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a3913778e108f95773fd13deb4c046938}{void {\bfseries set\-Synchronisation\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_a3913778e108f95773fd13deb4c046938}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_af7a8f4ad461386541903aff8ea65045d}{void {\bfseries set\-Finish\-Flag} (bool val)}\label{classwhisper__library_1_1TcpPacket_af7a8f4ad461386541903aff8ea65045d}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_ab12d4c4197cdc12c13cf2d9222550f48}{void {\bfseries set\-Window\-Size} (uint val)}\label{classwhisper__library_1_1TcpPacket_ab12d4c4197cdc12c13cf2d9222550f48}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a19f938a9147a0c464283d220cb462815}{void {\bfseries set\-Checksum} (uint val)}\label{classwhisper__library_1_1TcpPacket_a19f938a9147a0c464283d220cb462815}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a138021ac0df5662eb1cd3fbe53aaa3f5}{void {\bfseries set\-Urgent\-Pointer} (uint val)}\label{classwhisper__library_1_1TcpPacket_a138021ac0df5662eb1cd3fbe53aaa3f5}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a095139a0c4ec593afa12991e8eb33ee0}{void {\bfseries set\-Options} (vector$<$ bool $>$ val)}\label{classwhisper__library_1_1TcpPacket_a095139a0c4ec593afa12991e8eb33ee0}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a969d01e24f894a7f2b99dee210bb6a65}{void {\bfseries set\-Data} (vector$<$ bool $>$ val)}\label{classwhisper__library_1_1TcpPacket_a969d01e24f894a7f2b99dee210bb6a65}
+
+\item 
+\hypertarget{classwhisper__library_1_1TcpPacket_a0b0a67dddb600b642b0499c4714981ea}{void {\bfseries set\-Packet} (vector$<$ bool $>$ val)}\label{classwhisper__library_1_1TcpPacket_a0b0a67dddb600b642b0499c4714981ea}
+
+\item 
+void \hyperlink{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}{calculate\-Checksum} (ulong source\-Ip, ulong dest\-Ip, uint reserved\-Bits, uint protocol)
+\begin{DoxyCompactList}\small\item\em \-This function is used to calculate the tcp checksum. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This class represents a tcp packet. \-All fields are accessable. 
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}{\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}!\-Tcp\-Packet@{\-Tcp\-Packet}}
+\index{\-Tcp\-Packet@{\-Tcp\-Packet}!whisper_library::TcpPacket@{whisper\-\_\-library\-::\-Tcp\-Packet}}
+\subsubsection[{\-Tcp\-Packet}]{\setlength{\rightskip}{0pt plus 5cm}{\bf whisper\-\_\-library\-::\-Tcp\-Packet\-::\-Tcp\-Packet} (
+\begin{DoxyParamCaption}
+\item[{uint}]{in\-Source\-Port, }
+\item[{uint}]{in\-Dest\-Port, }
+\item[{ulong}]{in\-Sequence\-Number, }
+\item[{ulong}]{in\-Ack\-Number, }
+\item[{bitset$<$ 4 $>$}]{in\-Data\-Offset, }
+\item[{uint}]{in\-Window\-Size, }
+\item[{vector$<$ bool $>$}]{in\-Options}
+\end{DoxyParamCaption}
+)}}\label{classwhisper__library_1_1TcpPacket_ae6e80d2107091af927ded7f07ebe7764}
+
+
+\-This constructor is used to fill in some of the important fields beforehand. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em in\-Source\-Port} & the source port as integer \\
+\hline
+{\em in\-Dest\-Port} & the destination port as integer \\
+\hline
+{\em in\-Sequence\-Number} & the sequence number of the packet \\
+\hline
+{\em in\-Ack\-Number} & the acknowladgement number of the packet \\
+\hline
+{\em in\-Data\-Offset} & the length of the options field in bytes \\
+\hline
+{\em in\-Window\-Size} & the size of the packet in bytes \\
+\hline
+{\em in\-Options} & the options as a vector of boolean values \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}{\index{whisper\-\_\-library\-::\-Tcp\-Packet@{whisper\-\_\-library\-::\-Tcp\-Packet}!calculate\-Checksum@{calculate\-Checksum}}
+\index{calculate\-Checksum@{calculate\-Checksum}!whisper_library::TcpPacket@{whisper\-\_\-library\-::\-Tcp\-Packet}}
+\subsubsection[{calculate\-Checksum}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf whisper\-\_\-library\-::\-Tcp\-Packet\-::calculate\-Checksum} (
+\begin{DoxyParamCaption}
+\item[{ulong}]{source\-Ip, }
+\item[{ulong}]{dest\-Ip, }
+\item[{uint}]{reserved\-Bits, }
+\item[{uint}]{protocol}
+\end{DoxyParamCaption}
+)}}\label{classwhisper__library_1_1TcpPacket_a3461c1b760853c1e6c5e859f9a642a6d}
+
+
+\-This function is used to calculate the tcp checksum. 
+
+\-To do this it needs some additional information of the \-I\-P header as parameters. 
+\begin{DoxyParams}{\-Parameters}
+{\em source\-Ip} & \-I\-P adress of the sender as integer \\
+\hline
+{\em dest\-Ip} & \-I\-P adress of the reciever as integer \\
+\hline
+{\em reserved\-Bits} & the value of the reserved bits of the \-I\-P header as integer \\
+\hline
+{\em protocol} & the protocol used to send the data as integer value \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/simon/git/whisper\-Library/scm-\/ssi-\/student-\/whisper-\/library/whisper\-Library/src/tcppacket.\-hpp\item 
+/home/simon/git/whisper\-Library/scm-\/ssi-\/student-\/whisper-\/library/whisper\-Library/src/tcppacket.\-cpp\end{DoxyCompactItemize}
