@@ -1,5 +1,6 @@
 // Author: Martin Oehler
 #include <tcpheadercovertchannel.hpp>
+#include <iostream>
 
 using namespace std;
 
@@ -16,8 +17,7 @@ namespace whisper_library {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets
 			whisper_library::TcpPacket packet = m_getPacket();	// get valid tcp packet
-			modifyTcpPacket(packet, bit_blocks[i]);
-			
+			modifyTcpPacket(packet, bit_blocks[i]);			
 			m_send(packet);
 		}
 	}
@@ -26,6 +26,7 @@ namespace whisper_library {
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.content());
 		bitset<3> data = extractData(tcp_packet);
+		//cout << "received: " << data << endl;
 		if (m_remaining_packets == 0) {					// no message received yet
 			m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
 			return;
