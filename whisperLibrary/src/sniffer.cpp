@@ -22,7 +22,7 @@ namespace whisper_library {
 			fprintf(stderr, "Warning: Adapter requested while all adapters are freed. Retrieving adapters...");
 			retrieveAdapters();
 		}
-		if (m_adapter_data.size() <= adapter_id) { // ID starts with 0
+		if (static_cast<int>(m_adapter_data.size()) <= adapter_id) { // ID starts with 0
 			// specified adapter not found
 			fprintf(stderr, "Error: No network device with ID #%d\n", adapter_id);
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), false);
@@ -48,10 +48,10 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int Sniffer::adapterId(const char* value, unsigned int key, bool increment_key) {
+	int Sniffer::adapterId(const char* value, int key, bool increment_key) {
 		int i, j;
-		for (i = 0; i < m_adapter_data.size(); i++) {
-			for (j = key; j < m_adapter_data[i].size() && increment_key || j == key; j++) {
+		for (i = 0; i < static_cast<int>(m_adapter_data.size()); i++) {
+			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; j++) {
 				if (m_adapter_data[i][j] == value) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
@@ -60,7 +60,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	int Sniffer::adapterId(const char* adapter_value, unsigned int value_type) {
+	int Sniffer::adapterId(const char* adapter_value, int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
@@ -71,6 +71,14 @@ namespace whisper_library {
 			ret.push_back(m_adapter_data[adapter_id][i]);
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
+	}
+
+	const char*	Sniffer::adapterDescription(int adapter_id) {
+		if (!checkForAdapterId(adapter_id)) {
+			// specified adapter not found
+			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
+		}
+		RETURN_VALUE(RC(NORMAL_EXECUTION), m_adapter_data[adapter_id][ADAPTER_DESCRIPTION]);
 	}
 
 	int Sniffer::adapterCount() {
@@ -149,7 +157,7 @@ namespace whisper_library {
 		char error_buffer[PCAP_ERRBUF_SIZE]; // pcap error buffer
 
 		// resize handles vector as needed
-		if (m_adapter_handles.size() <= adapter_id) {
+		if (static_cast<int>(m_adapter_handles.size()) <= adapter_id) {
 			m_adapter_handles.resize(adapter_id + 1);
 		}
 		// open handle for live capturing
@@ -171,7 +179,7 @@ namespace whisper_library {
 	}
 
 	int Sniffer::closeAdapter(int adapter_id) {
-		if (m_adapter_handles.size() > adapter_id && m_adapter_handles[adapter_id]) {
+		if (static_cast<int>(m_adapter_handles.size()) > adapter_id && m_adapter_handles[adapter_id]) {
 			pcap_close(m_adapter_handles[adapter_id]);
 			m_adapter_handles[adapter_id] = NULL;
 			RETURN_CODE(RC(NORMAL_EXECUTION));
@@ -188,7 +196,7 @@ namespace whisper_library {
 		for (pcap_t* handle : m_adapter_handles) {
 			if (handle) { pcap_close(handle); }
 		}
-		int i;
+		unsigned int i;
 		for (std::vector<char*> adapter : m_adapter_data) {
 			// i >= 2 := Address strings
 			for (i = 2; i < adapter.size(); i++) {
@@ -212,7 +220,7 @@ namespace whisper_library {
 		const char*			filter_string = (filter ? filter : ""); // If given filter is NULL, replace with empty(/ANY) filter
 		struct bpf_program	filter_compiled;
 		pcap_t*				handle = NULL;
-		if (m_adapter_handles.size() > adapter_id) {
+		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
 		if (!handle) {
@@ -258,7 +266,7 @@ namespace whisper_library {
 		struct pcap_pkthdr 	packet_header;
 		const u_char*		packet_data;
 		pcap_t*				handle = NULL;
-		if (m_adapter_handles.size() > adapter_id) {
+		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
 		if (!handle) {

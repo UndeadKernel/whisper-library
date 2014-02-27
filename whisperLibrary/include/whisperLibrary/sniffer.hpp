@@ -74,9 +74,9 @@ namespace whisper_library {
 
 			// Constants (for m_adapter_data access)
 			// unsigned int instead of enum for type safety
-			static const unsigned int			ADAPTER_NAME			= 0;
-			static const unsigned int			ADAPTER_DESCRIPTION		= 1;
-			static const unsigned int			ADAPTER_ADDRESS			= 2;
+			static const int					ADAPTER_NAME			= 0;
+			static const int					ADAPTER_DESCRIPTION		= 1;
+			static const int					ADAPTER_ADDRESS			= 2;
 			static const int					DEFAULT_MAXPACKETSIZE	= 65535;
 			static const int					PROMISCUOUS_MODE_ON		= 1;
 			static const int					PROMISCUOUS_MODE_OFF	= 0;
@@ -118,12 +118,18 @@ namespace whisper_library {
 			\brief Get all network addresses from a specific network adapter
 			*/
 			std::vector<char*>					adapterAddresses	(int adapter_id);
+
+			/**
+			\fn const char* adapterDescription(int adapter_id)
+			\brief Get the descriptional text from a specific network adapter (under windows e.g. the name of the hardware network device, under unix often <null>)
+			*/
+			const char*							adapterDescription	(int adapter_id);
 			/**
 			\fn int adapterId(char* adapter_value, unsigned int value_type)
 			\brief Get the id from an adapter with a specific value\n \
 			Value Types:\n ADAPTER_NAME, ADAPTER_DESCRIPTION, ADAPTER_ADDRESS
 			*/
-			int									adapterId			(const char* adapter_value, unsigned int value_type);
+			int									adapterId			(const char* adapter_value, int value_type);
 			/**
 			\fn boost::circular_buffer<int>* returnCodeBuffer()
 			\brief Returns a pointer to the global return code buffer
@@ -223,7 +229,7 @@ namespace whisper_library {
 		// Stores the last 20 method return codes
 		boost::circular_buffer<int>			m_last_return_codes;
 		bool								checkForAdapterId(int adapter_id);
-		int									adapterId(const char* value, unsigned int key, bool increment_key);
+		int									adapterId(const char* value, int key, bool increment_key);
 	};
 }
 #endif // SNIFFER
