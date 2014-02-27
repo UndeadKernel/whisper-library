@@ -50,6 +50,10 @@ do { if (DEBUG_LEVEL >= MinLevel) { \
 #define DEBUG(...)
 #endif
 
+#ifndef PCAP_NETMASK_UNKNOWN 
+#define PCAP_NETMASK_UNKNOWN    0xffffffff 
+#endif
+
 IE_TEMPLATE template class WHISPERAPI std::vector<bool>;
 IE_TEMPLATE template class WHISPERAPI std::vector<int>;
 IE_TEMPLATE template class WHISPERAPI std::vector<char*>;

@@ -52,7 +52,7 @@ namespace whisper_library {
 		int i, j;
 		for (i = 0; i < static_cast<int>(m_adapter_data.size()); i++) {
 			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; j++) {
-				if (m_adapter_data[i][j] == value) {
+				if (*m_adapter_data[i][j] == *value) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
 			}

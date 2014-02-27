@@ -1,3 +1,25 @@
+/*	<channelmanager.hpp>
+	Copyright(C) 2013,2014  Jan Simon Bunten
+							Simon Kadel
+							Martin Sven Oehler
+							Arne Sven Stühlmeyer
+
+	This File is part of the WhisperLibrary
+
+	WhisperLibrary is free software : you can redistribute it and / or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	WhisperLibrary is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef CHANNEL_MANAGER
 #define CHANNEL_MANAGER
 
@@ -43,6 +65,7 @@ public:
 	 * \param message the message to be written
 	 */
 	void outputMessage(std::string message);
+	void outputErrorMessage(string message);
 	/** 
 	 * \brief creates a valid tcp packet
 	 * \return a tcp packet
@@ -97,7 +120,7 @@ private:
 	std::ostream* m_error_stream;
 	// sniffer
 	Sniffer* m_network_sniffer;
-	unsigned int m_current_adapter_id;
+	int m_current_adapter_id = -1;
 };
 }
 #endif // CHANNEL_MANAGER
