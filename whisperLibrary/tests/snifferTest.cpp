@@ -12,7 +12,8 @@ BOOST_FIXTURE_TEST_SUITE(sniffer, SnifferFixture)
 
 BOOST_AUTO_TEST_CASE(sniffer_test) {
 	whisper_library::ChannelManager channelmanager;
-	channelmanager.selectChannel("TCP Header Covert Channel");
+	channelmanager.selectChannel("Timing Covert Channel");
+	channelmanager.setErrorStream(&cout);
 	cout << "current channel: " << channelmanager.currentChannel() << endl;
 	vector<char*> adapters = channelmanager.adapterNames();
 	vector<char*> adapter_descriptions = channelmanager.adapterDescriptions();
@@ -20,7 +21,10 @@ BOOST_AUTO_TEST_CASE(sniffer_test) {
 	for (int i = 0; i < adapters.size(); i++) {
 		cout << adapters[i] << ": " << adapter_descriptions[i] << endl;
 	}
-	channelmanager.openConnection("127.0.0.81", 8080, adapters[0]);
+	channelmanager.openConnection("192.168.2.104", 23, adapters[0]);
+	while (true) {
+
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -43,6 +43,7 @@ public:
 	 * \param message the message to be written
 	 */
 	void outputMessage(std::string message);
+	void outputErrorMessage(string message);
 	/** 
 	 * \brief creates a valid tcp packet
 	 * \return a tcp packet
@@ -97,7 +98,7 @@ private:
 	std::ostream* m_error_stream;
 	// sniffer
 	Sniffer* m_network_sniffer;
-	unsigned int m_current_adapter_id;
+	int m_current_adapter_id = -1;
 };
 }
 #endif // CHANNEL_MANAGER

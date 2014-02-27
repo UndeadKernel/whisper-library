@@ -32,7 +32,15 @@ void ChannelManager::addChannel(CovertChannel* channel) {
 
 //callback method for CC
 void ChannelManager::outputMessage(std::string message){
-	(*m_output_stream) << message;
+	if (m_output_stream != NULL) {
+		(*m_output_stream) << message;
+	}
+}
+
+void ChannelManager::outputErrorMessage(string message) {
+	if (m_error_stream != NULL) {
+		(*m_error_stream) << message << endl;
+	}
 }
 
 void ChannelManager::sendMessage(string message) {
@@ -106,9 +114,12 @@ string ChannelManager::currentChannel() {
 void ChannelManager::openConnection(string ip, short port, string adapter_name) {
 	selectAdapter(adapter_name);
 	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
-	if (ip_good) {
-		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, m_network_sniffer->PROMISCUOUS_MODE_OFF);
-		string filter = "host " + ip + " and port " + to_string(port) + " and " + m_current_channel->protocol();
+	if (ip_good && m_current_adapter_id != -1) {
+		cout << "open adapter" << endl;
+		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, m_network_sniffer->PROMISCUOUS_MODE_ON);
+		//string filter = "host " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
+		string filter = "src 192.168.2.104 and icmp";
+		cout << "Capture filter: " << filter << endl;
 		m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
 		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
 		packet_receiver.detach();
@@ -116,11 +127,16 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 }
 
 void ChannelManager::retrievePacket() {
+	cout << "retrive packets on " << m_current_adapter_id << endl;
+	int packet_counter = 0;
 	while (true) { //TODO
 		vector<bool> packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
+		//cout << "function returned" << endl;
 		if (!packet_data.empty()) {
 			GenericPacket generic_packet(packet_data);
-			m_current_channel->receiveMessage(generic_packet);
+			packet_counter++;
+			cout << packet_counter << " packet received!" << endl;
+		//	m_current_channel->receiveMessage(generic_packet);
 		}
 	}
 }
@@ -145,9 +161,11 @@ vector<char*> ChannelManager::adapterDescriptions() {
 }
 
 void ChannelManager::selectAdapter(string adapter_name) {
+	cout << "selecting adapter: " << adapter_name << endl;
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
+	cout << "adapter id: " << adapter_id << endl;
 	if (adapter_id < 0) {
-		(*m_error_stream) << "Adapter \'" + adapter_name + "\' not found.";
+		outputErrorMessage("Adapter \'" + adapter_name + "\' not found.");
 	}
 	else {
 		m_current_adapter_id = adapter_id;

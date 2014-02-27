@@ -52,7 +52,7 @@ namespace whisper_library {
 		int i, j;
 		for (i = 0; i < static_cast<int>(m_adapter_data.size()); i++) {
 			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; j++) {
-				if (m_adapter_data[i][j] == value) {
+				if (*m_adapter_data[i][j] == *value) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
 			}
@@ -227,7 +227,7 @@ namespace whisper_library {
 			fprintf(stderr, "Error: applyFilter() called on unopened adapter.\n");
 			RETURN_CODE(RC(ACCESS_ON_UNOPENED_HANDLE));
 		}
-		if (pcap_compile(handle, &filter_compiled, filter_string, 1, 0) < 0) {
+		if (pcap_compile(handle, &filter_compiled, filter_string, 0, PCAP_NETMASK_UNKNOWN) < 0) {
 			fprintf(stderr, "Error: Failed to compile given filter.\n");
 			RETURN_CODE(RC(ERROR_COMPILING_FILTER));
 		}
