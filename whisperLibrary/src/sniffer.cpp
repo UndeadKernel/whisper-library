@@ -48,7 +48,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int Sniffer::adapterId(char* value, unsigned int key, bool increment_key) {
+	int Sniffer::adapterId(const char* value, unsigned int key, bool increment_key) {
 		unsigned int i, j;
 		for (i = 0; i < m_adapter_data.size(); i++) {
 			for (j = key; j < m_adapter_data[i].size() && increment_key || j == key; j++) {
@@ -60,7 +60,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	unsigned int Sniffer::adapterId(char* adapter_value, unsigned int value_type) {
+	unsigned int Sniffer::adapterId(const char* adapter_value, unsigned int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
