@@ -137,9 +137,8 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
 	if (ip_good && m_current_adapter_id != -1) {
 		cout << "open adapter" << endl;
-		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, m_network_sniffer->PROMISCUOUS_MODE_ON);
-		//string filter = "host " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
-		string filter = "src 192.168.2.104 and icmp";
+		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
+		string filter = "host " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
 		cout << "Capture filter: " << filter << endl;
 		m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
 		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
@@ -152,7 +151,6 @@ void ChannelManager::retrievePacket() {
 	int packet_counter = 0;
 	while (true) { //TODO
 		vector<bool> packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
-		//cout << "function returned" << endl;
 		if (!packet_data.empty()) {
 			GenericPacket generic_packet(packet_data);
 			packet_counter++;
