@@ -74,7 +74,7 @@ public:
 	void openConnection(string ip, short port);
 	int adapterCount();
 	vector<char*> adapterNames();
-	void selectAdapter(unsigned int adapter_id);
+	void selectAdapter(string adapter_name);
 	
 private:
 	// adds a channel to the available channels
@@ -92,7 +92,6 @@ private:
 	// sniffer
 	Sniffer* m_network_sniffer;
 	unsigned int m_current_adapter_id;
-	vector<char*> m_last_adapter_names;
 };
 }
 #endif // CHANNEL_MANAGER
