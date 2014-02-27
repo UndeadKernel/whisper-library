@@ -99,31 +99,31 @@ namespace whisper_library {
 
 			// Getter & Setter
 			/**
-				\fn unsigned int adapterCount()
+				\fn int adapterCount()
 				\brief retrieve the amount of available network adapters with a valid network address
 			*/
-			unsigned int						adapterCount		();
+			int									adapterCount		();
 			/**
 				\fn std::vector<char*> adapterNames()
 				\brief retrieve all adapter/device names (e.g. /dev/eth0) from network adapters with a valid network address
 			*/
 			std::vector<char*>					adapterNames		();
 			/**
-				\fn char* adapterName(unsigned int adapter_id)
+				\fn char* adapterName(int adapter_id)
 				\brief Get the name from a specific network adapter
 			*/
-			char*								adapterName			(unsigned int adapter_id);
+			const char*							adapterName			(int adapter_id);
 			/**
-			\fn std::vector<char*> adapterAddresses(unsigned int adapter_id)
+			\fn std::vector<char*> adapterAddresses(int adapter_id)
 			\brief Get all network addresses from a specific network adapter
 			*/
-			std::vector<char*>					adapterAddresses	(unsigned int adapter_id);
+			std::vector<char*>					adapterAddresses	(int adapter_id);
 			/**
-			\fn unsigned int adapterId(char* adapter_value, unsigned int value_type)
+			\fn int adapterId(char* adapter_value, unsigned int value_type)
 			\brief Get the id from an adapter with a specific value\n \
 			Value Types:\n ADAPTER_NAME, ADAPTER_DESCRIPTION, ADAPTER_ADDRESS
 			*/
-			unsigned int						adapterId			(const char* adapter_value, unsigned int value_type);
+			int									adapterId			(const char* adapter_value, unsigned int value_type);
 			/**
 			\fn boost::circular_buffer<int>* returnCodeBuffer()
 			\brief Returns a pointer to the global return code buffer
@@ -153,15 +153,15 @@ namespace whisper_library {
 				\return 0 - normal execution,
 				-1 - Error occured
 			*/
-			int									openAdapter		(char* adapter_name, int max_packet_size, int promiscuous_mode);
-			int									openAdapter		(unsigned int adapter_id, int max_packet_size, int promiscuous_mode);
+			int									openAdapter		(const char* adapter_name, int max_packet_size, int promiscuous_mode);
+			int									openAdapter		(int adapter_id, int max_packet_size, int promiscuous_mode);
 			/**
 				\fn int closeAdapter(char* adapter_name)
 				\brief Closes an openend handle on the adapter with the given name/id. 
 			
 			*/
-			int									closeAdapter(char* adapter_name);
-			int									closeAdapter(unsigned int adapter_name);
+			int									closeAdapter(const char* adapter_name);
+			int									closeAdapter(int adapter_name);
 			/**
 				\fn int freeAdapters()
 				\brief Frees unopened adapters and closes previously opened handles.
@@ -170,36 +170,36 @@ namespace whisper_library {
 			*/
 			int									freeAdapters	();
 			/**
-				\fn int applyFilter(unsigned int adapter_id, char* filter)
+				\fn int applyFilter(int adapter_id, char* filter)
 				\brief Applies a given filter with pcap syntax to the selected adapter
 			*/
-			int									applyFilter		(unsigned int adapter_id, char* filter);
-			int									applyFilter		(char* adapter_name, char* filter);
+			int									applyFilter		(int adapter_id, const char* filter);
+			int									applyFilter		(const char* adapter_name, const char* filter);
 			/**
-				\fn int removeFilter(unsigned int adapter_id)
+				\fn int removeFilter(int adapter_id)
 				\brief Removes any previously applied filter from the adapter handle
 			*/
-			int									removeFilter	(unsigned int adapter_id);
-			int									removeFilter	(char* adapter_name);
+			int									removeFilter	(int adapter_id);
+			int									removeFilter	(const char* adapter_name);
 
 			/**
-			\fn const u_char* retrievePacket(unsigned int adapter_id)
+			\fn const u_char* retrievePacket(int adapter_id)
 			\brief Retrieves the next packet from the capture device
 			\return PcapPacket{NULL, NULL} if adapter was not found or if the specified adapter had no open handle \n
 			or PcapPacket{pcap_pkthdr, NULL} if no packet passed through the configured filter\n
 			or PcapPacket{pcap_pkthdr, NULL} if no packet arrived in a system dependent time window (timeout)\n
 			or PcapPacket{pcap_pkthdr, const u_char*} where  const u_char* is the pointer to the packet data with the maximum size configured in openAdapter()
 			*/
-			PcapPacket							retrievePacket(unsigned int adapter_id);
-			PcapPacket							retrievePacket(char* adapter_name);
+			PcapPacket							retrievePacket(int adapter_id);
+			PcapPacket							retrievePacket(const char* adapter_name);
 
 			/**
-			\fn std::vector<bool> retrievePacketAsVector(unsigned int adapter_id)
+			\fn std::vector<bool> retrievePacketAsVector(int adapter_id)
 			\brief Calls retrievePacket(adapter_id) and converts the retrieved packet payload in a std::vector<bool>
 			\return bitwise representation of the packet payload from retrievePacket() as a std::vector<bool> 
 			*/
-			std::vector<bool>					retrievePacketAsVector	(unsigned int adapter_id);
-			std::vector<bool>					retrievePacketAsVector	(char* adapter_name);
+			std::vector<bool>					retrievePacketAsVector	(int adapter_id);
+			std::vector<bool>					retrievePacketAsVector	(const char* adapter_name);
 
 
 	protected:
@@ -222,7 +222,7 @@ namespace whisper_library {
 		pcap_if_t*							m_adapter_raw_data;
 		// Stores the last 20 method return codes
 		boost::circular_buffer<int>			m_last_return_codes;
-		bool								checkForAdapterId(unsigned int adapter_id);
+		bool								checkForAdapterId(int adapter_id);
 		int									adapterId(const char* value, unsigned int key, bool increment_key);
 	};
 }

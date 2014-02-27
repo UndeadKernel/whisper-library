@@ -30,7 +30,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), true);
 	}
 
-	char* Sniffer::adapterName(int adapter_id) {
+	const char* Sniffer::adapterName(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -48,8 +48,8 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int Sniffer::adapterId(const char* value, int key, bool increment_key) {
-		unsigned int i, j;
+	int Sniffer::adapterId(const char* value, unsigned int key, bool increment_key) {
+		int i, j;
 		for (i = 0; i < m_adapter_data.size(); i++) {
 			for (j = key; j < m_adapter_data[i].size() && increment_key || j == key; j++) {
 				if (m_adapter_data[i][j] == value) {
@@ -60,7 +60,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	unsigned int Sniffer::adapterId(const char* adapter_value, unsigned int value_type) {
+	int Sniffer::adapterId(const char* adapter_value, unsigned int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
@@ -73,8 +73,8 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	unsigned int Sniffer::adapterCount() {
-		return static_cast<unsigned int>(m_adapter_data.size());
+	int Sniffer::adapterCount() {
+		return static_cast<int>(m_adapter_data.size());
 	}
 
 	int Sniffer::retrieveAdapters() {
@@ -206,7 +206,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::applyFilter(int adapter_id, char* filter) {
+	int Sniffer::applyFilter(int adapter_id, const char* filter) {
 		
 		if (!checkForAdapterId(adapter_id)) { return -1; } // specified adapter not found
 		const char*			filter_string = (filter ? filter : ""); // If given filter is NULL, replace with empty(/ANY) filter
@@ -231,7 +231,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::applyFilter(const char* adapter_name, char* filter) {
+	int Sniffer::applyFilter(const char* adapter_name, const char* filter) {
 		return applyFilter(adapterId(adapter_name, ADAPTER_NAME), filter);
 	}
 
