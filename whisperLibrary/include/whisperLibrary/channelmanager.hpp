@@ -11,6 +11,7 @@
 #include <genericpacket.hpp>
 #include <udppacket.hpp>
 #include <regex>
+#include <sniffer.hpp>
 
 namespace whisper_library {
 
@@ -71,6 +72,9 @@ public:
 	// returns the name of the currently selected channel
 	string currentChannel();
 	void openConnection(string ip, short port);
+	int adapterCount();
+	vector<char*> adapterNames();
+	void selectAdapter(unsigned int adapter_id);
 	
 private:
 	// adds a channel to the available channels
@@ -85,6 +89,10 @@ private:
 	SocketConnector* m_socket;
 	// stream that holds received messages
 	std::ostream* m_output_stream;
+	// sniffer
+	Sniffer* m_network_sniffer;
+	unsigned int m_current_adapter_id;
+	vector<char*> m_last_adapter_names;
 };
 }
 #endif // CHANNEL_MANAGER

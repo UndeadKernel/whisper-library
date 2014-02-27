@@ -6,6 +6,7 @@ namespace whisper_library {
 
 ChannelManager::ChannelManager(){
 	m_socket = new SocketConnector(this);
+	m_network_sniffer = new Sniffer();
 
 	// TcpHeaderCovertChannel
 	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
@@ -22,6 +23,7 @@ ChannelManager::~ChannelManager() {
 		delete m_channels[i];
 	}
 	delete m_socket;
+	delete m_network_sniffer;
 }
 
 void ChannelManager::addChannel(CovertChannel* channel) {
@@ -100,8 +102,21 @@ string ChannelManager::currentChannel() {
 void ChannelManager::openConnection(string ip, short port) {
 	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
 	if (ip_good) {
-		cout << "ip good" << endl;
+		
 	}
+}
+
+int ChannelManager::adapterCount() {
+	return m_network_sniffer->adapterCount();
+}
+
+vector<char*> ChannelManager::adapterNames() {
+	return m_network_sniffer->adapterNames();
+}
+
+void ChannelManager::selectAdapter(string adapter_name) {
+	unsigned int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
+	m_current_adapter_id = adapter_id;
 }
 
 }
