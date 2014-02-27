@@ -10,6 +10,7 @@
 #include <functional>
 #include <genericpacket.hpp>
 #include <udppacket.hpp>
+#include <regex>
 
 namespace whisper_library {
 
@@ -35,6 +36,7 @@ public:
 	 * \param index the index of the channel
 	 */
 	void selectChannel(unsigned int index);
+	
 	/** 
 	 * \brief Writes a message to the selected output stream, stored in m_output_stream.
 	 * \param message the message to be written
@@ -52,6 +54,8 @@ public:
 	 * \param packet the  packet that was received
 	 */
 	void packetReceived(GenericPacket packet);
+	
+	void selectChannel(string name);
 	/** 
 	 * \brief Sends a message through the currently selected covert channel
 	 * \param the message as string
@@ -64,6 +68,9 @@ public:
 	void setOutputStream(std::ostream* stream);
 	vector<string> getChannelInfos();
 	vector<string> getChannelNames();
+	// returns the name of the currently selected channel
+	string currentChannel();
+	void openConnection(string ip, short port);
 	
 private:
 	// adds a channel to the available channels
