@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 		}
 		sniffer.openAdapter(id, sniffer.DEFAULT_MAXPACKETSIZE, sniffer.PROMISCUOUS_MODE_ON);
 		// http://www.winpcap.org/docs/docs_40_2/html/group__language.html
-		sniffer.applyFilter(id, "");
+		sniffer.applyFilter(id, "icmp");
 
 		/*
 		struct pcap_pkthdr:
@@ -32,14 +32,25 @@ int main(int argc, char* argv[]){
 		*/
 		for (int k = 0; k < 10000; k++) {
 			whisper_library::Sniffer::PcapPacket packet = sniffer.retrievePacket(id);
-			long p_ts, p_uts, s_ts, s_uts;
+			unsigned long p_ts, s_ts;
+			unsigned long s_uts, p_uts;
 			p_ts	= packet.header.ts.tv_sec;
-			p_uts	= packet.header.ts.tv_usec;
-			s_ts	= static_cast<long>(time(0));
-			s_uts	= 
-			if (s_ts - p_ts > 1) {
-				fprintf(stdout, "Timestamp - Packet: %ld ; Current: %ld\n", p_ts, s_ts);
-			}
+			p_uts	= static_cast<unsigned long>(packet.header.ts.tv_usec);
+
+			FILETIME ft;
+			GetSystemTimeAsFileTime(&ft);
+			unsigned long long tt = ft.dwHighDateTime;
+			tt <<= 32;
+			tt |= ft.dwLowDateTime;
+			// CONVERT TO POSIX TS
+			tt /= 10;
+			tt -= 11644473600000000ULL; // EPOCH IN MICROSECONDS
+			s_ts  = static_cast<long>(tt / 1000000UL);
+			s_uts = static_cast<long>(tt % 1000000UL);
+			fprintf(stdout, "sys: %lu\npac: %lu\n", s_uts, p_uts);
+			//if (s_ts - p_ts > 1 || s_uts - p_uts > 10000) { // packages with more than 1s or more than 25ms delay
+			//	fprintf(stdout, "Timestamp - Packet: %lu + %llu ; Current: %lu + %lu\n", p_ts, p_uts, s_ts, s_uts);
+			//}
 		}
 		sniffer.removeFilter(id);
 		sniffer.closeAdapter(id);
