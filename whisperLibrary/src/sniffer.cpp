@@ -16,7 +16,7 @@ namespace whisper_library {
 		m_last_return_codes.clear();
 	}
 	
-	bool Sniffer::checkForAdapterId(unsigned int adapter_id) {
+	bool Sniffer::checkForAdapterId(int adapter_id) {
 		if (m_adapter_data.empty()) {
 			// unsafe call
 			fprintf(stderr, "Warning: Adapter requested while all adapters are freed. Retrieving adapters...");
@@ -30,7 +30,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), true);
 	}
 
-	char* Sniffer::adapterName(unsigned int adapter_id) {
+	char* Sniffer::adapterName(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -48,7 +48,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int Sniffer::adapterId(char* value, unsigned int key, bool increment_key) {
+	int Sniffer::adapterId(const char* value, int key, bool increment_key) {
 		unsigned int i, j;
 		for (i = 0; i < m_adapter_data.size(); i++) {
 			for (j = key; j < m_adapter_data[i].size() && increment_key || j == key; j++) {
@@ -60,11 +60,11 @@ namespace whisper_library {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	unsigned int Sniffer::adapterId(char* adapter_value, unsigned int value_type) {
+	unsigned int Sniffer::adapterId(const char* adapter_value, unsigned int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
-	std::vector<char*> Sniffer::adapterAddresses(unsigned int adapter_id) {
+	std::vector<char*> Sniffer::adapterAddresses(int adapter_id) {
 		std::vector<char*> ret;
 		if (!checkForAdapterId(adapter_id)) { return ret; }  // specified adapter not found
 		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); i++) {
@@ -143,7 +143,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::openAdapter(unsigned int adapter_id, int max_packet_size, int promiscuous_mode) {
+	int Sniffer::openAdapter(int adapter_id, int max_packet_size, int promiscuous_mode) {
 		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
 		// open handle
 		char error_buffer[PCAP_ERRBUF_SIZE]; // pcap error buffer
@@ -162,15 +162,15 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::openAdapter(char* adapter_name, int max_packet_size, int promiscuous_mode) {
+	int Sniffer::openAdapter(const char* adapter_name, int max_packet_size, int promiscuous_mode) {
 		return openAdapter(adapterId(adapter_name, ADAPTER_NAME), max_packet_size, promiscuous_mode);
 	}
 
-	int Sniffer::closeAdapter(char* adapter_name) {
+	int Sniffer::closeAdapter(const char* adapter_name) {
 		return closeAdapter(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
-	int Sniffer::closeAdapter(unsigned int adapter_id) {
+	int Sniffer::closeAdapter(int adapter_id) {
 		if (m_adapter_handles.size() > adapter_id && m_adapter_handles[adapter_id]) {
 			pcap_close(m_adapter_handles[adapter_id]);
 			m_adapter_handles[adapter_id] = NULL;
@@ -206,7 +206,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::applyFilter(unsigned int adapter_id, char* filter) {
+	int Sniffer::applyFilter(int adapter_id, char* filter) {
 		
 		if (!checkForAdapterId(adapter_id)) { return -1; } // specified adapter not found
 		const char*			filter_string = (filter ? filter : ""); // If given filter is NULL, replace with empty(/ANY) filter
@@ -231,19 +231,19 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::applyFilter(char* adapter_name, char* filter) {
+	int Sniffer::applyFilter(const char* adapter_name, char* filter) {
 		return applyFilter(adapterId(adapter_name, ADAPTER_NAME), filter);
 	}
 
-	int Sniffer::removeFilter(char* adapter_name) {
+	int Sniffer::removeFilter(const char* adapter_name) {
 		return applyFilter(adapter_name, NULL);
 	}
 
-	int Sniffer::removeFilter(unsigned int adapter_id) {
+	int Sniffer::removeFilter(int adapter_id) {
 		return applyFilter(adapter_id, NULL);
 	}
 
-	Sniffer::PcapPacket Sniffer::retrievePacket(unsigned int adapter_id) {
+	Sniffer::PcapPacket Sniffer::retrievePacket(int adapter_id) {
 		PcapPacket packet = { NULL, NULL };
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
@@ -284,11 +284,11 @@ namespace whisper_library {
 		}
 	}
 
-	Sniffer::PcapPacket Sniffer::retrievePacket(char* adapter_name) {
+	Sniffer::PcapPacket Sniffer::retrievePacket(const char* adapter_name) {
 		return retrievePacket(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
-	std::vector<bool> Sniffer::retrievePacketAsVector(unsigned int adapter_id) {
+	std::vector<bool> Sniffer::retrievePacketAsVector(int adapter_id) {
 		std::vector<bool> bitVector;
 		PcapPacket packet			= retrievePacket(adapter_id);
 		if (packet.payload == NULL) {
@@ -307,7 +307,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), bitVector);
 	}
 
-	std::vector<bool> Sniffer::retrievePacketAsVector(char* adapter_name) {
+	std::vector<bool> Sniffer::retrievePacketAsVector(const char* adapter_name) {
 		return retrievePacketAsVector(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
@@ -318,6 +318,10 @@ namespace whisper_library {
 		DEBUG(2, "ipToString()\nBuffer length: %d; Address Length: %d\n", static_cast<unsigned int>(buffer_length), static_cast<unsigned int>(address_length));
 		
 		getnameinfo(socket_address, address_length, buffer, buffer_length, NULL, 0, NI_NUMERICHOST);
+		#ifndef WIN32
+
+		#endif
+
 		DEBUG(2, "Address from getnameinfo: %s\n\n", (buffer) ? buffer : "NULL");
 		return (buffer);
 	}

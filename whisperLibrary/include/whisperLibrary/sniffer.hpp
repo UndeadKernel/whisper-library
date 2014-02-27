@@ -53,7 +53,7 @@ IE_TEMPLATE template class WHISPERAPI std::vector<pcap_t*>;
 
 namespace whisper_library {
 		
-	class WHISPERAPI Sniffer {
+	class Sniffer {
 
 		public:
 			// Default Constructor
@@ -105,7 +105,7 @@ namespace whisper_library {
 			unsigned int						adapterCount		();
 			/**
 				\fn std::vector<char*> adapterNames()
-				\brief retrieve all adapter/device names (e.g. /dev/eth0) from network adapters with a valid network address
+				\brief Creates a new vector containing pointers to all adapter/device names (e.g. /dev/eth0) from network adapters retrieved by retrieveAdapters()
 			*/
 			std::vector<char*>					adapterNames		();
 			/**
@@ -223,7 +223,7 @@ namespace whisper_library {
 		// Stores the last 20 method return codes
 		boost::circular_buffer<int>			m_last_return_codes;
 		bool								checkForAdapterId(unsigned int adapter_id);
-		int									adapterId(char* value, unsigned int key, bool increment_key);
+		unsigned int						adapterId(char* value, unsigned int key, bool increment_key);
 	};
 }
 #endif // SNIFFER
