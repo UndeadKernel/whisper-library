@@ -36,7 +36,7 @@ set(TESTS
 	tests/bitSetCoderTest.cpp
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
-	#tests/snifferTest.cpp
+	tests/snifferTest.cpp
 )
 
 # Boost library

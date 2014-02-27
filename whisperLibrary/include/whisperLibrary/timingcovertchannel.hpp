@@ -59,6 +59,9 @@ public:
 	// Returns a string with basic information about the timing covert channel
 	string info() const;
 
+	// Returns the protocol used by this covert channel (udp)
+	string protocol() const;
+
 private:
 	/*
 		Starts the timeout. If m_timeout_changed is false and m_timeout_end is in the past, 

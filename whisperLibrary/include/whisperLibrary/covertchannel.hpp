@@ -26,6 +26,8 @@ public:
 	virtual string name() const = 0;
 	// Displays information about the covert channel
 	virtual string info() const = 0;
+	// Returns the used protocol (e.g. tcp)
+	virtual string protocol() const = 0;
 };
 }
 #endif // COVERT_CHANNEL
