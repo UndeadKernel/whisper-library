@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 		}
 		sniffer.openAdapter(id, sniffer.DEFAULT_MAXPACKETSIZE, sniffer.PROMISCUOUS_MODE_ON);
 		// http://www.winpcap.org/docs/docs_40_2/html/group__language.html
-		sniffer.applyFilter(id, "");
+		sniffer.applyFilter(id, "icmp");
 
 		/*
 		struct pcap_pkthdr:
@@ -48,9 +48,9 @@ int main(int argc, char* argv[]){
 			s_ts  = static_cast<long>(tt / 1000000UL);
 			s_uts = static_cast<long>(tt % 1000000UL);
 			fprintf(stdout, "sys: %lu\npac: %lu\n", s_uts, p_uts);
-			if (s_ts - p_ts > 1 || s_uts - p_uts > 10000) { // packages with more than 1s or more than 25ms delay
-				fprintf(stdout, "Timestamp - Packet: %lu + %llu ; Current: %lu + %lu\n", p_ts, p_uts, s_ts, s_uts);
-			}
+			//if (s_ts - p_ts > 1 || s_uts - p_uts > 10000) { // packages with more than 1s or more than 25ms delay
+			//	fprintf(stdout, "Timestamp - Packet: %lu + %llu ; Current: %lu + %lu\n", p_ts, p_uts, s_ts, s_uts);
+			//}
 		}
 		sniffer.removeFilter(id);
 		sniffer.closeAdapter(id);

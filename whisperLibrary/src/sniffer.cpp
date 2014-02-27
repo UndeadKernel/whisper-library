@@ -107,8 +107,15 @@ namespace whisper_library {
 			if (!adapter->addresses) { continue; }
 
 			std::vector<char*> current_adapter;
-			current_adapter.push_back(adapter->name);		 // adapter/device name in the system (for example /dev/eth0)
-			current_adapter.push_back(adapter->description); // adapter descriptional name (usually the product name of the network card o.s.)
+			current_adapter.push_back(adapter->name);					// adapter/device name in the system (for example /dev/eth0)
+			current_adapter.push_back(adapter->description);			// adapter descriptional name (usually the product name of the network card o.s.)
+			bpf_u_int32 netmask;
+			bpf_u_int32 ip4_address;
+			if (pcap_lookupnet(adapter->name, &netmask, &ip4_address, error_buffer) < 0) {
+				netmask = 0;
+			}
+			m_adapter_netmasks.push_back(netmask);
+
 			DEBUG(1, "Device Name: %s\nDescription: %s\nFlags: #%d\n", adapter->name, adapter->description, adapter->flags);
 			// get adapter addresses
 			for (pcap_addr* address = adapter->addresses; address; address = address->next) {
@@ -151,7 +158,7 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::openAdapter(int adapter_id, int max_packet_size, int promiscuous_mode) {
+	int Sniffer::openAdapter(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout) {
 		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
 		// open handle
 		char error_buffer[PCAP_ERRBUF_SIZE]; // pcap error buffer
@@ -161,7 +168,7 @@ namespace whisper_library {
 			m_adapter_handles.resize(adapter_id + 1);
 		}
 		// open handle for live capturing
-		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0], max_packet_size, promiscuous_mode, 0, error_buffer);
+		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0], max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
 		if (!m_adapter_handles[adapter_id]) {
 			fprintf(stderr, "Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0], error_buffer);
 			RETURN_CODE(RC(ERROR_OPENING_HANDLE));
@@ -170,8 +177,8 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int Sniffer::openAdapter(const char* adapter_name, int max_packet_size, int promiscuous_mode) {
-		return openAdapter(adapterId(adapter_name, ADAPTER_NAME), max_packet_size, promiscuous_mode);
+	int Sniffer::openAdapter(const char* adapter_name, int max_packet_size, bool promiscuous_mode, int timeout) {
+		return openAdapter(adapterId(adapter_name, ADAPTER_NAME), max_packet_size, promiscuous_mode, timeout);
 	}
 
 	int Sniffer::closeAdapter(const char* adapter_name) {
@@ -207,6 +214,7 @@ namespace whisper_library {
 		// clear vector content
 		m_adapter_data.clear();
 		m_adapter_handles.clear();
+		m_adapter_netmasks.clear();
 		// free adapters
 		pcap_freealldevs( m_adapter_raw_data );
 		// purge old values
@@ -227,7 +235,14 @@ namespace whisper_library {
 			fprintf(stderr, "Error: applyFilter() called on unopened adapter.\n");
 			RETURN_CODE(RC(ACCESS_ON_UNOPENED_HANDLE));
 		}
-		if (pcap_compile(handle, &filter_compiled, filter_string, 1, 0) < 0) {
+		bpf_u_int32 netmask;
+		if (m_adapter_netmasks.size() > adapter_id && m_adapter_netmasks[adapter_id] != 0) {
+			netmask = m_adapter_netmasks[adapter_id];
+		} else {
+			netmask = PCAP_NETMASK_UNKNOWN;
+		}
+
+		if (pcap_compile(handle, &filter_compiled, filter_string, 1, netmask) < 0) {
 			fprintf(stderr, "Error: Failed to compile given filter.\n");
 			RETURN_CODE(RC(ERROR_COMPILING_FILTER));
 		}

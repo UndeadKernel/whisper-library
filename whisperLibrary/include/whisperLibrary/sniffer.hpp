@@ -26,6 +26,11 @@
 	#	endif
 #endif
 
+/* Define PCAP_NETMASK_UNKNOWN if not included on pcap.h */
+#ifndef PCAP_NETMASK_UNKNOWN
+	#define PCAP_NETMASK_UNKNOWN    0xffffffff
+#endif
+
 #ifdef DEBUG_LEVEL
 /* define debug macro
 the do {} while(0) ensures that the ; after DEBUG() is always correctly placed.
@@ -78,9 +83,8 @@ namespace whisper_library {
 			static const int					ADAPTER_DESCRIPTION		= 1;
 			static const int					ADAPTER_ADDRESS			= 2;
 			static const int					DEFAULT_MAXPACKETSIZE	= 65535;
-			static const int					PROMISCUOUS_MODE_ON		= 1;
-			static const int					PROMISCUOUS_MODE_OFF	= 0;
 			static const int					RETURN_CODE_BUFFER_SIZE = 20;
+			static const int					TIMEOUT_WAIT_FOREVER = 0;
 
 			enum RC{
 				NORMAL_EXECUTION			= 0,
@@ -136,7 +140,6 @@ namespace whisper_library {
 			*/
 			std::vector<int>					lastReturnCodes();
 			
-
 			/**
 				\fn int retrieveAdapters()
 				\brief Retrieves available network devices from the (local) machine
@@ -150,17 +153,18 @@ namespace whisper_library {
 			/**
 				\fn int openAdapter(char* adapterName, int maxPacketSize, int promiscuous)
 				\brief Opens a live capture handle to the given device
-				\param char*	adapterName		- Name of the adapter (pcap_if_t->name) to open
-				\param int		maxPacketSize	- Maximum number of bytes that should be captured from each packet. 
+				\param char*	adapter_name		- Name of the adapter (pcap_if_t->name) to open
+				\param int		max_packet_size		- Maximum number of bytes that should be captured from each packet. 
 				65535 is enough for the whole packet in most networks.
-				\param int		promiscuous 	- Open in promiscuous mode? 0: No, 1: Yes (PCAP_OPENFLAG_PROMISCUOUS).
+				\param bool		promiscuous_mode 	- Open in promiscuous mode? false: No, true: Yes.
+				\param int		timeout				- Specifies a timeout in ms.
 				promiscuous mode: capture all packets
 				non-promiscuous:  capture only packets directed to the application
 				\return 0 - normal execution,
 				-1 - Error occured
 			*/
-			int									openAdapter		(const char* adapter_name, int max_packet_size, int promiscuous_mode);
-			int									openAdapter		(int adapter_id, int max_packet_size, int promiscuous_mode);
+			int									openAdapter		(const char* adapter_name, int max_packet_size, bool promiscuous_mode, int timeout);
+			int									openAdapter		(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout);
 			/**
 				\fn int closeAdapter(char* adapter_name)
 				\brief Closes an openend handle on the adapter with the given name/id. 
@@ -224,6 +228,7 @@ namespace whisper_library {
 		*/
 		std::vector< std::vector<char*> >	m_adapter_data;
 		std::vector<pcap_t*>				m_adapter_handles;
+		std::vector<bpf_u_int32>			m_adapter_netmasks;
 
 		pcap_if_t*							m_adapter_raw_data;
 		// Stores the last 20 method return codes
