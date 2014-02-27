@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 2.8)
 project(whisperLibrary)
 
 set(SOURCES
-	src/socketconnector.cpp
 	src/channelmanager.cpp
 	src/tcpheadercovertchannel.cpp
 	src/tcppacket.cpp
@@ -12,10 +11,10 @@ set(SOURCES
 	src/genericpacket.cpp
 	src/udppacket.cpp
 	src/sniffer.cpp
+	src/socketSender.cpp
 )
 
 set(HEADERS
-	include/whisperLibrary/socketconnector.hpp
 	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
 	include/whisperLibrary/covertchannel.hpp
@@ -25,8 +24,10 @@ set(HEADERS
 	include/whisperLibrary/morseCoder.hpp
 	include/whisperLibrary/timingcovertchannel.hpp
 	include/whisperLibrary/genericpacket.hpp
-	include/whisperLibrary/udppacket.hpp
+	src/udppacket.hpp
 	include/whisperLibrary/sniffer.hpp
+	src/socketSender.hpp
+	src/rawSocketProtocol.hpp
 )
 
 set(TESTS
@@ -37,6 +38,7 @@ set(TESTS
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
 	tests/snifferTest.cpp
+	tests/socketConnectionTest.cpp
 )
 
 # Boost library

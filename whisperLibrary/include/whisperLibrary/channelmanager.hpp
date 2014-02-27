@@ -31,14 +31,14 @@
 #include "timingcovertchannel.hpp"
 #include <functional>
 #include <genericpacket.hpp>
-#include <udppacket.hpp>
+#include "../../src/udppacket.hpp"
 #include <regex>
 #include <sniffer.hpp>
+#include "../../src/socketSender.hpp"
 
 namespace whisper_library {
 
 class CovertChannel;
-class SocketConnector;
 
 /**
 	\brief A ChannelManager is the connecting part for the covert channel and the framework. 
@@ -112,14 +112,13 @@ private:
 	std::vector<CovertChannel*> m_channels;
 	// pointer to the covert channel, that is currently in use
 	CovertChannel* m_current_channel;
-	// connects the ChannelManager to the network
-	SocketConnector* m_socket;
 	// stream that holds received messages
 	std::ostream* m_output_stream;
 	// stream that displays errors
 	std::ostream* m_error_stream;
 	// sniffer
 	Sniffer* m_network_sniffer;
+	SocketSender* m_socket_sender;
 	int m_current_adapter_id = -1;
 };
 }

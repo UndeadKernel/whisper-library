@@ -21,21 +21,20 @@
 */
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
-#include <socketconnector.hpp>
 
 namespace whisper_library {
 
 ChannelManager::ChannelManager(){
-	m_socket = new SocketConnector(this);
 	m_network_sniffer = new Sniffer();
+	m_socket_sender = new SocketSender();
 
 	// TcpHeaderCovertChannel
 	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-										   std::bind(&SocketConnector::sendTcpPacket, m_socket, std::placeholders::_1),
+										   std::bind(&SocketSender::sendTcp, m_socket_sender, std::placeholders::_1),
 										   std::bind(&ChannelManager::getTcpPacket, this))));
 	// TimingChannel
 	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-									   std::bind(&SocketConnector::sendUdpPacket, m_socket, std::placeholders::_1),
+									   std::bind(&SocketSender::sendUdp, m_socket_sender, std::placeholders::_1),
 									   std::bind(&ChannelManager::getUdpPacket, this)));
 	m_current_channel = m_channels[0];
 }
@@ -43,8 +42,8 @@ ChannelManager::~ChannelManager() {
 	for (unsigned int i = 0; i < m_channels.size(); i++) {
 		delete m_channels[i];
 	}
-	delete m_socket;
 	delete m_network_sniffer;
+	delete m_socket_sender;
 }
 
 void ChannelManager::addChannel(CovertChannel* channel) {
@@ -76,7 +75,17 @@ TcpPacket ChannelManager::getTcpPacket(){
 }
 
 UdpPacket ChannelManager::getUdpPacket() {
-	return UdpPacket();
+	whisper_library::UdpPacket packet;
+	packet.setSourcePort(23);
+	packet.setDestinationPort(23);
+	packet.setLength(11);
+	packet.setChecksum(33434);
+	std::vector<char> data;
+	data.push_back('A');
+	data.push_back('B');
+	data.push_back('C');
+	packet.setData(data);
+	return packet;
 }
 
 void ChannelManager::packetReceived(GenericPacket packet) {
@@ -136,6 +145,8 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 	selectAdapter(adapter_name);
 	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
 	if (ip_good && m_current_adapter_id != -1) {
+		cout << "set receiver ip: " << ip << endl;
+		m_socket_sender->setReceiverIp(ip);
 		cout << "open adapter" << endl;
 		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
 		string filter = "host " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
@@ -155,7 +166,7 @@ void ChannelManager::retrievePacket() {
 			GenericPacket generic_packet(packet_data);
 			packet_counter++;
 			cout << packet_counter << " packet received!" << endl;
-		//	m_current_channel->receiveMessage(generic_packet);
+			m_current_channel->receiveMessage(generic_packet);
 		}
 	}
 }

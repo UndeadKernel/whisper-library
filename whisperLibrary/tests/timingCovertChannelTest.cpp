@@ -26,8 +26,7 @@ struct timingCovertChannelFixture {
 	}
 
 	void sendPacket(whisper_library::UdpPacket packet) {
-		whisper_library::GenericPacket generic_packet(packet.packet());
-		uut->receiveMessage(generic_packet);
+		uut->receiveMessage(whisper_library::GenericPacket());
 	}
 };
 
