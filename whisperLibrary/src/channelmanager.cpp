@@ -133,6 +133,17 @@ vector<char*> ChannelManager::adapterNames() {
 	return m_network_sniffer->adapterNames();
 }
 
+vector<char*> ChannelManager::adapterDescriptions() {
+	vector<char*> adapter_names;
+	int count = m_network_sniffer->adapterCount();
+	for (int i = 0; i < count; i++) {
+		const char* description = m_network_sniffer->adapterDescription(i);
+		adapter_names.push_back(const_cast<char*>(description));
+	}
+
+	return adapter_names;
+}
+
 void ChannelManager::selectAdapter(string adapter_name) {
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
 	if (adapter_id < 0) {

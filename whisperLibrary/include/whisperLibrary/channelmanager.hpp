@@ -75,6 +75,7 @@ public:
 	void openConnection(string ip, short port, string adapter_name);
 	int adapterCount();
 	vector<char*> adapterNames();
+	vector<char*> adapterDescriptions();
 	
 private:
 	void selectAdapter(string adapter_name);
