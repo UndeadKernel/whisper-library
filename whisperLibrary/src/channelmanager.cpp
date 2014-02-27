@@ -107,7 +107,7 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 	selectAdapter(adapter_name);
 	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
 	if (ip_good) {
-		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, m_network_sniffer->PROMISCUOUS_MODE_OFF);
+		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, false, 10);
 		string filter = "host " + ip + " and port " + to_string(port) + " and " + m_current_channel->protocol();
 		m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
 		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
