@@ -9,6 +9,10 @@ namespace whisper_library {
 		return "This covert channel uses inter-packet delays to transmit morse code.";
 	}
 
+	string TimingCovertChannel::protocol() const {
+		return "udp";
+	}
+
 	void TimingCovertChannel::sendMessage(string message) {
 		if (message.empty()) {
 			return;

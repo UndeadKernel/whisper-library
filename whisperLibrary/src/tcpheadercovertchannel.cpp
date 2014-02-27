@@ -13,6 +13,10 @@ namespace whisper_library {
 		return	"The TCP Header Covert Channel uses unused bits in the TCP Header to hide data. 3 bits are sent per packet.";
 	}
 
+	string TcpHeaderCovertChannel::protocol() const {
+		return "tcp";
+	}
+
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets

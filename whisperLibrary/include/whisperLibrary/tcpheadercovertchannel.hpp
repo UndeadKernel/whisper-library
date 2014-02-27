@@ -52,6 +52,9 @@ namespace whisper_library {
 		// Returns a string with basic information about the tcp header covert channel
 		string info() const;
 
+		// Returns the protocol used by this covert channel (tcp)
+		string protocol() const;
+
 	private:
 		//	encodeMessageWithLength splits the message into parts of 3 bits and adds length blocks inbetween.
 		vector<bitset<3> > encodeMessageWithLength(string message);

@@ -67,20 +67,23 @@ public:
 	 * \param a pointer to the output stream
 	 */
 	void setOutputStream(std::ostream* stream);
+	void setErrorStream(std::ostream* stream);
 	vector<string> getChannelInfos();
 	vector<string> getChannelNames();
 	// returns the name of the currently selected channel
 	string currentChannel();
-	void openConnection(string ip, short port);
+	void openConnection(string ip, short port, string adapter_name);
 	int adapterCount();
 	vector<char*> adapterNames();
-	void selectAdapter(string adapter_name);
 	
 private:
+	void selectAdapter(string adapter_name);
 	// adds a channel to the available channels
 	void addChannel(CovertChannel* channel);
 	//removes a channel from the available channels
 	void removeChannel(CovertChannel* channel);
+	// retrieve packet from the adapter
+	void retrievePacket();
 	// hold all available channels
 	std::vector<CovertChannel*> m_channels;
 	// pointer to the covert channel, that is currently in use
@@ -89,6 +92,8 @@ private:
 	SocketConnector* m_socket;
 	// stream that holds received messages
 	std::ostream* m_output_stream;
+	// stream that displays errors
+	std::ostream* m_error_stream;
 	// sniffer
 	Sniffer* m_network_sniffer;
 	unsigned int m_current_adapter_id;
