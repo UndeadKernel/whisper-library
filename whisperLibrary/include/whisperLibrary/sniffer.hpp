@@ -161,7 +161,7 @@ namespace whisper_library {
 				\param int		max_packet_size		- Maximum number of bytes that should be captured from each packet. 
 				65535 is enough for the whole packet in most networks.
 				\param bool		promiscuous_mode 	- Open in promiscuous mode? false: No, true: Yes.
-				\param int		timeout				- Specifies a timeout in ms.
+				\param int		timeout				- Specifies a timeout in ms. A value of 0 can cause the process to wait forever.
 				promiscuous mode: capture all packets
 				non-promiscuous:  capture only packets directed to the application
 				\return 0 - normal execution,
