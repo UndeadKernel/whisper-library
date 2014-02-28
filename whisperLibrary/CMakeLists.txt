@@ -39,6 +39,7 @@ set(TESTS
 	tests/timingCovertChannelTest.cpp
 	tests/snifferTest.cpp
 	tests/socketConnectionTest.cpp
+	tests/communicationTest.cpp
 )
 
 # Boost library
