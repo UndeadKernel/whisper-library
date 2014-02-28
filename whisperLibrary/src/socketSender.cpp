@@ -20,7 +20,6 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 	ip += atoi(parts[0].c_str()) << 24;
 	
 	m_ipAddress = ip;
-	cout << "ulong receiver ip: " << m_ipAddress << endl;
 }
 
 void SocketSender::sendTcp(TcpPacket packet){
@@ -56,8 +55,6 @@ void SocketSender::sendUdp(UdpPacket packet) {
 		std::ostream os(&request_buffer);
 		os << packet;
 		ip::RawSocketProtocol<IPPROTO_UDP>::endpoint ep(ip::address_v4(m_ipAddress), packet.destinationPort());
-		cout << "port: " << packet.destinationPort() << endl;
-		packet.to_string();
 		unsigned short checksum = packet.checksum();
 		try {
 			socket.open();

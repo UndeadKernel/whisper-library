@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(basic_communication) {
 			string message;
 			int chatCode = 0;
 			while (chatCode != 1) {
-				cin >> message;
+				std::getline(cin, message);
 				chatCode = processMessage(message);
 			}
 			cout << "chat ended." << endl;
