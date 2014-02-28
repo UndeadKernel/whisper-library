@@ -1,4 +1,5 @@
 #include <channelmanager.hpp>
+#include <thread>
 
 #include <boost/test/unit_test.hpp>
 
@@ -23,7 +24,10 @@ BOOST_AUTO_TEST_CASE(sniffer_test) {
 		cout << adapters[i] << ": " << adapter_descriptions[i] << endl;
 	}
 
-	channelmanager.openConnection("192.168.2.104", 23, adapters[0]);
+	channelmanager.openConnection("192.168.2.105", 23, adapters[0]);
+	std::this_thread::sleep_for(chrono::seconds(2));
+	cout << "sending message.." << endl;
+	channelmanager.sendMessage("Hello World.");
 	while (true) {
 
 	}

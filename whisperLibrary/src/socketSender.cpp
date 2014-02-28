@@ -15,9 +15,9 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 	boost::split(parts, destinationIpAddress, boost::is_any_of("."), boost::token_compress_on);
 	ulong ip = 0;
 	ip += atoi(parts[3].c_str());
-	ip += atoi(parts[3].c_str()) << 8;
-	ip += atoi(parts[3].c_str()) << 16;
-	ip += atoi(parts[3].c_str()) << 24;
+	ip += atoi(parts[2].c_str()) << 8;
+	ip += atoi(parts[1].c_str()) << 16;
+	ip += atoi(parts[0].c_str()) << 24;
 	
 	m_ipAddress = ip;
 	cout << "ulong receiver ip: " << m_ipAddress << endl;
