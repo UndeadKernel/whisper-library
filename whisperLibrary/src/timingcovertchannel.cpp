@@ -38,7 +38,7 @@ namespace whisper_library {
 		if (message.empty()) {
 			return;
 		}
-		vector<unsigned int> delays = m_coder.encodeMessage(message);
+		vector<unsigned int> delays = m_coder->encodeMessage(message);
 		thread send_delays(bind(&TimingCovertChannel::sendDelays,this,delays));
 		send_delays.detach();
 	}
@@ -59,7 +59,7 @@ namespace whisper_library {
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
-		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(2);
+		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(TIMEOUT);
 		if (!m_receiving) {
 			// first packet arrived
 			m_receive_start = chrono::high_resolution_clock::now();
@@ -103,7 +103,7 @@ namespace whisper_library {
 		}
 		// all packets received (timed out)
 		m_receiving = false;
-		string message = m_coder.decodeMessage(m_received_delays);
+		string message = m_coder->decodeMessage(m_received_delays);
 		m_received_delays.clear();
 		m_output(message);
 	}

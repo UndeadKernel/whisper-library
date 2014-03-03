@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <whisperLibrary/sniffer.hpp>
 #include <ctime>
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]){
 		struct timeval	ts; - system dependent size (either 32 or 64bit)
 		bpf_u_int32		caplen;
 		bpf_u_int32		len;
-		*/
+		
 		for (int k = 0; k < 10000; k++) {
 			whisper_library::Sniffer::PcapPacket packet = sniffer.retrievePacket(id);
 			if (packet.payload == NULL) { continue; }
@@ -58,3 +59,4 @@ int main(int argc, char* argv[]){
 	}
 	sniffer.freeAdapters();
 }
+*/

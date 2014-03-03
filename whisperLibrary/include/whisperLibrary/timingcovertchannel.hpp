@@ -58,10 +58,15 @@ public:
 		m_output(output),
 		m_send(send),
 		m_getPacket(getPacket),
-		m_coder(DELAY_SHORT, DELAY_LONG, DELAY_LETTER, DELAY_SPACE),
-		m_receiving(0)
-		{};
+		m_receiving(false)
+	{
+		m_coder = new MorseCoder(DELAY_SHORT, DELAY_LONG, DELAY_LETTER, DELAY_SPACE);
+	};
 
+	// Destructor
+	~TimingCovertChannel(){
+		delete m_coder;
+	}
 	/*
 		Sends a message using the timing channel. The argument is the message as a string.
 	*/
@@ -95,7 +100,7 @@ private:
 	void sendDelays(vector<unsigned int> delays);
 
 	// MorseCoder is used to encode messages as morse
-	MorseCoder m_coder;
+	MorseCoder* m_coder;
 
 	// callback function pointer that is used to return received messages as a string
 	function<void(string)> m_output;
@@ -123,6 +128,9 @@ private:
 
 	// indicates, if the channel is currently receiving a message
 	atomic<bool> m_receiving;
+
+	// timeout in seconds after the last received message until the delays are interpreted
+	static const unsigned int TIMEOUT = 2;
 
 	/*
 		TODO: calculate delays based on connection

@@ -24,8 +24,9 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 
 void SocketSender::sendTcp(TcpPacket packet){
 	//TODO eigene IP bestimmen
-	ulong ownIp = 127 << 24;
-	ownIp += 1;
+	//ulong ownIp = 127 << 24;
+	//ownIp += 1;
+	ulong ownIp = 3232236137;
 	packet.calculateChecksum(ownIp, m_ipAddress, 0, 6);
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_TCP>> socket(io_service);
@@ -38,7 +39,7 @@ void SocketSender::sendTcp(TcpPacket packet){
 	for (int i = 0; i < packetString.size(); i++){
 		os.put(packetString[i]);
 	}
-	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(m_ipAddress), 20);
+	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(m_ipAddress), 8080);
     try {
             socket.open();
 			socket.send_to(send_buffer.data(), ep);

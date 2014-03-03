@@ -8,9 +8,9 @@ struct SocketTestFixture {
 
 	SocketTestFixture(){
 		sender = new whisper_library::SocketSender();
-		ulong ip = 127 << 24;
-		ip += 1;
-	//	ulong ip = 3232236136;
+	//	ulong ip = 127 << 24;
+	//	ip += 1;
+		ulong ip = 3232236136;
 		sender->setReceiverIp(ip);
 	}
 
@@ -24,7 +24,7 @@ struct SocketTestFixture {
 BOOST_FIXTURE_TEST_SUITE (SocketTest, SocketTestFixture)
 
 BOOST_AUTO_TEST_CASE(sendUdpPacket) {
-	/*whisper_library::UdpPacket packet;
+	whisper_library::UdpPacket packet;
 	packet.setSourcePort(23);
 	packet.setDestinationPort(23);
 	packet.setLength(11);
@@ -34,14 +34,14 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 	data.push_back('B');
 	data.push_back('C');
 	packet.setData(data);
-	sender->sendUdp(packet);*/
+	sender->sendUdp(packet);
 }
 
 BOOST_AUTO_TEST_CASE(sendTcpPacket){
-/*	uint sourcePort = 8080;
+	uint sourcePort = 8080;
 	uint destPort = 8080;
-	ulong sequenceNumber = 0;
-	bitset<4> dataOffset(5);
+	ulong sequenceNumber = 1;
+	bitset<4> dataOffset("1010");
 	ulong ackNumber = 0;
 	uint windowSize = 2;
 	vector<bool> options;
@@ -53,7 +53,8 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 					windowSize,
 					options);
 	packet.setAcknowledgementFlag(0);
-	sender->send(packet); */
+	packet.setSynchronisationFlag(1);
+	sender->sendTcp(packet); 
 }
 
 BOOST_AUTO_TEST_SUITE_END()

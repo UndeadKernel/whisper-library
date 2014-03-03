@@ -96,9 +96,11 @@ public:
 	// returns the name of the currently selected channel
 	string currentChannel();
 	void openConnection(string ip, short port, string adapter_name);
+	void closeConnection();
 	int adapterCount();
 	vector<char*> adapterNames();
 	vector<char*> adapterDescriptions();
+	bool connected();
 	
 private:
 	void selectAdapter(string adapter_name);
@@ -120,6 +122,7 @@ private:
 	Sniffer* m_network_sniffer;
 	SocketSender* m_socket_sender;
 	int m_current_adapter_id = -1;
+	bool m_connected = false;
 };
 }
 #endif // CHANNEL_MANAGER

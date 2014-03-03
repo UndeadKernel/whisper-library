@@ -142,28 +142,41 @@ string ChannelManager::currentChannel() {
 }
 
 void ChannelManager::openConnection(string ip, short port, string adapter_name) {
-	selectAdapter(adapter_name);
-	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
-	if (ip_good && m_current_adapter_id != -1) {
-		m_socket_sender->setReceiverIp(ip);
-		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
-		string filter = "src " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
-		m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
-		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
-		packet_receiver.detach();
+	if (m_connected) {
+		outputErrorMessage("Already connected. Please close the connection first.");
+		return;
 	}
-	else {
-		outputErrorMessage("Invalid IP or adapter not set.");
+	selectAdapter(adapter_name);
+	if (m_current_adapter_id == -1) {
+		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
+		return;
+	}
+	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
+	if (!ip_good) {
+		outputErrorMessage("Invalid IP");
+		return;
+	}
+	m_connected = true;
+	m_socket_sender->setReceiverIp(ip);
+	m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
+	string filter = "src " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
+	m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
+	std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
+	packet_receiver.detach();
+}
+
+void ChannelManager::closeConnection() {
+	if (m_connected) {
+		m_network_sniffer->closeAdapter(m_current_adapter_id);
+		m_connected = false;
 	}
 }
 
 void ChannelManager::retrievePacket() {
-	int packet_counter = 0;
-	while (true) { //TODO
+	while (m_connected) {
 		vector<bool> packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
 		if (!packet_data.empty()) {
 			GenericPacket generic_packet(packet_data);
-			packet_counter++;
 			m_current_channel->receiveMessage(generic_packet);
 		}
 	}
@@ -193,11 +206,15 @@ void ChannelManager::selectAdapter(string adapter_name) {
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
 	cout << "selected adapter id: " << adapter_id << endl;
 	if (adapter_id < 0) {
-		outputErrorMessage("Adapter \'" + adapter_name + "\' not found.");
+		adapter_id = -1;	//adapter not found
 	}
 	else {
 		m_current_adapter_id = adapter_id;
 	}
+}
+
+bool ChannelManager::connected() {
+	return m_connected;
 }
 
 }
