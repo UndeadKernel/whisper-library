@@ -62,11 +62,12 @@ public:
 		m_receiving(false)
 	{
 		TIMEOUT = 2;
-		DELAY_SHORT = 10;
-		DELAY_LONG = 30;
-		DELAY_LETTER = 50;
-		DELAY_SPACE = 70;
-		m_coder = new MorseCoder(DELAY_SHORT, DELAY_LONG, DELAY_LETTER, DELAY_SPACE);
+		m_delay_short = 10;
+		m_delay_long = 30;
+		m_delay_letter = 50;
+		m_delay_space = 70;
+		calculateTresholds();
+		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 	};
 
 	// Destructor
@@ -94,6 +95,7 @@ public:
 	string protocol() const;
 
 private:
+	void calculateTresholds();
 	/*
 		Starts the timeout. If m_timeout_changed is false and m_timeout_end is in the past, 
 		it calls the callback function m_output.
@@ -142,16 +144,19 @@ private:
 		TODO: calculate delays based on connection
 	*/
 	// delay_short is used to encode a short signal (in milliseconds)
-	unsigned int DELAY_SHORT;
+	unsigned int m_delay_short;
+	unsigned int m_threshold_delay_short;
 
 	// delay_long is used to encode a long signal (in milliseconds)
-	unsigned int DELAY_LONG;
+	unsigned int m_delay_long;
+	unsigned int m_threshold_delay_long;
 
 	// delay_letter is used to encode the end of a letter (in milliseconds)
-	unsigned int DELAY_LETTER;
+	unsigned int m_delay_letter;
+	unsigned int m_threshold_delay_letter;
 
 	// delay_space is used to encode space between words (in milliseconds)
-	unsigned int DELAY_SPACE;
+	unsigned int m_delay_space;
 };
 }
 #endif // TIMING_COVERT_CHANNEL
