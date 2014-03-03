@@ -3,20 +3,24 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 struct CommunicationFixture {
 	CommunicationFixture() {
 		channelmanager.setErrorStream(&cout);
 		channelmanager.setOutputStream(&cout);
-		connection = false;
+		adapter_name = "";
 	}
 	whisper_library::ChannelManager channelmanager;
 	vector<char*> last_adapters;
 	char* adapter_name;
-	bool connection;
 
 	int processCommand(string command) {
-		if (command.compare("close") == 0) {
+		if (command.compare("help") == 0) {
+			printCommands();
+			return 0;
+		}
+		if (command.compare("exit") == 0) {
 			return 2;
 		}
 		if (command.compare("displayCC") == 0) {
@@ -25,7 +29,15 @@ struct CommunicationFixture {
 		}
 		size_t found = command.find("selectCC");
 		if (found != string::npos) {
-			int index = atoi(command.substr(9, command.length() - 9).c_str());
+			int index = 0;
+			try {
+				index = boost::lexical_cast<int>(command.substr(9, command.length() - 9));
+			}
+			catch (boost::bad_lexical_cast e) {
+				cout << "Parameter war keine Zahl." << endl;
+				return 0;
+			}
+
 			channelmanager.selectChannel(index);
 			cout << "Selected channel: " << channelmanager.currentChannel() << endl;
 			return 0;
@@ -36,19 +48,38 @@ struct CommunicationFixture {
 		}
 		found = command.find("selectAdapter");
 		if (found != string::npos) {
-			int index = atoi(command.substr(14, command.length() - 14).c_str());
+			int index = 0;
+			try {
+				index = boost::lexical_cast<int>(command.substr(14, command.length() - 14));
+			}
+			catch (boost::bad_lexical_cast e) {
+				cout << "Parameter war keine Zahl." << endl;
+				return 0;
+			}
 			selectAdapterId(index);
 			cout << "Selected adapter: " << adapter_name << endl;
 			return 0;
 		}
 		found = command.find("connect");
 		if (found != string::npos) {
-			connection = true;
+			if (adapter_name == "") {
+				cout << "Kein Adapter ausgewählt" << endl;
+				return 0;
+			}
 			string ip_port = command.substr(8, command.length() - 8);
 			vector<string> parts;
 			boost::split(parts, ip_port, boost::is_any_of(":"), boost::token_compress_on);
 			if (parts.size() == 2) {
-				channelmanager.openConnection(parts[0], atoi(parts[1].c_str()), adapter_name);
+				short port;
+				try {
+					port = boost::lexical_cast<short>(parts[1]);
+				}
+				catch (boost::bad_lexical_cast e) {
+					cout << "Port war keine Zahl." << endl;
+					return 0;
+				}
+
+				channelmanager.openConnection(parts[0], port, adapter_name);
 				cout << "Opened connection to " << ip_port << endl;
 				return 1;
 			}
@@ -63,8 +94,12 @@ struct CommunicationFixture {
 	}
 
 	int processMessage(string message) {
-		if (message.compare("endChat") == 0) {
+		if (message.compare("exit") == 0) {
 			return 1;
+		}
+		if (message.compare("help") == 0) {
+			cout << "Help not available in chat mode. Close chat first with 'exit'" << endl;
+			return 0;
 		}
 		channelmanager.sendMessage(message);
 		return 0;
@@ -87,13 +122,36 @@ struct CommunicationFixture {
 		}
 	}
 
-	void selectAdapterId(int index) {
+	void selectAdapterId(unsigned int index) {
 		if (!last_adapters.empty()) {
-			adapter_name = last_adapters[index];
+			if (index < last_adapters.size()) {
+				adapter_name = last_adapters[index];
+			}
+			else {
+				cout << "Ungültiger Parameter" << endl;
+			}
+
 		}
 		else {
-			adapter_name = channelmanager.adapterNames()[index];
+			vector<char*> names = channelmanager.adapterNames();
+			if (index < names.size()) {
+				adapter_name = names[index];
+			} else {
+				cout << "Ungültiger Parameter" << endl;
+			}
 		}
+	}
+
+	void printCommands() {
+		cout << "Available commands: " << endl;
+		cout << "displayCC: Displays a list of available Covert Channels" << endl;
+		cout << "displayAdapters: Displays a list of available network adapters" << endl;
+		cout << "selectCC [ID]: Select the covert channel with ID [ID]" << endl;
+		cout << "selectAdapter [ID]: Select the network adapter with ID [ID]" << endl;
+		cout << "connect [IP:Port]: Connect to IP:Port using the selected Covert Channel and adapter." << endl;
+		cout << "exit: Exit the chat/program" << endl;
+		cout << "help: Print this list again" << endl;
+		cout << endl;
 	}
 
 };
@@ -101,7 +159,8 @@ struct CommunicationFixture {
 BOOST_FIXTURE_TEST_SUITE(communication, CommunicationFixture)
 
 BOOST_AUTO_TEST_CASE(basic_communication) {
-	cout << "Whisper Library Test" << endl;
+	cout << "Whisper Library Test" << endl << endl;
+	printCommands();
 	cout << "Enter your command:" << endl;
 	string command;
 	int code = 0;
