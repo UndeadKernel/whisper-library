@@ -24,6 +24,7 @@
 
 #include "common.hpp"
 #include "genericpacket.hpp"
+#include <string>
 
 
 namespace whisper_library {

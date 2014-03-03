@@ -75,9 +75,9 @@ BOOST_AUTO_TEST_CASE(testImportExport) {
 	dut->setWindowSize(128);
 	dut->setReserved(bitset<3>("111"));
 	dut->calculateChecksum(3225692929, 179307042, 0, 6);
-	vector<bool> export = dut->packet();
+	vector<bool> export_packet = dut->packet();
 	whisper_library::TcpPacket test;
-	test.setPacket(export);
+	test.setPacket(export_packet);
 	BOOST_CHECK_EQUAL(dut->reserved(), test.reserved());
 }
 

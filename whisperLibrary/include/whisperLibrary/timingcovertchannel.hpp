@@ -29,6 +29,7 @@
 #include <functional>
 #include <thread>
 #include <atomic>
+#include <string>
 #include "../../src/udppacket.hpp"
 
 using namespace std;
@@ -60,6 +61,10 @@ public:
 		m_getPacket(getPacket),
 		m_receiving(false)
 	{
+		DELAY_SHORT = 10;
+		DELAY_LONG = 30;
+		DELAY_LETTER = 50;
+		DELAY_SPACE = 70;
 		m_coder = new MorseCoder(DELAY_SHORT, DELAY_LONG, DELAY_LETTER, DELAY_SPACE);
 	};
 
@@ -130,22 +135,22 @@ private:
 	atomic<bool> m_receiving;
 
 	// timeout in seconds after the last received message until the delays are interpreted
-	static const unsigned int TIMEOUT = 2;
+	const unsigned int TIMEOUT = 2;
 
 	/*
 		TODO: calculate delays based on connection
 	*/
 	// delay_short is used to encode a short signal (in milliseconds)
-	static const unsigned int DELAY_SHORT = 10;
+	unsigned int DELAY_SHORT;
 
 	// delay_long is used to encode a long signal (in milliseconds)
-	static const unsigned int DELAY_LONG = 30;
+	unsigned int DELAY_LONG;
 
 	// delay_letter is used to encode the end of a letter (in milliseconds)
-	static const unsigned int DELAY_LETTER = 50;
+	unsigned int DELAY_LETTER;
 
 	// delay_space is used to encode space between words (in milliseconds)
-	static const unsigned int DELAY_SPACE = 70;
+	unsigned int DELAY_SPACE;
 };
 }
 #endif // TIMING_COVERT_CHANNEL

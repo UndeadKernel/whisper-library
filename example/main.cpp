@@ -1,4 +1,4 @@
-/*
+
 #include <iostream>
 #include <whisperLibrary/sniffer.hpp>
 #include <ctime>
@@ -7,7 +7,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-
+	/*
 	whisper_library::Sniffer sniffer = whisper_library::Sniffer();
 	if (sniffer.adapterCount() == 0) {
 		return -1;
@@ -58,5 +58,6 @@ int main(int argc, char* argv[]){
 		sniffer.closeAdapter(id);
 	}
 	sniffer.freeAdapters();
+	*/
 }
-*/
+
