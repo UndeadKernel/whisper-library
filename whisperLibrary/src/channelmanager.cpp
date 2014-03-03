@@ -147,7 +147,7 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 	if (ip_good && m_current_adapter_id != -1) {
 		m_socket_sender->setReceiverIp(ip);
 		m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
-		string filter = "host " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
+		string filter = "src " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
 		m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
 		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
 		packet_receiver.detach();
