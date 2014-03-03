@@ -21,6 +21,9 @@
 */
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
+#include <iostream>
+
+using namespace std;
 
 namespace whisper_library {
 
@@ -148,22 +151,30 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 		outputErrorMessage("Already connected. Please close the connection first.");
 		return;
 	}
+	cout << "Trying to select adapter." << endl;
 	selectAdapter(adapter_name);
 	if (m_current_adapter_id == -1) {
 		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
 		return;
 	}
-	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
-	if (!ip_good) {
+	cout << "Checking IP." << endl;
+	boost::system::error_code ec;
+	boost::asio::ip::address::from_string( ip, ec);
+	if ( ec) {
 		outputErrorMessage("Invalid IP");
 		return;
 	}
 	m_connected = true;
+	cout << "Starting socket communication." << endl;
 	m_socket_sender->setReceiverIp(ip);
+	cout << "Trying to open connection." << endl;
 	m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
 	string filter = "src " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
+	cout << "Applying filter." << endl;
 	m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
+	cout << "Opening thread." << endl;
 	std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
+	cout << "detaching." << endl;
 	packet_receiver.detach();
 }
 
@@ -175,10 +186,15 @@ void ChannelManager::closeConnection() {
 }
 
 void ChannelManager::retrievePacket() {
+	cout << "In retrieve packet" << endl;
 	while (m_connected) {
+		cout << "In retrieve packet" << endl;
 		vector<bool> packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
+		cout << "Packet data empty?" << endl;
 		if (!packet_data.empty()) {
+			cout << "Not empty!" << endl;
 			GenericPacket generic_packet(packet_data);
+			cout << "recieve message!" << endl;
 			m_current_channel->receiveMessage(generic_packet);
 		}
 	}
