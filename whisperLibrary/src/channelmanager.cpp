@@ -187,6 +187,7 @@ vector<char*> ChannelManager::adapterDescriptions() {
 
 void ChannelManager::selectAdapter(string adapter_name) {
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
+	cout << "selected adapter id: " << adapter_id << endl;
 	if (adapter_id < 0) {
 		outputErrorMessage("Adapter \'" + adapter_name + "\' not found.");
 	}

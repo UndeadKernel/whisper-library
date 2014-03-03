@@ -60,6 +60,7 @@ struct CommunicationFixture {
 			return 1;
 		}
 		channelmanager.sendMessage(message);
+		return 0;
 	}
 
 	void printCovertChannels() {
