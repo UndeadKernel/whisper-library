@@ -97,12 +97,27 @@ add_executable(tests
 		${SOURCES}
 )
 
+add_executable(systemtest
+		tests/communicationTest.cpp
+		tests/main_test_suite.cpp
+		${HEADERS}
+		${SOURCES}
+)
+
 add_dependencies(tests
     	whisperLibrary
+)
+add_dependencies(systemtest
+		whisperLibrary
 )
 
 target_link_libraries(tests
     	whisperLibrary
+		${Boost_LIBRARIES}
+		${PCAP_LIBRARIES}
+)
+target_link_libraries(systemtest
+		whisperLibrary
 		${Boost_LIBRARIES}
 		${PCAP_LIBRARIES}
 )
@@ -111,6 +126,7 @@ target_link_libraries(tests
 if (WIN32)
 	 target_link_libraries(whisperLibrary ws2_32)
 	 target_link_libraries(tests ws2_32)
+	 target_link_libraries(systemtest ws2_32)
 endif()
 add_definitions(-DWHISPER_BUILD)
 
