@@ -76,7 +76,23 @@ void ChannelManager::sendMessage(string message) {
 
 
 TcpPacket ChannelManager::getTcpPacket(){
-	return TcpPacket();
+	uint sourcePort = 8080;
+	uint destPort = 8080;
+	ulong sequenceNumber = 1;
+	bitset<4> dataOffset("1010");
+	ulong ackNumber = 0;
+	uint windowSize = 2;
+	vector<bool> options;
+	whisper_library::TcpPacket packet(sourcePort,
+		destPort,
+		sequenceNumber,
+		ackNumber,
+		dataOffset,
+		windowSize,
+		options);
+	packet.setAcknowledgementFlag(0);
+	packet.setSynchronisationFlag(1);
+	return packet;
 }
 
 UdpPacket ChannelManager::getUdpPacket() {
@@ -84,7 +100,7 @@ UdpPacket ChannelManager::getUdpPacket() {
 	packet.setSourcePort(23);
 	packet.setDestinationPort(23);
 	packet.setLength(11);
-	packet.setChecksum(33434);
+	packet.setChecksum(0);
 	std::vector<char> data;
 	data.push_back('A');
 	data.push_back('B');

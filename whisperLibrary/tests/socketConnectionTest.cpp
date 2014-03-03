@@ -10,7 +10,7 @@ struct SocketTestFixture {
 		sender = new whisper_library::SocketSender();
 	//	ulong ip = 127 << 24;
 	//	ip += 1;
-		ulong ip = 3232235779;
+		ulong ip = 3232236137;
 		sender->setReceiverIp(ip);
 	}
 
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 }
 
 BOOST_AUTO_TEST_CASE(sendTcpPacket){
-	uint sourcePort = 8080;
+/*	uint sourcePort = 8080;
 	uint destPort = 8080;
 	ulong sequenceNumber = 1;
 	bitset<4> dataOffset("1010");
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 					options);
 	packet.setAcknowledgementFlag(0);
 	packet.setSynchronisationFlag(1);
-	sender->sendTcp(packet); 
+	sender->sendTcp(packet); */
 }
 
 BOOST_AUTO_TEST_SUITE_END()

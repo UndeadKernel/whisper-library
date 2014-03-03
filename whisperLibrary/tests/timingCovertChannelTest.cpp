@@ -34,13 +34,13 @@ struct timingCovertChannelFixture {
 BOOST_FIXTURE_TEST_SUITE(timingCovertChannel, timingCovertChannelFixture);
 
 BOOST_AUTO_TEST_CASE(timingcc_send_simple_message) {
-/*	test_message = "Ein Test.";
+	test_message = "Ein Test.";
 
 	uut->sendMessage(test_message);
 
 	//Wait for end of transfer
 	this_thread::sleep_for(chrono::seconds(3));
-	BOOST_CHECK_EQUAL(boost::to_upper_copy(test_message), received_message.str());*/
+	BOOST_CHECK_EQUAL(boost::to_upper_copy(test_message), received_message.str());
 }
 
 BOOST_AUTO_TEST_CASE(timingcc_send_empty_message) {

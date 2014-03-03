@@ -153,7 +153,6 @@ struct CommunicationFixture {
 		cout << "help: Print this list again" << endl;
 		cout << endl;
 	}
-
 };
 
 BOOST_FIXTURE_TEST_SUITE(communication, CommunicationFixture)

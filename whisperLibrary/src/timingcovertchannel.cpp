@@ -75,20 +75,21 @@ namespace whisper_library {
 			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
+			cout << "received delay: " << delay << " ms" << endl;
 			// check which delay was received
-			if (delay < DELAY_LONG) {
-				m_received_delays.push_back(DELAY_SHORT);
+			if (delay < m_threshold_delay_short) {
+				m_received_delays.push_back(m_delay_short);
 			}
 			else {
-				if (delay < DELAY_LETTER) {
-					m_received_delays.push_back(DELAY_LONG);
+				if (delay < m_threshold_delay_long) {
+					m_received_delays.push_back(m_delay_long);
 				}
 				else {
-					if (delay < DELAY_SPACE) {
-						m_received_delays.push_back(DELAY_LETTER);
+					if (delay < m_threshold_delay_letter) {
+						m_received_delays.push_back(m_delay_letter);
 					}
 					else {
-						m_received_delays.push_back(DELAY_SPACE);
+						m_received_delays.push_back(m_delay_space);
 					}
 				}
 			}
@@ -106,5 +107,11 @@ namespace whisper_library {
 		string message = m_coder->decodeMessage(m_received_delays);
 		m_received_delays.clear();
 		m_output(message);
+	}
+
+	void TimingCovertChannel::calculateTresholds() {
+		m_threshold_delay_short = (m_delay_long + m_delay_short) / 2;
+		m_threshold_delay_long = (m_delay_long + m_delay_letter) / 2;
+		m_threshold_delay_letter = (m_delay_letter + m_delay_space) / 2;
 	}
 }
