@@ -47,9 +47,16 @@ struct CommunicationFixture {
 			string ip_port = command.substr(8, command.length() - 8);
 			vector<string> parts;
 			boost::split(parts, ip_port, boost::is_any_of(":"), boost::token_compress_on);
-			channelmanager.openConnection(parts[0], atoi(parts[1].c_str()), adapter_name);
-			cout << "Opened connection to " << ip_port << endl;
-			return 1;
+			if (parts.size() == 2) {
+				channelmanager.openConnection(parts[0], atoi(parts[1].c_str()), adapter_name);
+				cout << "Opened connection to " << ip_port << endl;
+				return 1;
+			}
+			else {
+				cout << "Eingabe der Zieladresse in der Form: IP:Port.";
+				return 0;
+			}
+
 		}
 		cout << "Command '" << command << "' unknown." << endl;
 		return 0;

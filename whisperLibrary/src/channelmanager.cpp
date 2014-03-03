@@ -152,6 +152,9 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 		std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
 		packet_receiver.detach();
 	}
+	else {
+		outputErrorMessage("Invalid IP or adapter not set.");
+	}
 }
 
 void ChannelManager::retrievePacket() {
@@ -186,6 +189,7 @@ vector<char*> ChannelManager::adapterDescriptions() {
 }
 
 void ChannelManager::selectAdapter(string adapter_name) {
+	cout << "received adapter name: " << adapter_name << endl;
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
 	cout << "selected adapter id: " << adapter_id << endl;
 	if (adapter_id < 0) {
