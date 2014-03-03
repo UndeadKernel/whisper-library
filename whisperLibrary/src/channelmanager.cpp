@@ -37,6 +37,8 @@ ChannelManager::ChannelManager(){
 									   std::bind(&SocketSender::sendUdp, m_socket_sender, std::placeholders::_1),
 									   std::bind(&ChannelManager::getUdpPacket, this)));
 	m_current_channel = m_channels[0];
+	m_current_adapter_id = -1;
+	m_connected = false;
 }
 ChannelManager::~ChannelManager() {
 	for (unsigned int i = 0; i < m_channels.size(); i++) {

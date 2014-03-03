@@ -121,8 +121,8 @@ private:
 	// sniffer
 	Sniffer* m_network_sniffer;
 	SocketSender* m_socket_sender;
-	int m_current_adapter_id = -1;
-	bool m_connected = false;
+	int m_current_adapter_id;
+	bool m_connected;
 };
 }
 #endif // CHANNEL_MANAGER

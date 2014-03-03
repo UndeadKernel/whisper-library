@@ -26,7 +26,7 @@ void SocketSender::sendTcp(TcpPacket packet){
 	//TODO eigene IP bestimmen
 	//ulong ownIp = 127 << 24;
 	//ownIp += 1;
-	ulong ownIp = 3232236137;
+	ulong ownIp = 3232235778;
 	packet.calculateChecksum(ownIp, m_ipAddress, 0, 6);
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_TCP>> socket(io_service);
