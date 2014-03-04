@@ -30,8 +30,6 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 
 void SocketSender::sendTcp(TcpPacket packet){
 	//TODO eigene IP bestimmen
-	//ulong ownIp = 127 << 24;
-	//ownIp += 1;
 	ulong ownIp = 3232236136;
 	packet.calculateChecksum(ownIp, m_ipAddress, 0, 6);
 	io_service io_service;

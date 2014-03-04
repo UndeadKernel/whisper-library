@@ -20,7 +20,7 @@ public:
 	void setReceiverIp(ulong destinationIpAddress);
 	void setReceiverIp(string destinationIpAddress);
 	void sendTcp(TcpPacket packet);
-	void sendUdp(UdpPacket& packet);
+	void sendUdp(UdpPacket packet);
 
 
 private:
