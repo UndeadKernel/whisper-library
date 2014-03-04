@@ -37,6 +37,10 @@ namespace whisper_library {
 		return "tcp";
 	}
 
+	short TcpHeaderCovertChannel::port() const {
+		return 8080;
+	}
+
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets

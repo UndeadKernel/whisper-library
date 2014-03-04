@@ -1,6 +1,7 @@
 #include "socketSender.hpp"
 #include <boost/array.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace boost::asio;
 
@@ -14,11 +15,16 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 	vector<string> parts;
 	boost::split(parts, destinationIpAddress, boost::is_any_of("."), boost::token_compress_on);
 	ulong ip = 0;
-	ip += atoi(parts[3].c_str());
-	ip += atoi(parts[2].c_str()) << 8;
-	ip += atoi(parts[1].c_str()) << 16;
-	ip += atoi(parts[0].c_str()) << 24;
-	
+	try {
+		ip += boost::lexical_cast<int>(parts[3]);
+		ip += boost::lexical_cast<int>(parts[2]) << 8;
+		ip += boost::lexical_cast<int>(parts[1]) << 16;
+		ip += boost::lexical_cast<int>(parts[0]) << 24;
+	}
+	catch (boost::bad_lexical_cast e) {
+		cout << "Error: " << e.what() << endl;
+	}
+
 	m_ipAddress = ip;
 }
 
@@ -49,7 +55,7 @@ void SocketSender::sendTcp(TcpPacket packet){
     }
 }
 
-void SocketSender::sendUdp(UdpPacket packet) {
+void SocketSender::sendUdp(UdpPacket& packet) {
 		io_service io_service;
 		basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
 		boost::asio::streambuf request_buffer;

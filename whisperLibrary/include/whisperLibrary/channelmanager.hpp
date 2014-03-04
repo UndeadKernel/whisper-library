@@ -95,7 +95,7 @@ public:
 	vector<string> getChannelNames();
 	// returns the name of the currently selected channel
 	string currentChannel();
-	void openConnection(string ip, short port, string adapter_name);
+	bool openConnection(string ip, string adapter_name);
 	void closeConnection();
 	int adapterCount();
 	vector<char*> adapterNames();

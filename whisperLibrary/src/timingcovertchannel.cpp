@@ -34,6 +34,10 @@ namespace whisper_library {
 		return "udp";
 	}
 
+	short TimingCovertChannel::port() const {
+		return 23;
+	}
+
 	void TimingCovertChannel::sendMessage(string message) {
 		if (message.empty()) {
 			return;

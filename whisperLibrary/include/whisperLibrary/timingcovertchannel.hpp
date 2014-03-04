@@ -85,6 +85,9 @@ public:
 	*/
 	void receiveMessage(GenericPacket& packet);
 
+	// No available arguments - empty function
+	void setArguments(string arguments) {};
+
 	// Returns a string with the name of the covert channel "Timing Covert Channel"
 	string name() const;
 
@@ -94,6 +97,8 @@ public:
 	// Returns the protocol used by this covert channel (udp)
 	string protocol() const;
 
+	// Returns the used port (23)
+	short port() const;
 private:
 	void calculateTresholds();
 	/*

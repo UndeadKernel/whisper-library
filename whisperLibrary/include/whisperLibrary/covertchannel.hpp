@@ -43,12 +43,18 @@ public:
 	virtual void sendMessage(std::string message) = 0;
 	// This function is called, when a new packet arrived. The argument is a reference to this packet.
 	virtual void receiveMessage(GenericPacket& packet) = 0;
+	// Arguments that are given to the covert channel
+	virtual void setArguments(string arguments) = 0;
+
 	// Displays the name of the covert channel
 	virtual string name() const = 0;
 	// Displays information about the covert channel
 	virtual string info() const = 0;
 	// Returns the used protocol (e.g. tcp)
 	virtual string protocol() const = 0;
+	// Returns the used port
+	virtual short port() const = 0;
+
 };
 }
 #endif // COVERT_CHANNEL

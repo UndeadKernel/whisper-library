@@ -52,7 +52,6 @@ struct CommunicationFixture {
 			printAdapters();
 			return 0;
 		}
-		command.find("selectAdapter");
 		if (arguments[0].compare("selectAdapter") == 0) {
 			int index = 0;
 			try {
@@ -71,24 +70,13 @@ struct CommunicationFixture {
 				cout << "No adapter selected" << endl;
 				return 0;
 			}
-			vector<string> parts;
-			boost::split(parts, arguments[1], boost::is_any_of(":"), boost::token_compress_on);
-			if (parts.size() == 2) {
-				short port;
-				try {
-					port = boost::lexical_cast<short>(parts[1]);
-				}
-				catch (boost::bad_lexical_cast e) {
-					cout << "invalid port" << endl;
-					return 0;
-				}
-				cout << "Trying to open a connection" << endl;
-				channelmanager.openConnection(parts[0], port, adapter_name);
+			cout << "Trying to open a connection" << endl;
+			bool success = channelmanager.openConnection(arguments[1], adapter_name);
+			if (success) {
 				cout << "Opened connection to " << arguments[1] << endl;
 				return 1;
 			}
 			else {
-				cout << "Eingabe der Zieladresse in der Form: IP:Port." << endl;
 				return 0;
 			}
 
@@ -152,7 +140,7 @@ struct CommunicationFixture {
 		cout << "displayAdapters: Displays a list of available network adapters" << endl;
 		cout << "selectCC [ID]: Select the covert channel with ID [ID]" << endl;
 		cout << "selectAdapter [ID]: Select the network adapter with ID [ID]" << endl;
-		cout << "connect [IP:Port]: Connect to IP:Port using the selected Covert Channel and adapter." << endl;
+		cout << "connect [IP]: Connect to IP using the selected Covert Channel and adapter." << endl;
 		cout << "exit: Exit the chat/program" << endl;
 		cout << "help: Print this list again" << endl;
 		cout << endl;

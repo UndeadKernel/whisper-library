@@ -66,6 +66,9 @@ namespace whisper_library {
 		*/
 		void receiveMessage(GenericPacket& packet);
 
+		// No available arguments - empty function
+		void setArguments(string arguments) {};
+
 		// Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		string name() const;
 
@@ -74,6 +77,9 @@ namespace whisper_library {
 
 		// Returns the protocol used by this covert channel (tcp)
 		string protocol() const;
+
+		// Returns the used port (8080)
+		short port() const;
 
 	private:
 		//	encodeMessageWithLength splits the message into parts of 3 bits and adds length blocks inbetween.

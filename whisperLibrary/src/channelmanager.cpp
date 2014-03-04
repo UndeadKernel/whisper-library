@@ -76,6 +76,7 @@ void ChannelManager::sendMessage(string message) {
 
 
 TcpPacket ChannelManager::getTcpPacket(){
+	// TODO
 	uint sourcePort = 8080;
 	uint destPort = 8080;
 	ulong sequenceNumber = 1;
@@ -97,8 +98,8 @@ TcpPacket ChannelManager::getTcpPacket(){
 
 UdpPacket ChannelManager::getUdpPacket() {
 	whisper_library::UdpPacket packet;
-	packet.setSourcePort(23);
-	packet.setDestinationPort(23);
+	packet.setSourcePort(m_current_channel->port());
+	packet.setDestinationPort(m_current_channel->port());
 	packet.setLength(11);
 	packet.setChecksum(0);
 	std::vector<char> data;
@@ -162,29 +163,30 @@ string ChannelManager::currentChannel() {
 	}
 }
 
-void ChannelManager::openConnection(string ip, short port, string adapter_name) {
+bool ChannelManager::openConnection(string ip, string adapter_name) {
 	if (m_connected) {
 		outputErrorMessage("Already connected. Please close the connection first.");
-		return;
+		return false;
 	}
 	selectAdapter(adapter_name);
 	if (m_current_adapter_id == -1) {
 		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
-		return;
+		return false;
 	}
 	boost::system::error_code ec;
 	boost::asio::ip::address::from_string( ip, ec);
-	if ( ec) {
+	if (ec) {
 		outputErrorMessage("Invalid IP");
-		return;
+		return false;
 	}
 	m_connected = true;
 	m_socket_sender->setReceiverIp(ip);
 	m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
-	string filter = "src " + ip +" and port " + to_string(port) + " and " + m_current_channel->protocol();
+	string filter = "src " + ip +" and port " + to_string(m_current_channel->port()) + " and " + m_current_channel->protocol();
 	m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
 	std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
 	packet_receiver.detach();
+	return true;
 }
 
 void ChannelManager::closeConnection() {
