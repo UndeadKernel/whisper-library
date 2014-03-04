@@ -128,6 +128,22 @@ target_link_libraries(systemtest
 		${PCAP_LIBRARIES}
 )
 
+if (UNIX)
+	find_package(Threads)
+	target_link_libraries (
+		systemtest
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+	target_link_libraries (
+		whisperLibrary
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+	target_link_libraries (
+		tests
+		${CMAKE_THREAD_LIBS_INIT}
+	)	
+endif()
+
 #ws2_32
 if (WIN32)
 	 target_link_libraries(whisperLibrary ws2_32)

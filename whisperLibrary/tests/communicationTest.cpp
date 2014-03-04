@@ -78,7 +78,7 @@ struct CommunicationFixture {
 					cout << "Port war keine Zahl." << endl;
 					return 0;
 				}
-
+				cout << "Trying to open a connection" << endl;
 				channelmanager.openConnection(parts[0], port, adapter_name);
 				cout << "Opened connection to " << ip_port << endl;
 				return 1;
@@ -119,7 +119,7 @@ struct CommunicationFixture {
 		last_adapters = names;
 		vector<char*> infos = channelmanager.adapterDescriptions();
 		for (int i = 0; i < names.size(); i++) {
-			cout << "[" << i << "] " << names[i] << ": " << infos[i] << endl;
+			cout << "[" << i << "] " << names[i] << ": " /*<< infos[i]*/ << endl;
 		}
 	}
 

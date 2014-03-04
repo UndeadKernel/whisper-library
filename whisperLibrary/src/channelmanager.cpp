@@ -21,6 +21,9 @@
 */
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
+#include <iostream>
+
+using namespace std;
 
 namespace whisper_library {
 
@@ -169,8 +172,9 @@ void ChannelManager::openConnection(string ip, short port, string adapter_name) 
 		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
 		return;
 	}
-	bool ip_good = std::regex_match(ip, std::regex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"));
-	if (!ip_good) {
+	boost::system::error_code ec;
+	boost::asio::ip::address::from_string( ip, ec);
+	if ( ec) {
 		outputErrorMessage("Invalid IP");
 		return;
 	}
