@@ -133,6 +133,14 @@ if (UNIX)
 	target_link_libraries (
 		systemtest
 		${CMAKE_THREAD_LIBS_INIT}
+	)
+	target_link_libraries (
+		whisperLibrary
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+	target_link_libraries (
+		tests
+		${CMAKE_THREAD_LIBS_INIT}
 	)	
 endif()
 
