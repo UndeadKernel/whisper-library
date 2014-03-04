@@ -101,6 +101,12 @@ public:
 	vector<char*> adapterNames();
 	const char* adapterDescription(string adapter_name);
 	bool connected();
+	/*
+		Sets the arguments of the current covert channel.
+		The string arguments is parsed by the channel to set channel specific options.
+		More information on which arguments are supported can be found in the specific covertchannel source.
+	*/
+	void setChannelArguments(string arguments);
 	
 private:
 	void selectAdapter(string adapter_name);

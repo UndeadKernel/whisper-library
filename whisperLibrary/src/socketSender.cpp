@@ -16,10 +16,10 @@ void SocketSender::setReceiverIp(string destinationIpAddress) {
 	boost::split(parts, destinationIpAddress, boost::is_any_of("."), boost::token_compress_on);
 	ulong ip = 0;
 	try {
-		ip += boost::lexical_cast<int>(parts[3]);
-		ip += boost::lexical_cast<int>(parts[2]) << 8;
-		ip += boost::lexical_cast<int>(parts[1]) << 16;
-		ip += boost::lexical_cast<int>(parts[0]) << 24;
+		ip += boost::lexical_cast<unsigned int>(parts[3]);
+		ip += boost::lexical_cast<unsigned int>(parts[2]) << 8;
+		ip += boost::lexical_cast<unsigned int>(parts[1]) << 16;
+		ip += boost::lexical_cast<unsigned int>(parts[0]) << 24;
 	}
 	catch (boost::bad_lexical_cast e) {
 		cout << "Error: " << e.what() << endl;
@@ -35,7 +35,6 @@ void SocketSender::sendTcp(TcpPacket packet){
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_TCP>> socket(io_service);
 	
-	//TODO irgendwie die Daten in den send_buffer packen
 	vector<bool> packetData = packet.packet();
 	std::string packetString = packetToString(packetData);
 	boost::asio::streambuf send_buffer;
@@ -49,25 +48,25 @@ void SocketSender::sendTcp(TcpPacket packet){
 		socket.send_to(send_buffer.data(), ep);
 		socket.close();
     } catch (std::exception& e) {
-            std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 }
 
 void SocketSender::sendUdp(UdpPacket packet) {
-		io_service io_service;
-		basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
-		boost::asio::streambuf request_buffer;
-		std::ostream os(&request_buffer);
-		os << packet;
-		ip::RawSocketProtocol<IPPROTO_UDP>::endpoint ep(ip::address_v4(m_ipAddress), packet.destinationPort());
-		unsigned short checksum = packet.checksum();
-		try {
-			socket.open();
-			socket.send_to(request_buffer.data(), ep);
-			socket.close();
-		} catch (std::exception& e) {
-			std::cerr << "Error: " << e.what() << std::endl;
-		}
+	io_service io_service;
+	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
+	boost::asio::streambuf request_buffer;
+	std::ostream os(&request_buffer);
+	os << packet;
+	ip::RawSocketProtocol<IPPROTO_UDP>::endpoint ep(ip::address_v4(m_ipAddress), packet.destinationPort());
+	unsigned short checksum = packet.checksum();
+	try {
+		socket.open();
+		socket.send_to(request_buffer.data(), ep);
+		socket.close();
+	} catch (std::exception& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+	}
 }
 
 

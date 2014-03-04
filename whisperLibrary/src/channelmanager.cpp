@@ -117,12 +117,20 @@ void ChannelManager::packetReceived(GenericPacket packet) {
 }
 
 void ChannelManager::selectChannel(unsigned int index) {
+	if (m_connected) {
+		outputErrorMessage("Can't change channel while connected");
+		return;
+	}
 	if (index >= 0 && index < m_channels.size()) {
 		m_current_channel = m_channels[index];
 	}
 }
 
 void ChannelManager::selectChannel(string name) {
+	if (m_connected) {
+		outputErrorMessage("Can't change channel while connected");
+		return;
+	}
 	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); it++) {
 		if ((*it)->name().compare(name) == 0) {
 			m_current_channel = (*it);
@@ -157,9 +165,6 @@ vector<string> ChannelManager::getChannelNames() {
 string ChannelManager::currentChannel() {
 	if (m_current_channel != NULL) {
 		return m_current_channel->name();
-	}
-	else {
-		return "null";
 	}
 }
 
@@ -237,6 +242,12 @@ void ChannelManager::selectAdapter(string adapter_name) {
 
 bool ChannelManager::connected() {
 	return m_connected;
+}
+
+void ChannelManager::setChannelArguments(string arguments) {
+	if (m_current_channel != NULL) {
+		m_current_channel->setArguments(arguments);
+	}
 }
 
 }
