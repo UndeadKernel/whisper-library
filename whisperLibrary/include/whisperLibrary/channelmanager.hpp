@@ -99,7 +99,7 @@ public:
 	void closeConnection();
 	int adapterCount();
 	vector<char*> adapterNames();
-	vector<char*> adapterDescriptions();
+	const char* adapterDescription(string adapter_name);
 	bool connected();
 	
 private:

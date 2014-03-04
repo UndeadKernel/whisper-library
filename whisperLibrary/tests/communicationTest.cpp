@@ -16,25 +16,31 @@ struct CommunicationFixture {
 	char* adapter_name;
 
 	int processCommand(string command) {
-		if (command.compare("help") == 0) {
+		vector<string> arguments;
+		boost::split(arguments, command, boost::is_any_of(" "), boost::token_compress_on);
+		if (arguments.size() > 2) {
+			cout << "Too many arguments." << endl;
+			return 0;
+		}
+
+		if (arguments[0].compare("help") == 0) {
 			printCommands();
 			return 0;
 		}
-		if (command.compare("exit") == 0) {
+		if (arguments[0].compare("exit") == 0) {
 			return 2;
 		}
-		if (command.compare("displayCC") == 0) {
+		if (arguments[0].compare("displayCC") == 0) {
 			printCovertChannels();
 			return 0;
 		}
-		size_t found = command.find("selectCC");
-		if (found != string::npos) {
+		if (arguments[0].compare("selectCC") == 0) {
 			int index = 0;
 			try {
-				index = boost::lexical_cast<int>(command.substr(9, command.length() - 9));
+				index = boost::lexical_cast<int>(arguments[1]);
 			}
 			catch (boost::bad_lexical_cast e) {
-				cout << "Parameter war keine Zahl." << endl;
+				cout << "Parameter was not a number" << endl;
 				return 0;
 			}
 
@@ -42,49 +48,47 @@ struct CommunicationFixture {
 			cout << "Selected channel: " << channelmanager.currentChannel() << endl;
 			return 0;
 		}
-		if (command.compare("displayAdapters") == 0) {
+		if (arguments[0].compare("displayAdapters") == 0) {
 			printAdapters();
 			return 0;
 		}
-		found = command.find("selectAdapter");
-		if (found != string::npos) {
+		command.find("selectAdapter");
+		if (arguments[0].compare("selectAdapter") == 0) {
 			int index = 0;
 			try {
-				index = boost::lexical_cast<int>(command.substr(14, command.length() - 14));
+				index = boost::lexical_cast<int>(arguments[1]);
 			}
 			catch (boost::bad_lexical_cast e) {
-				cout << "Parameter war keine Zahl." << endl;
+				cout << "Parameter was not a number" << endl;
 				return 0;
 			}
 			selectAdapterId(index);
 			cout << "Selected adapter: " << adapter_name << endl;
 			return 0;
 		}
-		found = command.find("connect");
-		if (found != string::npos) {
+		if (arguments[0].compare("connect") == 0) {
 			if (adapter_name == "") {
-				cout << "Kein Adapter ausgewählt" << endl;
+				cout << "No adapter selected" << endl;
 				return 0;
 			}
-			string ip_port = command.substr(8, command.length() - 8);
 			vector<string> parts;
-			boost::split(parts, ip_port, boost::is_any_of(":"), boost::token_compress_on);
+			boost::split(parts, arguments[1], boost::is_any_of(":"), boost::token_compress_on);
 			if (parts.size() == 2) {
 				short port;
 				try {
 					port = boost::lexical_cast<short>(parts[1]);
 				}
 				catch (boost::bad_lexical_cast e) {
-					cout << "Port war keine Zahl." << endl;
+					cout << "invalid port" << endl;
 					return 0;
 				}
 				cout << "Trying to open a connection" << endl;
 				channelmanager.openConnection(parts[0], port, adapter_name);
-				cout << "Opened connection to " << ip_port << endl;
+				cout << "Opened connection to " << arguments[1] << endl;
 				return 1;
 			}
 			else {
-				cout << "Eingabe der Zieladresse in der Form: IP:Port.";
+				cout << "Eingabe der Zieladresse in der Form: IP:Port." << endl;
 				return 0;
 			}
 
@@ -117,9 +121,8 @@ struct CommunicationFixture {
 	void printAdapters() {
 		vector<char*> names = channelmanager.adapterNames();
 		last_adapters = names;
-		vector<char*> infos = channelmanager.adapterDescriptions();
 		for (int i = 0; i < names.size(); i++) {
-			cout << "[" << i << "] " << names[i] << ": " /*<< infos[i]*/ << endl;
+			cout << "[" << i << "] " << names[i] << ": " << channelmanager.adapterDescription(names[i]) << endl;
 		}
 	}
 
@@ -129,7 +132,7 @@ struct CommunicationFixture {
 				adapter_name = last_adapters[index];
 			}
 			else {
-				cout << "Ungültiger Parameter" << endl;
+				cout << "Invalid parameter" << endl;
 			}
 
 		}
@@ -138,7 +141,7 @@ struct CommunicationFixture {
 			if (index < names.size()) {
 				adapter_name = names[index];
 			} else {
-				cout << "Ungültiger Parameter" << endl;
+				cout << "Invalid parameter" << endl;
 			}
 		}
 	}
