@@ -24,6 +24,7 @@
 
 #include "common.hpp"
 #include "genericpacket.hpp"
+#include <string>
 
 
 namespace whisper_library {
@@ -43,9 +44,11 @@ public:
 	// This function is called, when a new packet arrived. The argument is a reference to this packet.
 	virtual void receiveMessage(GenericPacket& packet) = 0;
 	// Displays the name of the covert channel
-	virtual string name() const = 0;
+	virtual std::string name() const = 0;
 	// Displays information about the covert channel
-	virtual string info() const = 0;
+	virtual std::string info() const = 0;
+	// Returns the used protocol (e.g. tcp)
+	//virtual std::string protocol() const = 0;
 };
 }
 #endif // COVERT_CHANNEL

@@ -22,6 +22,19 @@
 #include <timingcovertchannel.hpp>
 
 namespace whisper_library {
+	
+		// delay_short is used to encode a short signal (in milliseconds)
+	const unsigned int TimingCovertChannel::DELAY_SHORT = 10;
+
+	// delay_long is used to encode a long signal (in milliseconds)
+	const unsigned int TimingCovertChannel::DELAY_LONG = 30;
+
+	// delay_letter is used to encode the end of a letter (in milliseconds)
+	const unsigned int TimingCovertChannel::DELAY_LETTER = 50;
+
+	// delay_space is used to encode space between words (in milliseconds)
+	const unsigned int TimingCovertChannel::DELAY_SPACE = 80;
+	
 	string TimingCovertChannel::name() const{
 		return "Timing Covert Channel";
 	}
@@ -72,19 +85,19 @@ namespace whisper_library {
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
 			// check which delay was received
-			if (delay < DELAY_LONG) {
-				m_received_delays.push_back(DELAY_SHORT);
+			if (delay < TimingCovertChannel::DELAY_LONG) {
+				m_received_delays.push_back(TimingCovertChannel::DELAY_SHORT);
 			}
 			else {
-				if (delay < DELAY_LETTER) {
-					m_received_delays.push_back(DELAY_LONG);
+				if (delay < TimingCovertChannel::DELAY_LETTER) {
+					m_received_delays.push_back(TimingCovertChannel::DELAY_LONG);
 				}
 				else {
-					if (delay < DELAY_SPACE) {
-						m_received_delays.push_back(DELAY_LETTER);
+					if (delay < TimingCovertChannel::DELAY_SPACE) {
+						m_received_delays.push_back(TimingCovertChannel::DELAY_LETTER);
 					}
 					else {
-						m_received_delays.push_back(DELAY_SPACE);
+						m_received_delays.push_back(TimingCovertChannel::DELAY_SPACE);
 					}
 				}
 			}

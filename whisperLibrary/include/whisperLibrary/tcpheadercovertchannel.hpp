@@ -71,6 +71,8 @@ namespace whisper_library {
 
 		// Returns a string with basic information about the tcp header covert channel
 		string info() const;
+		
+		string protocol() const;
 
 	private:
 		//	encodeMessageWithLength splits the message into parts of 3 bits and adds length blocks inbetween.

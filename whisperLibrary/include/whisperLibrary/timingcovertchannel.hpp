@@ -45,6 +45,20 @@ namespace whisper_library {
 class TimingCovertChannel : public CovertChannel {
 public:
 	/*
+		TODO: calculate delays based on connection
+	*/
+	// delay_short is used to encode a short signal (in milliseconds)
+	static const unsigned int DELAY_SHORT;
+
+	// delay_long is used to encode a long signal (in milliseconds)
+	static const unsigned int DELAY_LONG;
+
+	// delay_letter is used to encode the end of a letter (in milliseconds)
+	static const unsigned int DELAY_LETTER;
+
+	// delay_space is used to encode space between words (in milliseconds)
+	static const unsigned int DELAY_SPACE;
+	/*
 		Constructor
 		output is a function pointer that is called, when a complete message arrived. 
 			   Its parameter is this message.
@@ -121,20 +135,6 @@ private:
 	// indicates, if the channel is currently receiving a message
 	atomic<bool> m_receiving;
 
-	/*
-		TODO: calculate delays based on connection
-	*/
-	// delay_short is used to encode a short signal (in milliseconds)
-	static const unsigned int DELAY_SHORT = 10;
-
-	// delay_long is used to encode a long signal (in milliseconds)
-	static const unsigned int DELAY_LONG = 30;
-
-	// delay_letter is used to encode the end of a letter (in milliseconds)
-	static const unsigned int DELAY_LETTER = 50;
-
-	// delay_space is used to encode space between words (in milliseconds)
-	static const unsigned int DELAY_SPACE = 70;
 };
 }
 #endif // TIMING_COVERT_CHANNEL
