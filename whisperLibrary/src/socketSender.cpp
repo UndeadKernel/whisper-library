@@ -53,7 +53,7 @@ void SocketSender::sendTcp(TcpPacket packet){
     }
 }
 
-void SocketSender::sendUdp(UdpPacket& packet) {
+void SocketSender::sendUdp(UdpPacket packet) {
 		io_service io_service;
 		basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
 		boost::asio::streambuf request_buffer;

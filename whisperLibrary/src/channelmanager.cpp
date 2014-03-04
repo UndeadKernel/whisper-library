@@ -226,9 +226,7 @@ const char* ChannelManager::adapterDescription(string adapter_name) {
 }
 
 void ChannelManager::selectAdapter(string adapter_name) {
-	cout << "received adapter name: " << adapter_name << endl;
 	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
-	cout << "selected adapter id: " << adapter_id << endl;
 	if (adapter_id < 0) {
 		adapter_id = -1;	//adapter not found
 	}
