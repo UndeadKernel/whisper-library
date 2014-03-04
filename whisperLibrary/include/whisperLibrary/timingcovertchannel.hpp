@@ -61,7 +61,7 @@ public:
 		m_getPacket(getPacket),
 		m_receiving(false)
 	{
-		TIMEOUT = 2;
+		m_timeout = 2;
 		m_delay_short = 10;
 		m_delay_long = 30;
 		m_delay_letter = 50;
@@ -138,7 +138,7 @@ private:
 	atomic<bool> m_receiving;
 
 	// timeout in seconds after the last received message until the delays are interpreted
-	unsigned int TIMEOUT;
+	unsigned int m_timeout;
 
 	/*
 		TODO: calculate delays based on connection

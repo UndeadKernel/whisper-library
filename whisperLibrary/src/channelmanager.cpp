@@ -191,10 +191,12 @@ void ChannelManager::closeConnection() {
 }
 
 void ChannelManager::retrievePacket() {
+	vector<bool> packet_data;
+	GenericPacket generic_packet;
 	while (m_connected) {
-		vector<bool> packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
+		packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
 		if (!packet_data.empty()) {
-			GenericPacket generic_packet(packet_data);
+			generic_packet.setContent(packet_data);
 			m_current_channel->receiveMessage(generic_packet);
 		}
 	}

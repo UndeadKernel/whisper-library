@@ -95,6 +95,7 @@ struct CommunicationFixture {
 
 	int processMessage(string message) {
 		if (message.compare("exit") == 0) {
+			channelmanager.closeConnection();
 			return 1;
 		}
 		if (message.compare("help") == 0) {

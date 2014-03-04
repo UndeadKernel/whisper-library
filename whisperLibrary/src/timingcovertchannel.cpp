@@ -59,7 +59,7 @@ namespace whisper_library {
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
-		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(TIMEOUT);
+		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(m_timeout);
 		if (!m_receiving) {
 			// first packet arrived
 			m_receive_start = chrono::high_resolution_clock::now();
@@ -75,7 +75,6 @@ namespace whisper_library {
 			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
-			cout << "received delay: " << delay << " ms" << endl;
 			// check which delay was received
 			if (delay < m_threshold_delay_short) {
 				m_received_delays.push_back(m_delay_short);
