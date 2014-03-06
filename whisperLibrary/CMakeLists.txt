@@ -12,6 +12,7 @@ set(SOURCES
 	src/udppacket.cpp
 	src/sniffer.cpp
 	src/socketSender.cpp
+	src/networkconnector.cpp
 )
 
 set(HEADERS
@@ -28,6 +29,7 @@ set(HEADERS
 	include/whisperLibrary/sniffer.hpp
 	src/socketSender.hpp
 	src/rawSocketProtocol.hpp
+	src/networkconnector.hpp
 )
 
 set(TESTS
