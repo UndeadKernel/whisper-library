@@ -7,12 +7,42 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-	/*
+	
 	whisper_library::Sniffer sniffer = whisper_library::Sniffer();
 	if (sniffer.adapterCount() == 0) {
 		return -1;
 	}
+	unsigned char packet_buffer[100];
+	int buffer_length = 100;
 
+	/* Supposing to be on ethernet, set mac destination to 1:1:1:1:1:1 */
+	packet_buffer[0] = 1;
+	packet_buffer[1] = 1;
+	packet_buffer[2] = 1;
+	packet_buffer[3] = 1;
+	packet_buffer[4] = 1;
+	packet_buffer[5] = 1;
+
+	/* set mac source to 2:2:2:2:2:2 */
+	packet_buffer[6] = 2;
+	packet_buffer[7] = 2;
+	packet_buffer[8] = 2;
+	packet_buffer[9] = 2;
+	packet_buffer[10] = 2;
+	packet_buffer[11] = 2;
+
+	/* Fill the rest of the packet */
+	for (int i = 12; i < 100; i++)
+	{
+		packet_buffer[i] = i % 256;
+	}
+	sniffer.openAdapter(0, sniffer.DEFAULT_MAXPACKETSIZE, true, 1);
+
+	// Wireshark display filter: eth.addr == 1:1:1:1:1:1
+	sniffer.sendPacket(0, packet_buffer, buffer_length);
+
+	return 0;
+	/*
 	int id;
 	vector<char*> names = sniffer.adapterNames();
 	for (char* name : names) {
