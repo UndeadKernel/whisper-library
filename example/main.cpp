@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include <whisperLibrary/sniffer.hpp>
+#include <whisperLibrary/pcapwrapper.hpp>
 #include <ctime>
 #include <time.h>
 
@@ -8,8 +8,8 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 	
-	whisper_library::Sniffer sniffer = whisper_library::Sniffer();
-	if (sniffer.adapterCount() == 0) {
+	whisper_library::PcapWrapper wrapper = whisper_library::PcapWrapper();
+	if (wrapper.adapterCount() == 0) {
 		return -1;
 	}
 	unsigned char packet_buffer[100];
@@ -36,24 +36,24 @@ int main(int argc, char* argv[]){
 	{
 		packet_buffer[i] = i % 256;
 	}
-	sniffer.openAdapter(0, sniffer.DEFAULT_MAXPACKETSIZE, true, 1);
+	wrapper.openAdapter(0, wrapper.DEFAULT_MAXPACKETSIZE, true, 1);
 
 	// Wireshark display filter: eth.addr == 1:1:1:1:1:1
-	sniffer.sendPacket(0, packet_buffer, buffer_length);
+	wrapper.sendPacket(0, packet_buffer, buffer_length);
 
 	return 0;
 	/*
 	int id;
-	vector<char*> names = sniffer.adapterNames();
+	vector<char*> names = wrapper.adapterNames();
 	for (char* name : names) {
 		printf("###Name: %s\n", name);
-		id = sniffer.adapterId(name, sniffer.ADAPTER_NAME);
-		for (char* addr : sniffer.adapterAddresses(id)) {
+		id = wrapper.adapterId(name, wrapper.ADAPTER_NAME);
+		for (char* addr : wrapper.adapterAddresses(id)) {
 			printf("Address: %s\n", addr);
 		}
-		sniffer.openAdapter(id, sniffer.DEFAULT_MAXPACKETSIZE, true, 1);
+		wrapper.openAdapter(id, wrapper.DEFAULT_MAXPACKETSIZE, true, 1);
 		// http://www.winpcap.org/docs/docs_40_2/html/group__language.html
-		sniffer.applyFilter(id, "");
+		wrapper.applyFilter(id, "");
 
 		/*
 		struct pcap_pkthdr:
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
 		bpf_u_int32		len;
 		
 		for (int k = 0; k < 10000; k++) {
-			whisper_library::Sniffer::PcapPacket packet = sniffer.retrievePacket(id);
+			whisper_library::PcapWrapper::PcapPacket packet = wrapper.retrievePacket(id);
 			if (packet.payload == NULL) { continue; }
 			unsigned long p_ts, s_ts;
 			unsigned long s_uts, p_uts;
@@ -84,10 +84,10 @@ int main(int argc, char* argv[]){
 				fprintf(stdout, "Timestamp - Packet: %lu + %llu ; Current: %lu + %lu\n", p_ts, p_uts, s_ts, s_uts);
 			}
 		}
-		sniffer.removeFilter(id);
-		sniffer.closeAdapter(id);
+		wrapper.removeFilter(id);
+		wrapper.closeAdapter(id);
 	}
-	sniffer.freeAdapters();
+	wrapper.freeAdapters();
 	*/
 }
 

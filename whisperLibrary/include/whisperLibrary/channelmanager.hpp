@@ -33,7 +33,7 @@
 #include <genericpacket.hpp>
 #include "../../src/udppacket.hpp"
 #include <regex>
-#include <sniffer.hpp>
+#include <pcapwrapper.hpp>
 #include "../../src/socketSender.hpp"
 
 namespace whisper_library {
@@ -125,7 +125,7 @@ private:
 	// stream that displays errors
 	std::ostream* m_error_stream;
 	// sniffer
-	Sniffer* m_network_sniffer;
+	PcapWrapper* m_network_sniffer;
 	SocketSender* m_socket_sender;
 	int m_current_adapter_id;
 	bool m_connected;

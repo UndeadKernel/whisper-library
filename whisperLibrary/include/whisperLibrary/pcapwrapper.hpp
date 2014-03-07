@@ -1,4 +1,4 @@
-/*	<sniffer.hpp>
+/*	<pcapwrapper.hpp>
 Copyright(C) 2013,2014  Jan Simon Bunten
 Simon Kadel
 Martin Sven Oehler
@@ -20,8 +20,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SNIFFER
-#define SNIFFER
+#ifndef PCAPWRAPPER
+#define PCAPWRAPPER
 
 #include "common.hpp"
 #include <vector>
@@ -84,14 +84,14 @@ IE_TEMPLATE template class WHISPERAPI std::vector<pcap_t*>;
 
 namespace whisper_library {
 		
-	class WHISPERAPI Sniffer {
+	class WHISPERAPI PcapWrapper {
 
 		public:
 			// Default Constructor
-			Sniffer();
+			PcapWrapper();
 
 			// Destructor
-			~Sniffer();
+			~PcapWrapper();
 
 			typedef struct {
 				struct pcap_pkthdr	header;
@@ -274,4 +274,4 @@ namespace whisper_library {
 		int									adapterId(const char* value, int key, bool increment_key);
 	};
 }
-#endif // SNIFFER
+#endif // PCAPWRAPPER

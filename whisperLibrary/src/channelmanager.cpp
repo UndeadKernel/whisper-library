@@ -28,7 +28,7 @@ using namespace std;
 namespace whisper_library {
 
 ChannelManager::ChannelManager(){
-	m_network_sniffer = new Sniffer();
+	m_network_sniffer = new PcapWrapper();
 	m_socket_sender = new SocketSender();
 
 	// TcpHeaderCovertChannel
