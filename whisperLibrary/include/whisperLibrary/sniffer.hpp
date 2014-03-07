@@ -237,6 +237,17 @@ namespace whisper_library {
 			std::vector<bool>					retrievePacketAsVector	(int adapter_id);
 			std::vector<bool>					retrievePacketAsVector	(const char* adapter_name);
 
+			/**
+			\fn sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
+			\brief Sends a packet using a raw socket via the WinPcap driver (Note: libcap on linux currently doesn't allow sending packages)
+			\return RC.NORMAL_EXECUTION - normal execution
+					RC.ADAPTER_NOT_FOUND - adapter with given id not found
+					RC.ACCESS_ON_UNOPENED_HANDLE - tried to access an unopened adapter (use openAdapter(...) beforehand)
+					RC.UNSPECIFIED_ERROR_OCCURED - otherwise
+			*/
+			int									sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
+			int									sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size);
+
 
 	protected:
 		/**

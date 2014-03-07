@@ -376,4 +376,33 @@ namespace whisper_library {
 		}
 		return returnCodes;
 	}
+
+	int	Sniffer::sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size) {
+	#ifdef WIN32
+		if (!checkForAdapterId(adapter_id)) {
+			// specified adapter not found
+			RETURN_CODE(RC(ADAPTER_NOT_FOUND));
+		}
+		pcap_t*				handle = NULL;
+		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
+			handle = m_adapter_handles[adapter_id];
+		}
+		if (!handle) {
+			fprintf(stderr, "Error: retrievePacket() called on unopened adapter.\n");
+			RETURN_CODE(RC(ACCESS_ON_UNOPENED_HANDLE));
+		}
+		if (pcap_sendpacket(handle, packet_buffer, buffer_size ) < 0) {
+			fprintf(stderr, "Error: Failed to send the given packet: \n", pcap_geterr(handle));
+			RETURN_CODE(RC(UNSPECIFIED_ERROR_OCCURED));
+		}
+		RETURN_CODE(RC(NORMAL_EXECUTION));
+	#else
+		fprintf(stderr, "Error: Wrong function called. pcap_sendpacket(...) only works with WinPcap.\n");
+		RETURN_CODE(RC(UNSPECIFIED_ERROR_OCCURED));
+	#endif
+	}
+
+	int	Sniffer::sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size) {
+		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_buffer, buffer_size);
+	}
 } 
