@@ -22,7 +22,13 @@
 #include <udppacket.hpp>
 
 namespace whisper_library {
+	void UdpPacket::setPacket(vector<bool> packet){
+
+	}
 	vector<bool> UdpPacket::packet() {
 		return vector<bool>();
+	}
+	int UdpPacket::length(){
+		return 0;
 	}
 }

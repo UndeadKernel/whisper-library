@@ -23,7 +23,7 @@
 
 namespace whisper_library {
 	
-		// delay_short is used to encode a short signal (in milliseconds)
+	// delay_short is used to encode a short signal (in milliseconds)
 	const unsigned int TimingCovertChannel::DELAY_SHORT = 10;
 
 	// delay_long is used to encode a long signal (in milliseconds)
