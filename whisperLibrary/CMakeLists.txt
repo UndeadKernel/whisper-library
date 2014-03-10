@@ -47,14 +47,16 @@ set(TESTS
 # Boost library
 set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
+find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework REQUIRED)
+
+add_definitions(-D_SCL_SECURE_NO_WARNINGS)	# disable warning C4996 in MSVC
 
 include_directories(
 		include/whisperLibrary
 		${Boost_INCLUDE_DIRS}
 )
 
-add_library(whisperLibrary SHARED
+add_library(whisperLibrary STATIC
     ${HEADERS}
     ${SOURCES}
 )
@@ -78,7 +80,7 @@ target_link_libraries(tests
 		${Boost_LIBRARIES}
 )
 
-add_definitions(-DWHISPER_BUILD)
+#add_definitions(-DWHISPER_BUILD)
 
 install(TARGETS whisperLibrary RUNTIME DESTINATION .
-				LIBRARY DESTINATION .)
+				ARCHIVE DESTINATION .)

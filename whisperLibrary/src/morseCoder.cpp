@@ -121,7 +121,7 @@ namespace whisper_library {
 				try {
 					m_morse_map.left.at(toupper(message[i]));
 				}
-				catch (const out_of_range& e) {
+				catch (const out_of_range&) {
 					unsupported_letters.push_back(message[i]);
 				}
 			}
@@ -135,7 +135,7 @@ namespace whisper_library {
 		try {
 			encoding = m_morse_map.left.at(uppercase_letter);
 		}
-		catch (const out_of_range& e) {
+		catch (const out_of_range&) {
 			encoding = m_morse_map.left.at('#');
 		}
 
@@ -187,7 +187,7 @@ namespace whisper_library {
 		try {
 			letter = m_morse_map.right.at(morse_code_string);
 		}
-		catch (const out_of_range& e) {
+		catch (const out_of_range&) {
 			letter = '#';
 		}
 		return letter;
