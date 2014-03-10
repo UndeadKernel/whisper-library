@@ -10,7 +10,7 @@ set(SOURCES
 	src/timingcovertchannel.cpp
 	src/genericpacket.cpp
 	src/udppacket.cpp
-	src/sniffer.cpp
+	src/pcapwrapper.cpp
 	src/socketSender.cpp
 	src/networkconnector.cpp
 )
@@ -26,7 +26,7 @@ set(HEADERS
 	include/whisperLibrary/timingcovertchannel.hpp
 	include/whisperLibrary/genericpacket.hpp
 	src/udppacket.hpp
-	include/whisperLibrary/sniffer.hpp
+	include/whisperLibrary/pcapwrapper.hpp
 	src/socketSender.hpp
 	src/rawSocketProtocol.hpp
 	src/networkconnector.hpp
@@ -39,7 +39,7 @@ set(TESTS
 	tests/bitSetCoderTest.cpp
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
-	tests/snifferTest.cpp
+	tests/pcapWrapperTest.cpp
 	tests/socketConnectionTest.cpp
 )
 
