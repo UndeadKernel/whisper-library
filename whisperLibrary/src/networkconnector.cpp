@@ -1,7 +1,6 @@
 #include "networkconnector.hpp"
 
 namespace whisper_library {
-
 	NetworkConnector::NetworkConnector(ChannelManager* channelmanager) {
 		m_channelmanager = channelmanager;
 		m_pcap = new PcapWrapper();
@@ -99,5 +98,4 @@ namespace whisper_library {
 		}
 		return true;
 	}
-
 }
