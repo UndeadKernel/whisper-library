@@ -22,6 +22,9 @@
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
 #include <socketconnector.hpp>
+#include "tcpheadercovertchannel.hpp"
+#include "timingcovertchannel.hpp"
+#include "packetlengthcovertchannel.hpp"
 
 namespace whisper_library {
 
@@ -29,13 +32,17 @@ ChannelManager::ChannelManager(){
 	m_socket = new SocketConnector(this);
 
 	// TcpHeaderCovertChannel
-	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+	addChannel(new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 										   std::bind(&SocketConnector::sendTcpPacket, m_socket, std::placeholders::_1),
-										   std::bind(&ChannelManager::getTcpPacket, this))));
+										   std::bind(&ChannelManager::getTcpPacket, this)));
 	// TimingChannel
 	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 									   std::bind(&SocketConnector::sendUdpPacket, m_socket, std::placeholders::_1),
 									   std::bind(&ChannelManager::getUdpPacket, this)));
+	// PacketLengthCovertChannel
+	addChannel(new PacketLengthCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+		std::bind(&SocketConnector::sendUdpPacket, m_socket, std::placeholders::_1),
+		std::bind(&ChannelManager::getUdpPacketWithLength, this, std::placeholders::_1)));
 	m_current_channel = m_channels[0];
 }
 ChannelManager::~ChannelManager() {
@@ -66,6 +73,11 @@ TcpPacket ChannelManager::getTcpPacket(){
 }
 
 UdpPacket ChannelManager::getUdpPacket() {
+	return UdpPacket();
+}
+
+UdpPacket ChannelManager::getUdpPacketWithLength(int length){
+	//TODO create Packet with given length
 	return UdpPacket();
 }
 

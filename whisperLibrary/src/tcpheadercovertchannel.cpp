@@ -42,6 +42,7 @@ namespace whisper_library {
 		}
 	}
 
+	
 	void TcpHeaderCovertChannel::receivePacket(whisper_library::GenericPacket& packet) {
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.content());

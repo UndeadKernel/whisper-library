@@ -29,7 +29,9 @@ using namespace std;
 namespace whisper_library {
 	class UdpPacket {
 	public:
+		void setPacket(vector<bool> packet);
 		vector<bool> packet();
+		int length();
 	};
 }
 

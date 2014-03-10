@@ -11,6 +11,7 @@ set(SOURCES
 	src/timingcovertchannel.cpp
 	src/genericpacket.cpp
 	src/udppacket.cpp
+	src/packetlengthcovertchannel.cpp
 )
 
 set(HEADERS
@@ -25,6 +26,7 @@ set(HEADERS
 	include/whisperLibrary/timingcovertchannel.hpp
 	include/whisperLibrary/genericpacket.hpp
 	include/whisperLibrary/udppacket.hpp
+	include/whisperLibrary/packetlengthcovertchannel.hpp
 )
 
 set(TESTS
@@ -34,6 +36,7 @@ set(TESTS
 	tests/bitSetCoderTest.cpp
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
+	tests/packetLengthCovertChannelTest.cpp
 )
 
 # Boost library

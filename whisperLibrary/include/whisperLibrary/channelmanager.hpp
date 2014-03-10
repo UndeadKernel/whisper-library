@@ -27,8 +27,6 @@
 #include <vector>
 #include "../../src/tcppacket.hpp"
 #include <iostream>
-#include "tcpheadercovertchannel.hpp"
-#include "timingcovertchannel.hpp"
 #include <functional>
 #include <genericpacket.hpp>
 #include <udppacket.hpp>
@@ -68,6 +66,7 @@ public:
 	 */
 	TcpPacket getTcpPacket();
 	UdpPacket getUdpPacket();
+	UdpPacket getUdpPacketWithLength(int length);
 
 	/** 
 	 * \brief Is called, when the socket receives a packet of the communication

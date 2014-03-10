@@ -2,6 +2,7 @@
 #include <channelmanager.hpp>
 #include <chrono>
 #include <boost/algorithm/string.hpp>
+#include <thread>
 
 struct timingCovertChannelFixture {
 	timingCovertChannelFixture() {
