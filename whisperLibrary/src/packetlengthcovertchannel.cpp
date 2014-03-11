@@ -30,17 +30,17 @@ namespace whisper_library {
 	}
 
 	void PacketLengthCovertChannel::sendMessage(std::string message){
-		m_packetLengths = m_coder->encodeMessage(message);
-		m_send(m_getPacket(8 + m_baseLength + m_packetLengths.size()));
-		for (int i = 0; i < m_packetLengths.size(); i++){
-			m_send(m_getPacket(m_packetLengths[i]));
+		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
+		m_send(m_getPacket(8 + m_baseLength + packetLengths.size()));
+		for (int i = 0; i < packetLengths.size(); i++){
+			m_send(m_getPacket(packetLengths[i]));
 		}
 
 	}
 
 	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
 		UdpPacket udpPacket;
-		udpPacket.packet() = packet.content();
+		udpPacket.setPacket(packet.content());
 		if (m_packetCount == -1){
 			m_packetCount = udpPacket.length()-8-m_baseLength;
 		}

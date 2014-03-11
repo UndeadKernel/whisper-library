@@ -25,6 +25,7 @@
 #include "tcpheadercovertchannel.hpp"
 #include "timingcovertchannel.hpp"
 #include "packetlengthcovertchannel.hpp"
+#include "../../src/udppacketgenerator.hpp"
 
 namespace whisper_library {
 
@@ -77,8 +78,7 @@ UdpPacket ChannelManager::getUdpPacket() {
 }
 
 UdpPacket ChannelManager::getUdpPacketWithLength(int length){
-	//TODO create Packet with given length
-	return UdpPacket();
+	return whisper_library::UdpPacketGenerator::packetWithLength(23, length);
 }
 
 void ChannelManager::packetReceived(GenericPacket packet) {
