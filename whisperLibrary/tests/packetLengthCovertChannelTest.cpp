@@ -1,6 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include "packetlengthcovertchannel.hpp"
-#include "udppacket.hpp"
+#include "../../src/udppacket.hpp"
+#include "../../src/udppacketgenerator.hpp"
 
 struct PacketLengthCovertChannelFixture {
 	PacketLengthCovertChannelFixture(){
@@ -25,8 +26,7 @@ struct PacketLengthCovertChannelFixture {
 	}
 
 	whisper_library::UdpPacket getUdpPacket(int length){
-		whisper_library::UdpPacket packet;
-		return packet;
+		 return whisper_library::UdpPacketGenerator::packetWithLength(23,length);	
 	}
 
 	std::string m_received;
@@ -41,11 +41,11 @@ BOOST_AUTO_TEST_CASE(testEmptyMessage){
 	BOOST_CHECK_EQUAL(msg, m_received);
 }
 
-//BOOST_AUTO_TEST_CASE(testShortMessage){
-//	std::string msg = "test";
-//	m_channel->sendMessage(msg);
-//	BOOST_CHECK_EQUAL(msg, m_received);
-//}
+BOOST_AUTO_TEST_CASE(testShortMessage){
+	std::string msg = "test";
+	m_channel->sendMessage(msg);
+	BOOST_CHECK_EQUAL(msg, m_received);
+}
 
 //BOOST_AUTO_TEST_CASE(testLongMessage){
 //	std::string msg = "a longer test to see if the packet length covert channel works correct";

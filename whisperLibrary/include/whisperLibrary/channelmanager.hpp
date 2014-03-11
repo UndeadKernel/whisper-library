@@ -29,7 +29,7 @@
 #include <iostream>
 #include <functional>
 #include <genericpacket.hpp>
-#include <udppacket.hpp>
+#include "../../src/udppacket.hpp"
 
 namespace whisper_library {
 

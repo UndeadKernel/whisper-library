@@ -25,7 +25,7 @@
 
 #include "covertchannel.hpp"
 #include <functional>
-#include "udppacket.hpp"
+#include "../../src/udppacket.hpp"
 #include "lengthcoder.hpp"
 
 namespace whisper_library {

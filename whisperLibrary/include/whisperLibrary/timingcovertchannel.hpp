@@ -29,7 +29,7 @@
 #include <functional>
 #include <thread>
 #include <atomic>
-#include <udppacket.hpp>
+#include "../../src/udppacket.hpp"
 
 using namespace std;
 

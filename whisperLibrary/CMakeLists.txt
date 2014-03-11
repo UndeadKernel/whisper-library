@@ -13,6 +13,7 @@ set(SOURCES
 	src/udppacket.cpp
 	src/packetlengthcovertchannel.cpp
 	src/lengthcoder.cpp
+	src/udppacketgenerator.cpp
 )
 
 set(HEADERS
@@ -26,9 +27,10 @@ set(HEADERS
 	include/whisperLibrary/morseCoder.hpp
 	include/whisperLibrary/timingcovertchannel.hpp
 	include/whisperLibrary/genericpacket.hpp
-	include/whisperLibrary/udppacket.hpp
+	src/udppacket.hpp
 	include/whisperLibrary/packetlengthcovertchannel.hpp
 	include/whisperLibrary/lengthcoder.hpp
+	src/udppacketgenerator.hpp
 )
 
 set(TESTS
