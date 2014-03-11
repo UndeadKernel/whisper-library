@@ -95,7 +95,7 @@ void UdpPacket::setPacket(std::vector<bool> packet){
 		for (int j = 0; j < 8; j++){
 			part[j] = packet[i * 8 + j];
 		}
-		parts.push_back(part.to_string().at(0));
+		parts.push_back(part.to_ulong());
 	}
 	for (int j = 0; j < 8; j++){
 		m_head[j] = parts[j];
