@@ -7,6 +7,7 @@ namespace whisper_library {
 		m_socket = new SocketSender();
 
 		m_adapter_open = false;
+		m_connection_count = 0;
 	}
 
 	NetworkConnector::~NetworkConnector() {
@@ -58,11 +59,28 @@ namespace whisper_library {
 			if (m_pcap->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 				return false;
 			}
+			m_connection_count++;
 			std::thread packet_receiver(std::bind(&NetworkConnector::retrievePacket, this));
 			packet_receiver.detach();
 		}
+		else {
+			m_connection_count++;
+		}
+		m_ip_mapping.emplace(ip, channel);
 		addFilter(ip, channel->port(), channel->protocol());
 		return true;
+	}
+
+	void NetworkConnector::closeConnection(string ip) {
+		m_ip_mapping.erase(ip);
+		if (m_adapter_open) {
+			removeFilter(ip);
+			m_connection_count--;
+			if (m_connection_count == 0) {
+				m_pcap->closeAdapter(m_adapter.c_str());
+				m_adapter_open = false;
+			}
+		}
 	}
 
 	void NetworkConnector::addFilter(string ip, unsigned short port, string protocol) {
@@ -89,6 +107,43 @@ namespace whisper_library {
 		}
 		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
 	}
+
+	void NetworkConnector::retrievePacket() {
+		vector<bool> packet_data;
+		GenericPacket generic_packet;
+		while (m_adapter_open) {
+			packet_data = m_pcap->retrievePacketAsVector(m_adapter.c_str());
+			if (!packet_data.empty()) {
+				generic_packet.setContent(packet_data);
+				// TODO: get sender ip, split packet
+				string ip;
+				CovertChannel * channel = m_ip_mapping[ip];
+				channel->receiveMessage(generic_packet);
+			}
+		}
+	}
+
+	// Sending
+	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
+		#ifndef WIN32
+			// UNIX
+			int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
+			if (adapter_id < 0) {
+				return ;
+			}
+			vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
+			m_socket->sendTcp(addresses[0], ip, packet);
+		#else
+			// Windows TODO
+			//m_pcap->sendPacket
+		#endif
+
+	}
+
+	void NetworkConnector::sendUdp(string ip, UdpPacket packet) {
+		m_socket->sendUdp(ip, packet);
+	}
+
 	// Utility
 	bool NetworkConnector::validIP(string ip) {
 		boost::system::error_code ec;

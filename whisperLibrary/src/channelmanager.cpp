@@ -28,10 +28,8 @@ using namespace std;
 namespace whisper_library {
 
 ChannelManager::ChannelManager(){
-	m_network_sniffer = new PcapWrapper();
-	m_socket_sender = new SocketSender();
 
-	// TcpHeaderCovertChannel
+/*	// TcpHeaderCovertChannel
 	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 										   std::bind(&SocketSender::sendTcp, m_socket_sender, std::placeholders::_1),
 										   std::bind(&ChannelManager::getTcpPacket, this))));
@@ -39,9 +37,7 @@ ChannelManager::ChannelManager(){
 	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 									   std::bind(&SocketSender::sendUdp, m_socket_sender, std::placeholders::_1),
 									   std::bind(&ChannelManager::getUdpPacket, this)));
-	m_current_channel = m_channels[0];
-	m_current_adapter_id = -1;
-	m_connected = false;
+	m_current_channel = m_channels[0]; */
 }
 ChannelManager::~ChannelManager() {
 	for (unsigned int i = 0; i < m_channels.size(); i++) {
@@ -110,33 +106,8 @@ UdpPacket ChannelManager::getUdpPacket() {
 	return packet;
 }
 
-void ChannelManager::packetReceived(GenericPacket packet) {
-	if (m_current_channel != NULL) {
-		m_current_channel->receiveMessage(packet);
-	}
-}
 
-void ChannelManager::selectChannel(unsigned int index) {
-	if (m_connected) {
-		outputErrorMessage("Can't change channel while connected");
-		return;
-	}
-	if (index >= 0 && index < m_channels.size()) {
-		m_current_channel = m_channels[index];
-	}
-}
 
-void ChannelManager::selectChannel(string name) {
-	if (m_connected) {
-		outputErrorMessage("Can't change channel while connected");
-		return;
-	}
-	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); it++) {
-		if ((*it)->name().compare(name) == 0) {
-			m_current_channel = (*it);
-		}
-	}
-}
 
 void ChannelManager::setOutputStream(std::ostream* stream) {
 	m_output_stream = stream;
@@ -162,83 +133,15 @@ vector<string> ChannelManager::getChannelNames() {
 	return string_vector;
 }
 
-string ChannelManager::currentChannel() {
-	if (m_current_channel != NULL) {
-		return m_current_channel->name();
-	}
-}
 
 bool ChannelManager::openConnection(string ip, string adapter_name) {
-	if (m_connected) {
-		outputErrorMessage("Already connected. Please close the connection first.");
-		return false;
-	}
-	selectAdapter(adapter_name);
-	if (m_current_adapter_id == -1) {
-		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
-		return false;
-	}
-	boost::system::error_code ec;
-	boost::asio::ip::address::from_string( ip, ec);
-	if (ec) {
-		outputErrorMessage("Invalid IP");
-		return false;
-	}
-	m_connected = true;
-	m_socket_sender->setReceiverIp(ip);
-	m_network_sniffer->openAdapter(m_current_adapter_id, m_network_sniffer->DEFAULT_MAXPACKETSIZE, true, 1);
-	string filter = "src " + ip +" and port " + to_string(m_current_channel->port()) + " and " + m_current_channel->protocol();
-	m_network_sniffer->applyFilter(m_current_adapter_id, filter.c_str());
-	std::thread packet_receiver(std::bind(&ChannelManager::retrievePacket, this));
-	packet_receiver.detach();
-	return true;
+	
 }
 
-void ChannelManager::closeConnection() {
-	if (m_connected) {
-		m_network_sniffer->closeAdapter(m_current_adapter_id);
-		m_connected = false;
-	}
-}
 
-void ChannelManager::retrievePacket() {
-	vector<bool> packet_data;
-	GenericPacket generic_packet;
-	while (m_connected) {
-		packet_data = m_network_sniffer->retrievePacketAsVector(m_current_adapter_id);
-		if (!packet_data.empty()) {
-			generic_packet.setContent(packet_data);
-			m_current_channel->receiveMessage(generic_packet);
-		}
-	}
-}
 
-int ChannelManager::adapterCount() {
-	return m_network_sniffer->adapterCount();
-}
 
-vector<char*> ChannelManager::adapterNames() {
-	return m_network_sniffer->adapterNames();
-}
 
-const char* ChannelManager::adapterDescription(string adapter_name) {
-	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
-	if (adapter_id == -2) {
-		outputErrorMessage("Adapter '" + adapter_name + "' not found.");
-		return "";
-	}
-	return m_network_sniffer->adapterDescription(adapter_id);
-}
-
-void ChannelManager::selectAdapter(string adapter_name) {
-	int adapter_id = m_network_sniffer->adapterId(adapter_name.c_str(), m_network_sniffer->ADAPTER_NAME);
-	if (adapter_id < 0) {
-		adapter_id = -1;	//adapter not found
-	}
-	else {
-		m_current_adapter_id = adapter_id;
-	}
-}
 
 bool ChannelManager::connected() {
 	return m_connected;

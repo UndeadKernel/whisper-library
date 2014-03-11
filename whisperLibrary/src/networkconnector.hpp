@@ -47,6 +47,9 @@ private:
 	PcapWrapper* m_pcap;
 	SocketSender* m_socket;
 
+	map<string, CovertChannel*> m_ip_mapping;
+
+	unsigned int m_connection_count;
 	string m_adapter;
 	bool m_adapter_open;
 	map<string, string> m_filter;

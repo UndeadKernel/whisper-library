@@ -8,31 +8,29 @@ using namespace boost::asio;
 
 namespace whisper_library {
 
-void SocketSender::setReceiverIp(ulong destinationIpAddress){
-	m_ipAddress = destinationIpAddress;	
-}
-
-void SocketSender::setReceiverIp(string destinationIpAddress) {
+ulong SocketSender::ipToUlong(string ip) {
 	vector<string> parts;
-	boost::split(parts, destinationIpAddress, boost::is_any_of("."), boost::token_compress_on);
-	ulong ip = 0;
+	boost::split(parts, ip, boost::is_any_of("."), boost::token_compress_on);
+	ulong ulong_ip = 0;
 	try {
-		ip += boost::lexical_cast<unsigned int>(parts[3]);
-		ip += boost::lexical_cast<unsigned int>(parts[2]) << 8;
-		ip += boost::lexical_cast<unsigned int>(parts[1]) << 16;
-		ip += boost::lexical_cast<unsigned int>(parts[0]) << 24;
+		ulong_ip += boost::lexical_cast<unsigned int>(parts[3]);
+		ulong_ip += boost::lexical_cast<unsigned int>(parts[2]) << 8;
+		ulong_ip += boost::lexical_cast<unsigned int>(parts[1]) << 16;
+		ulong_ip += boost::lexical_cast<unsigned int>(parts[0]) << 24;
 	}
 	catch (boost::bad_lexical_cast e) {
 		cout << "Error: " << e.what() << endl;
 	}
 
-	m_ipAddress = ip;
+	return ulong_ip;
 }
 
-void SocketSender::sendTcp(TcpPacket packet){
+void SocketSender::sendTcp(string sourceIp, string destinationIp, TcpPacket packet){
 	//TODO eigene IP bestimmen
 	ulong ownIp = 3232236136;
-	packet.calculateChecksum(ownIp, m_ipAddress, 0, 6);
+
+	ulong ulong_destinationIp = ipToUlong(destinationIp);
+	packet.calculateChecksum(ownIp, ulong_destinationIp, 0, 6);
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_TCP>> socket(io_service);
 	
@@ -43,7 +41,7 @@ void SocketSender::sendTcp(TcpPacket packet){
 	for (int i = 0; i < packetString.size(); i++){
 		os.put(packetString[i]);
 	}
-	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(m_ipAddress), packet.destPort());
+	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(ulong_destinationIp), packet.destPort());
     try {
         socket.open();
 		socket.send_to(send_buffer.data(), ep);
@@ -53,7 +51,7 @@ void SocketSender::sendTcp(TcpPacket packet){
     }
 }
 
-void SocketSender::sendUdp(UdpPacket packet) {
+void SocketSender::sendUdp(string ip, UdpPacket packet) {
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
 	boost::asio::streambuf request_buffer;

@@ -17,15 +17,13 @@ namespace whisper_library {
 class SocketSender {
 
 public:
-	void setReceiverIp(ulong destinationIpAddress);
-	void setReceiverIp(string destinationIpAddress);
-	void sendTcp(TcpPacket packet);
-	void sendUdp(UdpPacket packet);
+	void sendTcp(string sourceIp, string destinationIp, TcpPacket packet);
+	void sendUdp(string ip, UdpPacket packet);
 
 
 private:
 	std::string packetToString(vector<bool> packetData);
-	ulong m_ipAddress;
+	ulong ipToUlong(string ip);
 };
 }
 #endif // SOCKET_SENDER
