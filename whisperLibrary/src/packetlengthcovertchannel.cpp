@@ -40,14 +40,19 @@ namespace whisper_library {
 
 	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
 		UdpPacket udpPacket;
-		udpPacket.setPacket(packet.content());
+		std::vector<bool> content = packet.content();
+		udpPacket.setPacket(content);
 		if (m_packetCount == -1){
+			if (udpPacket.length() == 8 + m_baseLength){
+				m_output("");
+				return;
+			}
 			m_packetCount = udpPacket.length()-8-m_baseLength;
 		}
 		else {
 			m_packetLengths.push_back(udpPacket.length());
+			m_received++;
 		}
-		m_received++;
 		if (m_received == m_packetCount){
 			m_output(m_coder->decodeMessage(m_packetLengths));
 			m_received = 0;

@@ -21,7 +21,7 @@ namespace whisper_library {
 		std::vector<char> data;
 		std::random_device generator;
 		std::uniform_int_distribution<int> char_distribution(0, 255);
-		for (unsigned int i = 0; i < length; i++) {
+		for (unsigned int i = 0; i < length-8; i++) {
 			unsigned int character = char_distribution(generator);
 			data.push_back(static_cast<char>(character));
 		}
