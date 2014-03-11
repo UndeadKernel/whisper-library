@@ -35,6 +35,8 @@
 #include <regex>
 #include <pcapwrapper.hpp>
 #include "../../src/socketSender.hpp"
+#include <map>
+#include "../../src/networkconnector.hpp"
 
 namespace whisper_library {
 
@@ -77,7 +79,7 @@ public:
 	 * \brief Is called, when the socket receives a packet of the communication
 	 * \param packet the  packet that was received
 	 */
-	void packetReceived(GenericPacket packet);
+	void packetReceived(string ip, GenericPacket packet);
 	
 	void selectChannel(string name);
 	/** 
@@ -95,7 +97,7 @@ public:
 	vector<string> getChannelNames();
 	// returns the name of the currently selected channel
 	string currentChannel();
-	bool openConnection(string ip, string adapter_name);
+	bool openConnection(string ip, unsigned int channel_id);
 	void closeConnection();
 	int adapterCount();
 	vector<char*> adapterNames();
@@ -109,13 +111,12 @@ public:
 	void setChannelArguments(string arguments);
 	
 private:
+	CovertChannel* createChannel(string ip, unsigned int channel_id);
 	void selectAdapter(string adapter_name);
 	// adds a channel to the available channels
 	void addChannel(CovertChannel* channel);
 	//removes a channel from the available channels
 	void removeChannel(CovertChannel* channel);
-	// retrieve packet from the adapter
-	void retrievePacket();
 	// hold all available channels
 	std::vector<CovertChannel*> m_channels;
 	// pointer to the covert channel, that is currently in use
@@ -124,11 +125,9 @@ private:
 	std::ostream* m_output_stream;
 	// stream that displays errors
 	std::ostream* m_error_stream;
-	// sniffer
-	PcapWrapper* m_network_sniffer;
-	SocketSender* m_socket_sender;
-	int m_current_adapter_id;
-	bool m_connected;
+
+	NetworkConnector* m_network;
+	map<string, CovertChannel*> m_ip_mapping;
 };
 }
 #endif // CHANNEL_MANAGER

@@ -28,23 +28,16 @@ using namespace std;
 namespace whisper_library {
 
 ChannelManager::ChannelManager(){
-
-/*	// TcpHeaderCovertChannel
-	addChannel((new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-										   std::bind(&SocketSender::sendTcp, m_socket_sender, std::placeholders::_1),
-										   std::bind(&ChannelManager::getTcpPacket, this))));
-	// TimingChannel
-	addChannel(new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
-									   std::bind(&SocketSender::sendUdp, m_socket_sender, std::placeholders::_1),
-									   std::bind(&ChannelManager::getUdpPacket, this)));
-	m_current_channel = m_channels[0]; */
+	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 }
 ChannelManager::~ChannelManager() {
 	for (unsigned int i = 0; i < m_channels.size(); i++) {
 		delete m_channels[i];
 	}
-	delete m_network_sniffer;
-	delete m_socket_sender;
+	for (map<string, CovertChannel*>::iterator it = m_ip_mapping.begin(); it != m_ip_mapping.end(); it++) {
+		pair<string, CovertChannel*> element = *it;
+		delete element.second;
+	}
 }
 
 void ChannelManager::addChannel(CovertChannel* channel) {
@@ -133,18 +126,35 @@ vector<string> ChannelManager::getChannelNames() {
 	return string_vector;
 }
 
+CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
+	if (channel_id == 0) {
+		return new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),
+			std::bind(&ChannelManager::getTcpPacket, this));
+	}
+	// else
+	return new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
+			std::bind(&ChannelManager::getUdpPacket, this));
+}
 
-bool ChannelManager::openConnection(string ip, string adapter_name) {
-	
+bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
+	CovertChannel* channel = createChannel(ip, channel_id);
+	m_ip_mapping.emplace(ip, channel);
+	return m_network->openConnection(ip, channel);
+}
+
+void ChannelManager::packetReceived(string ip, GenericPacket packet) {
+	CovertChannel* channel = m_ip_mapping[ip];
+	channel->receiveMessage(packet);
 }
 
 
 
 
 
-
 bool ChannelManager::connected() {
-	return m_connected;
+	//return m_connected;
 }
 
 void ChannelManager::setChannelArguments(string arguments) {

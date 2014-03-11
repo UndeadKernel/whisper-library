@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include <thread>
 
 #include <genericpacket.hpp>
 #include "tcppacket.hpp"
@@ -12,7 +13,6 @@
 #include <pcapwrapper.hpp>
 #include "socketSender.hpp"
 #include <covertchannel.hpp>
-#include <channelmanager.hpp>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ namespace whisper_library {
 
 class NetworkConnector {
 public:
-	NetworkConnector(ChannelManager* channelmanager);
+	NetworkConnector(function<void(string, GenericPacket)> packet_received);
 	~NetworkConnector();
 
 	// Interface CovertChannel
@@ -43,16 +43,16 @@ private:
 	void addFilter(string ip, unsigned short port, string protocol);
 	void removeFilter(string ip);
 	void rebuildFilter();
-	ChannelManager* m_channelmanager;
 	PcapWrapper* m_pcap;
 	SocketSender* m_socket;
 
-	map<string, CovertChannel*> m_ip_mapping;
+
 
 	unsigned int m_connection_count;
 	string m_adapter;
 	bool m_adapter_open;
 	map<string, string> m_filter;
+	function<void(string, GenericPacket)> m_packet_received
 };
 
 }

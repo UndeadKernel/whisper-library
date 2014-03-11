@@ -1,13 +1,13 @@
 #include "networkconnector.hpp"
 
 namespace whisper_library {
-	NetworkConnector::NetworkConnector(ChannelManager* channelmanager) {
-		m_channelmanager = channelmanager;
+	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {
 		m_pcap = new PcapWrapper();
 		m_socket = new SocketSender();
 
 		m_adapter_open = false;
 		m_connection_count = 0;
+		m_packet_received = packet_received;
 	}
 
 	NetworkConnector::~NetworkConnector() {
@@ -66,13 +66,11 @@ namespace whisper_library {
 		else {
 			m_connection_count++;
 		}
-		m_ip_mapping.emplace(ip, channel);
 		addFilter(ip, channel->port(), channel->protocol());
 		return true;
 	}
 
 	void NetworkConnector::closeConnection(string ip) {
-		m_ip_mapping.erase(ip);
 		if (m_adapter_open) {
 			removeFilter(ip);
 			m_connection_count--;
@@ -117,8 +115,7 @@ namespace whisper_library {
 				generic_packet.setContent(packet_data);
 				// TODO: get sender ip, split packet
 				string ip;
-				CovertChannel * channel = m_ip_mapping[ip];
-				channel->receiveMessage(generic_packet);
+				m_packet_received(ip, generic_packet);
 			}
 		}
 	}
