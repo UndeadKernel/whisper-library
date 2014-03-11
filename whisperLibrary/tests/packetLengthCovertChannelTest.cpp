@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(testEmptyMessage){
 }
 
 BOOST_AUTO_TEST_CASE(testShortMessage){
-	std::string msg = "a";
+	std::string msg = "test";
 	m_channel->sendMessage(msg);
 	BOOST_CHECK_EQUAL(msg, m_received);
 }

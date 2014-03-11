@@ -23,8 +23,12 @@
 #include <packetlengthcovertchannel.hpp>
 
 namespace whisper_library {
-	
 
+	const std::string PacketLengthCovertChannel::NAME = "Packet Length Covert Channel";
+	
+	const std::string PacketLengthCovertChannel::INFO = 
+		"The Packet Length Covert Channel alters the length of UDP packets to transmit messages";
+	
 	PacketLengthCovertChannel::~PacketLengthCovertChannel(){
 		delete m_coder;
 	}
@@ -35,7 +39,6 @@ namespace whisper_library {
 		for (int i = 0; i < packetLengths.size(); i++){
 			m_send(m_getPacket(packetLengths[i]));
 		}
-
 	}
 
 	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
@@ -58,15 +61,14 @@ namespace whisper_library {
 			m_received = 0;
 			m_packetCount = -1;
 		}
-
 	}
 
 	std::string PacketLengthCovertChannel::name() const {
-		return "Packet Length Covert Channel";
+		return NAME;
 	}
 
 	std::string PacketLengthCovertChannel::info() const {
-		return "The Packet Length Covert Channel alters the length of UDP packets to transmit messages";
+		return INFO;
 	}
 
 }
