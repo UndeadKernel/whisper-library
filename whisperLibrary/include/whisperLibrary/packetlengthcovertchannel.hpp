@@ -32,13 +32,18 @@ namespace whisper_library {
 
 class PacketLengthCovertChannel : public CovertChannel {
 public:
+	static const std::string NAME;///< the name of the covert channel
+	static const std::string INFO;///< some information about the covert channel
+
 	/** \brief Creates an PacketLenghtCovertChannel
 
-		Creates a new PacketLengthCovertChannel. An PacketLengthCovertChannel needs three function pointers.
-		It than can be use to send and receive messages.
-		\param output a function the covert channel calls with the message he received as an argument
+		Creates a new PacketLengthCovertChannel. An PacketLengthCovertChannel needs three
+		function pointers. It than can be use to send and receive messages.
+		\param output a function the covert channel calls with the message he received as 
+					an argument
 		\param send a function the covert channel uses to send udp packets
-		\param getPacket a function the covert channel uses to get udp packets with a certain length
+		\param getPacket a function the covert channel uses to get udp packets with a
+						certain length
 		
 	*/
 	PacketLengthCovertChannel(function<void(std::string)> output,
@@ -51,8 +56,8 @@ public:
 		m_received(0),
 		m_packetCount(-1),
 		m_baseLength(10),
-		m_coder(new LengthCoder(m_baseLength))
-	{};
+		m_coder(new LengthCoder(m_baseLength)){};
+
 	/** \brief Deletes the PacketLengthCovertChannel
 
 		Deletes this instance of PacketLengthCovertChannel and frees all memory.
@@ -72,11 +77,16 @@ public:
 		\param udpPacket the packet that gets interpreted
 	*/
 	void receivePacket(GenericPacket& udpPacket);
-
+	/**
+		returns the name of the covert channel
+	*/
 	std::string name() const;
+	/**
+		returns a description of the covert channel
+	*/
 	std::string info() const;
+
 private:
-	
 	function<void(string)> m_output;///< function used to return received messages as a string
 	function<void(UdpPacket)> m_send;///< function used to send Udp Packets via the socket
 	function<UdpPacket(int)> m_getPacket;///< function used to retrieve valid udp packets with given length
