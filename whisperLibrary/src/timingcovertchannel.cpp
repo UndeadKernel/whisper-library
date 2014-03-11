@@ -65,7 +65,7 @@ namespace whisper_library {
 		}
 	}
 
-	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
+	void TimingCovertChannel::receivePacket(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
 		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(2);

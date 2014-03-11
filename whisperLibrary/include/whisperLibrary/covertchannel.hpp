@@ -42,7 +42,7 @@ public:
 	// Call this function to send a message using the covert channel.
 	virtual void sendMessage(std::string message) = 0;
 	// This function is called, when a new packet arrived. The argument is a reference to this packet.
-	virtual void receiveMessage(GenericPacket& packet) = 0;
+	virtual void receivePacket(GenericPacket& packet) = 0;
 	// Displays the name of the covert channel
 	virtual std::string name() const = 0;
 	// Displays information about the covert channel

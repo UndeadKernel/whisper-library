@@ -64,7 +64,7 @@ namespace whisper_library {
 			This function is called, when a new packet arrives at the socket. 
 			It collects them and returns the message via the callback function "m_output".
 		*/
-		void receiveMessage(GenericPacket& packet);
+		void receivePacket(GenericPacket& packet);
 
 		// Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		string name() const;

@@ -85,7 +85,7 @@ public:
 		Has to be called when a packet is received, with the packet as the argument. 
 		After a timeout of 2 seconds the callback m_output is called with the received message.
 	*/
-	void receiveMessage(GenericPacket& packet);
+	void receivePacket(GenericPacket& packet);
 
 	// Returns a string with the name of the covert channel "Timing Covert Channel"
 	string name() const;
