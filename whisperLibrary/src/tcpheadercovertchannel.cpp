@@ -41,9 +41,7 @@ namespace whisper_library {
 			m_send(packet);
 		}
 	}
-
-	
-	void TcpHeaderCovertChannel::receivePacket(whisper_library::GenericPacket& packet) {
+	void TcpHeaderCovertChannel::receivePacket(GenericPacket& packet) {
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.content());
 		bitset<3> data = extractData(tcp_packet);

@@ -12,6 +12,7 @@ set(SOURCES
 	src/genericpacket.cpp
 	src/udppacket.cpp
 	src/packetlengthcovertchannel.cpp
+	src/lengthcoder.cpp
 )
 
 set(HEADERS
@@ -27,6 +28,7 @@ set(HEADERS
 	include/whisperLibrary/genericpacket.hpp
 	include/whisperLibrary/udppacket.hpp
 	include/whisperLibrary/packetlengthcovertchannel.hpp
+	include/whisperLibrary/lengthcoder.hpp
 )
 
 set(TESTS
@@ -37,6 +39,7 @@ set(TESTS
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
 	tests/packetLengthCovertChannelTest.cpp
+	tests/lengthCoderTest.cpp
 )
 
 # Boost library

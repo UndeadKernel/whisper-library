@@ -29,27 +29,32 @@
 
 namespace whisper_library {
 
+
 /**
 	CovertChannel is the abstract class all covert channels you want to use have to inherit from. It defines the
 	interface for a covert channel. You can add CovertChannel objects to the ChannelManager to use them.
 */
 class CovertChannel {
 public:
+	
 	/** \brief Contructor
 
 		Creates a CovertChannel
 	*/ 
 	CovertChannel() {};
+	
 	/** \brief Destructor
 
 		Virtual destructor so that the destructor of derived classes is called
 	*/ 
 	virtual ~CovertChannel() {};
+	
 	/** \brief sends a message
 
 		Call this function to send a message using the covert channel.
 	*/ 
 	virtual void sendMessage(std::string message) = 0;
+	
 	/** \brief receives a packet
 
 		This function is called, when a new packet arrived. The argument is a reference to this packet.
@@ -59,10 +64,12 @@ public:
 		Returns the name of the covert channel
 	*/ 
 	virtual std::string name() const = 0;
+	
 	/**
 		Returns some information about the covert channel
 	*/ 
 	virtual std::string info() const = 0;
+
 };
 }
 #endif // COVERT_CHANNEL

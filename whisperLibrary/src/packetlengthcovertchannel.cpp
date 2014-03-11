@@ -1,8 +1,8 @@
 /*	<packetlengthcovertchannel.cpp>
-	Copyright(C) 2013,2014  Jan Simon Bunten
-	Simon Kadel
-	Martin Sven Oehler
-	Arne Sven Stühlmeyer
+	Copyright(C) 2014	Jan Simon Bunten
+						Simon Kadel
+						Martin Sven Oehler
+						Arne Sven Stühlmeyer
 
 	This File is part of the WhisperLibrary
 
@@ -26,11 +26,11 @@ namespace whisper_library {
 	
 
 	PacketLengthCovertChannel::~PacketLengthCovertChannel(){
-
+		delete m_coder;
 	}
 
 	void PacketLengthCovertChannel::sendMessage(std::string message){
-		//TODO encode message
+		m_packetLengths = m_coder->encodeMessage(message);
 		m_send(m_getPacket(8 + m_baseLength + m_packetLengths.size()));
 		for (int i = 0; i < m_packetLengths.size(); i++){
 			m_send(m_getPacket(m_packetLengths[i]));
@@ -38,18 +38,18 @@ namespace whisper_library {
 
 	}
 
-	void PacketLengthCovertChannel::receiveMessage(GenericPacket& packet){
+	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
 		UdpPacket udpPacket;
 		udpPacket.packet() = packet.content();
 		if (m_packetCount == -1){
-			m_packetCount = udpPacket.length() - 8 - m_baseLength;
+			m_packetCount = udpPacket.length()-8-m_baseLength;
 		}
 		else {
 			m_packetLengths.push_back(udpPacket.length());
 		}
 		m_received++;
 		if (m_received == m_packetCount){
-			//TODO decode message
+			m_output(m_coder->decodeMessage(m_packetLengths));
 			m_received = 0;
 			m_packetCount = -1;
 		}
@@ -61,7 +61,7 @@ namespace whisper_library {
 	}
 
 	std::string PacketLengthCovertChannel::info() const {
-		return "The Packet Length Covert Channel alters the length of UDP packetsso transmit messages";
+		return "The Packet Length Covert Channel alters the length of UDP packets to transmit messages";
 	}
 
 }
