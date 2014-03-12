@@ -50,6 +50,21 @@ namespace whisper_library {
 		return m_pcap->adapterCount();
 	}
 
+	vector<string> NetworkConnector::adapterAddresses() {
+		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
+		vector<string> string_addresses;
+		if (adapter_id < 0) {
+			return string_addresses;
+		}
+		vector<char*> addresses = m_pcap->adapterAddresses(adapter_id);
+		for (vector<char*>::iterator it = addresses.begin(); it != addresses.end(); it++) {
+			string_addresses.push_back(*it);
+		}
+
+		return string_addresses;
+	}
+
+
 	// Connection
 	bool NetworkConnector::openConnection(string ip, CovertChannel* channel) {
 		if (!validIP(ip) || channel == NULL) {
@@ -82,7 +97,7 @@ namespace whisper_library {
 	}
 
 	void NetworkConnector::addFilter(string ip, unsigned short port, string protocol) {
-		string filter_rule = "dst " + ip + " and port " + to_string(port) + " and " + protocol;
+		string filter_rule = "src " + ip + " and port " + to_string(port) + " and " + protocol;
 		m_filter.emplace(ip, filter_rule);
 		rebuildFilter();
 	}
@@ -129,10 +144,11 @@ namespace whisper_library {
 				return ;
 			}
 			vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
+			// TODO get right address
 			m_socket->sendTcp(addresses[0], ip, packet);
 		#else
-			// Windows TODO
-			//m_pcap->sendPacket
+			// TODO: add ethernet and ip header
+			m_pcap->sendPacket(m_adapter.c_str(), packet.packet());
 		#endif
 
 	}

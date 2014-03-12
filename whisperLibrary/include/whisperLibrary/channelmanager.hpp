@@ -114,6 +114,7 @@ public:
 	unsigned int adapterCount();
 	vector<string> networkAdapters();
 	string adapterDescription(string adapter_name);
+	vector<string> adapterAddresses();
 	
 private:
 	CovertChannel* createChannel(string ip, unsigned int channel_id);

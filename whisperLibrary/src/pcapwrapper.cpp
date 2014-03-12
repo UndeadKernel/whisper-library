@@ -339,7 +339,6 @@ namespace whisper_library {
 		}
 		unsigned int packet_size	= packet.header.len;
 		const unsigned char* it		= packet.payload;
-		bitVector					= std::vector<bool>(packet_size * sizeof(u_char));
 		unsigned int i, j;
 		for (i = 0; i < packet_size; i++) {
 			for (j = 0; j < 8; j++) {
@@ -361,10 +360,6 @@ namespace whisper_library {
 		DEBUG(2, "ipToString()\nBuffer length: %d; Address Length: %d\n", static_cast<unsigned int>(buffer_length), static_cast<unsigned int>(address_length));
 		
 		getnameinfo(socket_address, address_length, buffer, buffer_length, NULL, 0, NI_NUMERICHOST);
-		#ifndef WIN32
-
-		#endif
-
 		DEBUG(2, "Address from getnameinfo: %s\n\n", (buffer) ? buffer : "NULL");
 		return (buffer);
 	}
@@ -383,7 +378,7 @@ namespace whisper_library {
 			// specified adapter not found
 			RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 		}
-		pcap_t*				handle = NULL;
+		pcap_t*	handle = NULL;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
@@ -404,5 +399,33 @@ namespace whisper_library {
 
 	int	PcapWrapper::sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size) {
 		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_buffer, buffer_size);
+	}
+
+	int	PcapWrapper::sendPacket(int adapter_id, std::vector<bool> packet_data) {
+		if (packet_data.size() < 1) { RETURN_CODE(RC(NORMAL_EXECUTION)); } // nothing to send
+		int buffer_size			= packet_data.size() / 8;
+		unsigned char* buffer	= static_cast<unsigned char*>(malloc(buffer_size));
+		if (!buffer) {
+			fprintf(stderr, "Error: Out of memory.\n");
+			RETURN_CODE(RC(OUT_OF_MEMORY));
+		}
+
+		// convert logical values to numerical
+		int i, j, return_code;
+		for (i = 0; i < buffer_size; i++) {
+			buffer[i] = 0; // initialize
+			for (j = 0; j < 8; j++) {
+				DEBUG(4, "bit index: %d, data index: %d, value: %d\n", j, j + (i * 8), (packet_data[j + (i * 8)] ? 1 : 0));
+				buffer[i] |= (packet_data[j + (i * 8)] ? 1 : 0) << j;
+			}
+			DEBUG(3, "send buffer char #%d content: %u\n\n", i, buffer[i]);
+		}
+		return_code = sendPacket(adapter_id, buffer, buffer_size);
+		free(buffer);
+		RETURN_CODE(return_code);
+	}
+
+	int	PcapWrapper::sendPacket(const char* adapter_name, std::vector<bool> packet_data) {
+		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_data);
 	}
 } 

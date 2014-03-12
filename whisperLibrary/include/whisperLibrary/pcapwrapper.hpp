@@ -248,6 +248,9 @@ namespace whisper_library {
 			int									sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
 			int									sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size);
 
+			int									sendPacket(int adapter_id, std::vector<bool> packet_data);
+			int									sendPacket(const char* adapter_name, std::vector<bool> packet_data);
+
 
 	protected:
 		/**

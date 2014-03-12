@@ -8,10 +8,6 @@ struct SocketTestFixture {
 
 	SocketTestFixture(){
 		sender = new whisper_library::SocketSender();
-	//	ulong ip = 127 << 24;
-	//	ip += 1;
-		ulong ip = 3232236137;
-		sender->setReceiverIp(ip);
 	}
 
 	~SocketTestFixture(){

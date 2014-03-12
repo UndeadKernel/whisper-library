@@ -17,8 +17,8 @@ namespace whisper_library {
 class SocketSender {
 
 public:
-	void sendTcp(string sourceIp, string destinationIp, TcpPacket packet);
-	void sendUdp(string ip, UdpPacket packet);
+	void sendTcp(string source_ip, string destination_ip, TcpPacket packet);
+	void sendUdp(string destination_ip, UdpPacket packet);
 
 
 private:

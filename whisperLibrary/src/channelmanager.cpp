@@ -189,5 +189,8 @@ vector<string> ChannelManager::networkAdapters() {
 string ChannelManager::adapterDescription(string adapter_name) {
 	return m_network->adapterDescription(adapter_name);
 }
+vector<string> ChannelManager::adapterAddresses() {
+	return m_network->adapterAddresses();
+}
 
 }

@@ -36,6 +36,7 @@ public:
 	unsigned int adapterCount();
 	void setAdapter(string adapter_name);
 	string adapterDescription(string adapter_name);
+	vector<string> adapterAddresses();
 
 private:
 	void retrievePacket();
@@ -52,7 +53,7 @@ private:
 	string m_adapter;
 	bool m_adapter_open;
 	map<string, string> m_filter;
-	function<void(string, GenericPacket)> m_packet_received
+	function<void(string, GenericPacket)> m_packet_received;
 };
 
 }

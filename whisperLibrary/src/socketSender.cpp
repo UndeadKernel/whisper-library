@@ -25,12 +25,12 @@ ulong SocketSender::ipToUlong(string ip) {
 	return ulong_ip;
 }
 
-void SocketSender::sendTcp(string sourceIp, string destinationIp, TcpPacket packet){
-	//TODO eigene IP bestimmen
-	ulong ownIp = 3232236136;
+void SocketSender::sendTcp(string source_ip, string destination_ip, TcpPacket packet){
+	ulong ulong_source_ip = ipToUlong(source_ip);
+	ulong ulong_destination_ip = ipToUlong(destination_ip);
 
-	ulong ulong_destinationIp = ipToUlong(destinationIp);
-	packet.calculateChecksum(ownIp, ulong_destinationIp, 0, 6);
+	packet.calculateChecksum(ulong_source_ip, ulong_destination_ip, 0, 6);
+
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_TCP>> socket(io_service);
 	
@@ -41,7 +41,7 @@ void SocketSender::sendTcp(string sourceIp, string destinationIp, TcpPacket pack
 	for (int i = 0; i < packetString.size(); i++){
 		os.put(packetString[i]);
 	}
-	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(ulong_destinationIp), packet.destPort());
+	ip::RawSocketProtocol<IPPROTO_TCP>::endpoint ep(ip::address_v4(ulong_destination_ip), packet.destPort());
     try {
         socket.open();
 		socket.send_to(send_buffer.data(), ep);
@@ -51,13 +51,14 @@ void SocketSender::sendTcp(string sourceIp, string destinationIp, TcpPacket pack
     }
 }
 
-void SocketSender::sendUdp(string ip, UdpPacket packet) {
+void SocketSender::sendUdp(string destination_ip, UdpPacket packet) {
+	ulong ulong_destination_ip = ipToUlong(destination_ip);
 	io_service io_service;
 	basic_raw_socket<ip::RawSocketProtocol<IPPROTO_UDP> > socket(io_service);
 	boost::asio::streambuf request_buffer;
 	std::ostream os(&request_buffer);
 	os << packet;
-	ip::RawSocketProtocol<IPPROTO_UDP>::endpoint ep(ip::address_v4(m_ipAddress), packet.destinationPort());
+	ip::RawSocketProtocol<IPPROTO_UDP>::endpoint ep(ip::address_v4(ulong_destination_ip), packet.destinationPort());
 	unsigned short checksum = packet.checksum();
 	try {
 		socket.open();
