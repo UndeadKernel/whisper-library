@@ -34,7 +34,7 @@ namespace whisper_library {
 		return "udp";
 	}
 
-	short TimingCovertChannel::port() const {
+	short TimingCovertChannel::port() const{
 		return 23;
 	}
 
@@ -49,10 +49,10 @@ namespace whisper_library {
 
 	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
 		chrono::high_resolution_clock::time_point sending_time;
-		m_send(m_getPacket());
+		m_send(m_getPacket(port()));
 		chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
-			UdpPacket packet = m_getPacket();
+			UdpPacket packet = m_getPacket(port());
 			sending_time = start + chrono::milliseconds(*it);
 			this_thread::sleep_until(sending_time);
 			m_send(packet);

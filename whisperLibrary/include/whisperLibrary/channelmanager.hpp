@@ -56,71 +56,70 @@ public:
 	// constructor
 	ChannelManager();
 	~ChannelManager();
-	/** 
-	 * \brief Selects the channel for communication using the 'index' of m_channels.
-	 * \param index the index of the channel
-	 */
-	void selectChannel(unsigned int index);
-	
-	/** 
-	 * \brief Writes a message to the selected output stream, stored in m_output_stream.
-	 * \param message the message to be written
-	 */
-	void outputMessage(std::string message);
+
+	// Error handling
+
+	/**
+	* \brief Sets the stream, that the covert channel uses as the output for received messages
+	* \param a pointer to the output stream
+	*/
+	void setErrorStream(std::ostream* stream);
 	void outputErrorMessage(string message);
+
+	// Covert channel
+	vector<string> getChannelInfos();
+	vector<string> getChannelNames();
+	unsigned int channelCount();
+	/*
+	Sets the arguments of the current covert channel.
+	The string arguments is parsed by the channel to set channel specific options.
+	More information on which arguments are supported can be found in the specific covertchannel source.
+	*/
+	void setChannelArguments(CovertChannel* channel, string arguments);
+
+	// Callbacks for Covert Channels
+
 	/** 
 	 * \brief creates a valid tcp packet
 	 * \return a tcp packet
 	 */
 	TcpPacket getTcpPacket();
-	UdpPacket getUdpPacket();
+	UdpPacket getUdpPacket(unsigned short port);
+
+	void setOutputStream(std::ostream* stream);
+	/**
+	* \brief Writes a message to the selected output stream, stored in m_output_stream.
+	* \param message the message to be written
+	*/
+	void outputMessage(std::string message);
 
 	/** 
 	 * \brief Is called, when the socket receives a packet of the communication
-	 * \param packet the  packet that was received
+	 * It is then forwarded to the channel with the specified ip.
+	 * \param packet the packet that was received
 	 */
 	void packetReceived(string ip, GenericPacket packet);
-	
-	void selectChannel(string name);
-	/** 
-	 * \brief Sends a message through the currently selected covert channel
-	 * \param the message as string
-	 */
-	void sendMessage(string message);
-	/** 
-	 * \brief Sets the stream, that the covert channel uses as the output for received messages
-	 * \param a pointer to the output stream
-	 */
-	void setOutputStream(std::ostream* stream);
-	void setErrorStream(std::ostream* stream);
-	vector<string> getChannelInfos();
-	vector<string> getChannelNames();
-	// returns the name of the currently selected channel
-	string currentChannel();
+
+	// Connection
 	bool openConnection(string ip, unsigned int channel_id);
-	void closeConnection();
-	int adapterCount();
-	vector<char*> adapterNames();
-	const char* adapterDescription(string adapter_name);
-	bool connected();
-	/*
-		Sets the arguments of the current covert channel.
-		The string arguments is parsed by the channel to set channel specific options.
-		More information on which arguments are supported can be found in the specific covertchannel source.
+	void closeConnection(string ip);
+	unsigned int connectionCount();
+	/**
+	* \brief Sends a message through the currently selected covert channel
+	* \param the message as string
 	*/
-	void setChannelArguments(string arguments);
+	void sendMessage(string ip, string message);
+
+	// Adapter handling
+	unsigned int adapterCount();
+	vector<string> networkAdapters();
+	string adapterDescription(string adapter_name);
 	
 private:
 	CovertChannel* createChannel(string ip, unsigned int channel_id);
-	void selectAdapter(string adapter_name);
-	// adds a channel to the available channels
-	void addChannel(CovertChannel* channel);
-	//removes a channel from the available channels
-	void removeChannel(CovertChannel* channel);
-	// hold all available channels
+
+	// hold all available channels, just to pull infos
 	std::vector<CovertChannel*> m_channels;
-	// pointer to the covert channel, that is currently in use
-	CovertChannel* m_current_channel;
 	// stream that holds received messages
 	std::ostream* m_output_stream;
 	// stream that displays errors
@@ -128,6 +127,7 @@ private:
 
 	NetworkConnector* m_network;
 	map<string, CovertChannel*> m_ip_mapping;
+	const unsigned int CHANNEL_COUNT = 2;
 };
 }
 #endif // CHANNEL_MANAGER

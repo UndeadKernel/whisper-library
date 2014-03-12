@@ -54,7 +54,7 @@ public:
 	*/
 	TimingCovertChannel(function<void(string)> output, 
 						function<void(UdpPacket)> send, 
-						function<UdpPacket(void)> getPacket)
+						function<UdpPacket(unsigned short)> getPacket)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
@@ -122,7 +122,7 @@ private:
 	function<void(UdpPacket)> m_send;
 
 	// function pointer that is used to retrieve valid udp packets, that are send with delay
-	function<UdpPacket(void)> m_getPacket;
+	function<UdpPacket(unsigned short)> m_getPacket;
 
 	// Marks the time the last packet was received to measure inter-packet delays
 	chrono::high_resolution_clock::time_point m_receive_start;

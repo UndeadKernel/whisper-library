@@ -29,40 +29,86 @@ namespace whisper_library {
 
 ChannelManager::ChannelManager(){
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
+
+	// create a list of all available channels to display names and descriptions
+	for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
+		m_channels.push_back(createChannel("", i));
+	}
 }
 ChannelManager::~ChannelManager() {
-	for (unsigned int i = 0; i < m_channels.size(); i++) {
-		delete m_channels[i];
-	}
+	// clean up open connections
 	for (map<string, CovertChannel*>::iterator it = m_ip_mapping.begin(); it != m_ip_mapping.end(); it++) {
 		pair<string, CovertChannel*> element = *it;
 		delete element.second;
 	}
+	// clean up m_channels
+	for (unsigned int i = 0; i < m_channels.size(); i++) {
+		delete m_channels[i];
+	}
+
+	delete m_network;
 }
 
-void ChannelManager::addChannel(CovertChannel* channel) {
-	m_channels.push_back(channel);
+
+void ChannelManager::setErrorStream(std::ostream* stream) {
+	m_error_stream = stream;
 }
 
-//callback method for CC
+void ChannelManager::outputErrorMessage(string message) {
+	if (m_error_stream != NULL) {
+		(*m_error_stream) << "Error: " << message << endl;
+	}
+}
+
+// Covert Channels
+
+vector<string> ChannelManager::getChannelInfos() {
+	vector<string> string_vector;
+	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back((*it)->info());
+	}
+	return string_vector;
+}
+
+vector<string> ChannelManager::getChannelNames() {
+	vector<string> string_vector;
+	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back((*it)->name());
+	}
+	return string_vector;
+}
+
+unsigned int ChannelManager::channelCount() {
+	return CHANNEL_COUNT;
+}
+
+void ChannelManager::sendMessage(string ip, string message) {
+	try {
+		CovertChannel* channel = m_ip_mapping.at(ip);
+		channel->sendMessage(message);
+	}
+	catch (out_of_range e) {
+		outputErrorMessage("No connection to " + ip);
+	}
+}
+
+void ChannelManager::setChannelArguments(CovertChannel* channel, string arguments) {
+	if (channel != NULL) {
+		channel->setArguments(arguments);
+	}
+}
+
+
+// Callbacks for Covert Channels
+void ChannelManager::setOutputStream(std::ostream* stream) {
+	m_output_stream = stream;
+}
+
 void ChannelManager::outputMessage(std::string message){
 	if (m_output_stream != NULL) {
 		(*m_output_stream) << message << endl;
 	}
 }
-
-void ChannelManager::outputErrorMessage(string message) {
-	if (m_error_stream != NULL) {
-		(*m_error_stream) << message << endl;
-	}
-}
-
-void ChannelManager::sendMessage(string message) {
-	if (m_current_channel != NULL) {
-		m_current_channel->sendMessage(message);
-	}
-}
-
 
 TcpPacket ChannelManager::getTcpPacket(){
 	// TODO
@@ -85,10 +131,10 @@ TcpPacket ChannelManager::getTcpPacket(){
 	return packet;
 }
 
-UdpPacket ChannelManager::getUdpPacket() {
+UdpPacket ChannelManager::getUdpPacket(unsigned short port) {
 	whisper_library::UdpPacket packet;
-	packet.setSourcePort(m_current_channel->port());
-	packet.setDestinationPort(m_current_channel->port());
+	packet.setSourcePort(port);
+	packet.setDestinationPort(port);
 	packet.setLength(11);
 	packet.setChecksum(0);
 	std::vector<char> data;
@@ -100,30 +146,9 @@ UdpPacket ChannelManager::getUdpPacket() {
 }
 
 
-
-
-void ChannelManager::setOutputStream(std::ostream* stream) {
-	m_output_stream = stream;
-}
-
-void ChannelManager::setErrorStream(std::ostream* stream) {
-	m_error_stream = stream;
-}
-
-vector<string> ChannelManager::getChannelInfos() {
-	vector<string> string_vector;
-	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
-		string_vector.push_back((*it)->info());
-	}
-	return string_vector;
-}
-
-vector<string> ChannelManager::getChannelNames() {
-	vector<string> string_vector;
-	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
-		string_vector.push_back((*it)->name());
-	}
-	return string_vector;
+void ChannelManager::packetReceived(string ip, GenericPacket packet) {
+	CovertChannel* channel = m_ip_mapping.at(ip);
+	channel->receiveMessage(packet);
 }
 
 CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
@@ -135,7 +160,7 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 	// else
 	return new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
 			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
-			std::bind(&ChannelManager::getUdpPacket, this));
+			std::bind(&ChannelManager::getUdpPacket, this, std::placeholders::_1));
 }
 
 bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
@@ -144,23 +169,25 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 	return m_network->openConnection(ip, channel);
 }
 
-void ChannelManager::packetReceived(string ip, GenericPacket packet) {
-	CovertChannel* channel = m_ip_mapping[ip];
-	channel->receiveMessage(packet);
+void ChannelManager::closeConnection(string ip) {
+	m_network->closeConnection(ip);
+	CovertChannel* channel = m_ip_mapping.at(ip);
+	delete channel;
+	m_ip_mapping.erase(ip);
 }
 
-
-
-
-
-bool ChannelManager::connected() {
-	//return m_connected;
+unsigned int ChannelManager::connectionCount() {
+	return m_ip_mapping.size();
 }
 
-void ChannelManager::setChannelArguments(string arguments) {
-	if (m_current_channel != NULL) {
-		m_current_channel->setArguments(arguments);
-	}
+unsigned int ChannelManager::adapterCount() {
+	return m_network->adapterCount();
+}
+vector<string> ChannelManager::networkAdapters() {
+	return m_network->adapters();
+}
+string ChannelManager::adapterDescription(string adapter_name) {
+	return m_network->adapterDescription(adapter_name);
 }
 
 }
