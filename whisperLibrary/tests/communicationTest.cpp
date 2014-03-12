@@ -9,11 +9,13 @@ struct CommunicationFixture {
 	CommunicationFixture() {
 		channelmanager.setErrorStream(&cout);
 		channelmanager.setOutputStream(&cout);
-		adapter_name = "";
+		destination_ip = "";
+		channel_id = 1;
 	}
 	whisper_library::ChannelManager channelmanager;
-	vector<char*> last_adapters;
-	char* adapter_name;
+	vector<string> last_adapters;
+	string destination_ip;
+	unsigned int channel_id;
 
 	int processCommand(string command) {
 		vector<string> arguments;
@@ -44,8 +46,7 @@ struct CommunicationFixture {
 				return 0;
 			}
 
-			channelmanager.selectChannel(index);
-			cout << "Selected channel: " << channelmanager.currentChannel() << endl;
+			channel_id = index;
 			return 0;
 		}
 		if (arguments[0].compare("displayAdapters") == 0) {
@@ -62,17 +63,13 @@ struct CommunicationFixture {
 				return 0;
 			}
 			selectAdapterId(index);
-			cout << "Selected adapter: " << adapter_name << endl;
 			return 0;
 		}
 		if (arguments[0].compare("connect") == 0) {
-			if (adapter_name == "") {
-				cout << "No adapter selected" << endl;
-				return 0;
-			}
 			cout << "Trying to open a connection" << endl;
-			bool success = channelmanager.openConnection(arguments[1], adapter_name);
+			bool success = channelmanager.openConnection(arguments[1], channel_id);
 			if (success) {
+				destination_ip = arguments[1];
 				cout << "Opened connection to " << arguments[1] << endl;
 				return 1;
 			}
@@ -87,14 +84,14 @@ struct CommunicationFixture {
 
 	int processMessage(string message) {
 		if (message.compare("exit") == 0) {
-			channelmanager.closeConnection();
+			channelmanager.closeConnection(destination_ip);
 			return 1;
 		}
 		if (message.compare("help") == 0) {
 			cout << "Help not available in chat mode. Close chat first with 'exit'" << endl;
 			return 0;
 		}
-		channelmanager.sendMessage(message);
+		channelmanager.sendMessage(destination_ip, message);
 		return 0;
 	}
 
@@ -107,7 +104,7 @@ struct CommunicationFixture {
 	}
 
 	void printAdapters() {
-		vector<char*> names = channelmanager.adapterNames();
+		vector<string> names = channelmanager.networkAdapters();
 		last_adapters = names;
 		for (int i = 0; i < names.size(); i++) {
 			cout << "[" << i << "] " << names[i] << ": " << channelmanager.adapterDescription(names[i]) << endl;
@@ -115,22 +112,20 @@ struct CommunicationFixture {
 	}
 
 	void selectAdapterId(unsigned int index) {
-		if (!last_adapters.empty()) {
-			if (index < last_adapters.size()) {
-				adapter_name = last_adapters[index];
+		if (last_adapters.empty()) {
+			last_adapters = channelmanager.networkAdapters();
+		}
+		if (index < last_adapters.size()) {
+			channelmanager.setAdapter(last_adapters[index]);
+			vector<string> addresses = channelmanager.adapterAddresses();
+			cout << "Addresses: " << endl;
+			for (unsigned int i = 0; i < addresses.size(); i++) {
+				cout << addresses[i] << endl;
 			}
-			else {
-				cout << "Invalid parameter" << endl;
-			}
-
+			cout << endl;
 		}
 		else {
-			vector<char*> names = channelmanager.adapterNames();
-			if (index < names.size()) {
-				adapter_name = names[index];
-			} else {
-				cout << "Invalid parameter" << endl;
-			}
+			cout << "Invalid parameter" << endl;
 		}
 	}
 

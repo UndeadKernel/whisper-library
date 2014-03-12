@@ -180,6 +180,11 @@ unsigned int ChannelManager::connectionCount() {
 	return m_ip_mapping.size();
 }
 
+// Adapter handling
+void ChannelManager::setAdapter(string name) {
+	return m_network->setAdapter(name);
+}
+
 unsigned int ChannelManager::adapterCount() {
 	return m_network->adapterCount();
 }

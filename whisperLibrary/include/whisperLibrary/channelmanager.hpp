@@ -111,6 +111,7 @@ public:
 	void sendMessage(string ip, string message);
 
 	// Adapter handling
+	void setAdapter(string name);
 	unsigned int adapterCount();
 	vector<string> networkAdapters();
 	string adapterDescription(string adapter_name);
