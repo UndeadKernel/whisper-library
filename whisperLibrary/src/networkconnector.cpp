@@ -1,6 +1,7 @@
 #include "networkconnector.hpp"
 #include <iostream>
 #include "ipheaderv4.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace whisper_library {
 	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {
@@ -124,7 +125,7 @@ namespace whisper_library {
 		}
 		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
 	}
-	vector<bool> NetworkConnector::toLittleEndian(vector<bool> big_endian) {
+	vector<bool> NetworkConnector::switchEndian(vector<bool> big_endian) {
 		vector<bool> little_endian;
 		for (unsigned int i = 0; i < big_endian.size()-7; i = i+8) {
 			vector<bool> byte;
@@ -143,11 +144,9 @@ namespace whisper_library {
 			packet_data = m_pcap->retrievePacketAsVector(m_adapter.c_str());
 
 			if (!packet_data.empty()) {
-				vector<bool> packet_little_endian = toLittleEndian(packet_data);
+				vector<bool> packet_little_endian = switchEndian(packet_data);
 
 				IpHeaderv4 ip_header(packet_little_endian);
-			//	cout << "Packet received: " << endl;
-			//	cout << ip_header.info() << endl;
 				unsigned int length_bit = ip_header.ipHeaderLength() * 32;
 
 				vector<bool> application_layer;
@@ -158,20 +157,79 @@ namespace whisper_library {
 		}
 	}
 
+	vector<bool> hexToBin(string mac) {
+		vector<string> parts;
+		boost::split(parts, mac, boost::is_any_of("-"), boost::token_compress_on);
+		vector<bool> binary;
+		for (unsigned int i = 0; i < parts.size(); i++) {
+			string hex = "0x" + parts[i];
+			unsigned char byte = stoul(hex, nullptr, 16);
+			for (unsigned int j = 0; j < 8; j++) {
+				unsigned char bit = byte >> (7 - j);
+				bit = bit & 0x01;
+				if (bit == 0) {
+					binary.push_back(false);
+				}
+				else {
+					binary.push_back(true);
+				}
+			}
+		}
+
+		return binary;
+	}
+
 	// Sending
 	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
+		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
+		if (adapter_id < 0) {
+			return;
+		}
+		vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
+		string source_ip = "";
+		for (unsigned int i = 0; i < addresses.size(); i++) {
+			if(validIP(addresses[i])) {
+				source_ip = addresses[i];
+			}
+		}
 		#ifndef WIN32
 			// UNIX
-			int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
-			if (adapter_id < 0) {
-				return ;
-			}
-			vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
-			// TODO get own address (network adapter has multiple)
-			m_socket->sendTcp(addresses[0], ip, packet);
+			m_socket->sendTcp(source_ip, ip, packet);
 		#else
-			// TODO: add ethernet and ip header
-			m_pcap->sendPacket(m_adapter.c_str(), packet.packet());
+			vector<bool> frame;
+			// Ethernet
+			string destination_MAC = "78-92-9c-2d-49-74"; // 6 byte
+			string source_MAC = "bc-5f-f4-5d-e9-c5";	// 6 byte
+			string ethernet_type = "08-00";	// 16 bit, ipv4
+
+			vector<bool> destination_mac_bin = hexToBin(destination_MAC);
+			vector<bool> source_mac_bin = hexToBin(source_MAC);
+			vector<bool> ehternet_type_bin = hexToBin(ethernet_type);
+
+			frame.insert(frame.end(), destination_mac_bin.begin(), destination_mac_bin.end());
+			frame.insert(frame.end(), source_mac_bin.begin(), source_mac_bin.end());
+			frame.insert(frame.end(), ehternet_type_bin.begin(), ehternet_type_bin.end());
+
+			// ip header
+			IpHeaderv4 ip_header;
+			ip_header.setVersion(4);
+			ip_header.calculateHeaderLength();
+			ip_header.setTotalLength(ip_header.ipHeaderLength()*4 + packet.packet().size() / 8);
+			ip_header.setTimeToLive(128);
+			ip_header.setProtocol(IpHeaderv4::TCP);
+			ip_header.setSourceIp(source_ip);
+			ip_header.setDestinationIp(ip);
+			ip_header.calculateChecksum();
+			vector<bool> ip_header_bin = ip_header.toVector();
+			frame.insert(frame.end(), ip_header_bin.begin(), ip_header_bin.end());
+
+			// tcp
+			vector<bool> tcp = packet.packet();
+			frame.insert(frame.end(), tcp.begin(), tcp.end());
+		
+			//cout << "packet sent!" << endl;
+			vector<bool> frame_big_endian = switchEndian(frame);
+			m_pcap->sendPacket(m_adapter.c_str(), frame_big_endian);
 		#endif
 
 	}

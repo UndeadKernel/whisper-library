@@ -43,6 +43,7 @@ set(TESTS
 	tests/timingCovertChannelTest.cpp
 	tests/pcapWrapperTest.cpp
 	tests/socketConnectionTest.cpp
+	tests/networkConnectorTest.cpp
 )
 
 # Boost library

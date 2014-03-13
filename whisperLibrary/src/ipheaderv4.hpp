@@ -13,6 +13,12 @@ public:
 	// frame in little endian
 	IpHeaderv4(vector<bool> frame);
 
+	void calculateHeaderLength();
+	void calculateChecksum();
+	void print();
+	string info();
+	vector<bool> toVector();
+
 	// IP-Version (4 or 6) (4 bit)
 	unsigned int version();
 	// length of the IP header : length * 32 bit (4 bit)
@@ -44,14 +50,28 @@ public:
 	unsigned long destinationIp();
 	string destinationIpDotted();
 	// print header content to stdout
-	void print();
-	string info();
+
+	void setVersion(unsigned int version);
+	void setTypeOfService(unsigned int tos);
+	void setTotalLength(unsigned int total_length);
+	void setIdentification(unsigned int identification);
+	void setFlagReserved(bool flag);
+	void setFlagdontFragment(bool flag);
+	void setFlagFragmented(bool flag);
+	void setOffset(unsigned int offset);
+	void setTimeToLive(unsigned int ttl);
+	void setProtocol(unsigned int protocol_id);
+	void setSourceIp(unsigned long source_ip);
+	void setSourceIp(string source_ip);
+	void setDestinationIp(unsigned long destination_ip);
+	void setDestinationIp(string destination_ip);
 
 	static const unsigned int TCP = 6;
 	static const unsigned int UDP = 17;
 
 private:
 	string ipToDotted(unsigned long ip);
+	unsigned long ipToUlong(string ip);
 	unsigned char* m_head;
 };
 }

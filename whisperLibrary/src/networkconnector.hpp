@@ -44,7 +44,7 @@ private:
 	void addFilter(string ip, unsigned short port, string protocol);
 	void removeFilter(string ip);
 	void rebuildFilter();
-	vector<bool> toLittleEndian(vector<bool> big_endian);
+	vector<bool> switchEndian(vector<bool> big_endian);
 	PcapWrapper* m_pcap;
 	SocketSender* m_socket;
 
