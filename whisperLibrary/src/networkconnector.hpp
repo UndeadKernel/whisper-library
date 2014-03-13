@@ -45,6 +45,7 @@ private:
 	void removeFilter(string ip);
 	void rebuildFilter();
 	vector<bool> switchEndian(vector<bool> big_endian);
+	vector<bool> hexToBin(string mac);
 	PcapWrapper* m_pcap;
 	SocketSender* m_socket;
 

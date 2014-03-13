@@ -157,7 +157,7 @@ namespace whisper_library {
 		}
 	}
 
-	vector<bool> hexToBin(string mac) {
+	vector<bool> NetworkConnector::hexToBin(string mac) {
 		vector<string> parts;
 		boost::split(parts, mac, boost::is_any_of("-"), boost::token_compress_on);
 		vector<bool> binary;
