@@ -1,5 +1,6 @@
 #include "networkconnector.hpp"
 #include <iostream>
+#include "ipheaderv4.hpp"
 
 namespace whisper_library {
 	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {
@@ -121,24 +122,8 @@ namespace whisper_library {
 				complete_filter += " or (" + element.second + ")";
 			}
 		}
-		cout << "filter: " << complete_filter << endl;
 		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
 	}
-
-	struct IpHeader{
-		unsigned char        ip_vhl;
-		unsigned char        service;
-		unsigned short       length;
-		unsigned short       identification;
-		u_short              offset;
-		u_char               ttl;
-		u_char               protocol;
-		u_short              chksum;
-		unsigned long        src;
-		unsigned long        dst;
-	};	/*
-#define IP_HL(ip)       (((ip)->ip_vhl) & 0x0f)#define IP_V(ip)        (((ip)->ip_vhl) >> 4)
-*/
 	vector<bool> NetworkConnector::toLittleEndian(vector<bool> big_endian) {
 		vector<bool> little_endian;
 		for (unsigned int i = 0; i < big_endian.size()-7; i = i+8) {
@@ -152,82 +137,24 @@ namespace whisper_library {
 	}
 
 	void NetworkConnector::retrievePacket() {
-		cout << "packet receiver started" << endl;
 		vector<bool> packet_data;
 		GenericPacket generic_packet;
 		while (m_adapter_open) {
 			packet_data = m_pcap->retrievePacketAsVector(m_adapter.c_str());
+
 			if (!packet_data.empty()) {
-				cout << "length: " << packet_data.size() / 8 << " byte" << endl;
 				vector<bool> packet_little_endian = toLittleEndian(packet_data);
-				for (unsigned int i = 0; i < packet_little_endian.size(); i++) {
-					if (i % 4 == 0) {
-						cout << " ";
-					}
-					cout << packet_little_endian[i];
-				}
-				cout << endl << endl;
-				int buffer_size = packet_little_endian.size() / 8;
-				unsigned char* buffer = static_cast<unsigned char*>(malloc(buffer_size));
 
-				for (unsigned int i = 0; i < buffer_size; i++) {
-					buffer[i] = 0; // initialize
-					for (unsigned int j = 0; j < 8; j++) {
-						buffer[i] |= (packet_little_endian[j + (i * 8)] ? 1 : 0) << (7-j);
-					}
-				}
-				for (unsigned int i = 0; i < buffer_size; i++) {
-					if (i % 8 == 0) {
-						printf(" ");
-					}
-					if (i % 2 == 0) {
-						printf(" ");
-					}
-					if (i % 16 == 0) {
-						printf("\n");
-					}
-					printf("%.2X", buffer[i]);
-				}
-				IpHeader* ip_header = (IpHeader*)(buffer + 14);
-				printf("Protokoll: %.2X", ip_header->protocol);
-				free(buffer);
+				IpHeaderv4 ip_header(packet_little_endian);
+			//	cout << "Packet received: " << endl;
+			//	cout << ip_header.info() << endl;
+				unsigned int length_bit = ip_header.ipHeaderLength() * 32;
+
+				vector<bool> application_layer;
+				application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
+				generic_packet.setContent(application_layer);
+				m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 			}
-		/*	whisper_library::PcapWrapper::PcapPacket p = m_pcap->retrievePacket(m_adapter.c_str());
-			const u_char* data = p.payload;
-			if (data != NULL) {
-				cout << "received packet: " << endl;
-				printf("%.2", *data);
-				//generic_packet.setContent(packet_data);
-				// TODO: get sender ip, split packet
-				string ip = "";*/
-
-			/*	for (unsigned int i = 0; i < strlen(data); i++) {
-					if (i % 8 == 0) {
-						printf(" ");
-					}
-					if (i % 2 == 0) {
-						printf(" ");
-					}
-					if (i % 16 == 0) {
-						printf("\n");
-					}
-					printf("%.2X", data[i]);
-				}*/
-
-			//	m_packet_received(ip, generic_packet);
-
-			/*	whisper_library::PcapWrapper::PcapPacket p = m_pcap->retrievePacket(m_adapter.c_str());
-				const u_char* data = p.payload;
-				ip_header* ip_h;
-				TcpPacket tcp;
-				unsigned int ip_length = 0;
-				if (data != NULL) {
-					ip_h = ((struct ip_header*)(data + 14));
-					ip_length = IP_HL(ip_h) * 4;
-					//	tcp = ((whisper_library::TcpPacket*)(data + ip_length));
-					// denk drann: Alle Daten da drinnen sind in Big En
-				} 
-			} */
 		}
 	}
 
@@ -240,7 +167,7 @@ namespace whisper_library {
 				return ;
 			}
 			vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
-			// TODO get right address
+			// TODO get own address (network adapter has multiple)
 			m_socket->sendTcp(addresses[0], ip, packet);
 		#else
 			// TODO: add ethernet and ip header

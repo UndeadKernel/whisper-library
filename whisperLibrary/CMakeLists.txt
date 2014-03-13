@@ -13,6 +13,7 @@ set(SOURCES
 	src/pcapwrapper.cpp
 	src/socketSender.cpp
 	src/networkconnector.cpp
+	src/ipheaderv4.cpp
 )
 
 set(HEADERS
@@ -30,6 +31,7 @@ set(HEADERS
 	src/socketSender.hpp
 	src/rawSocketProtocol.hpp
 	src/networkconnector.hpp
+	src/ipheaderv4.hpp
 )
 
 set(TESTS
