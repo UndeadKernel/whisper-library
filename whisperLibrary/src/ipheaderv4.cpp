@@ -25,6 +25,10 @@ namespace whisper_library {
 		free(packet_buffer);
 	}
 
+	IpHeaderv4::~IpHeaderv4() {
+		delete m_head;
+	}
+
 	void IpHeaderv4::calculateHeaderLength() {
 		m_head[0] = 5 + (m_head[0] & 0xf0);
 	}

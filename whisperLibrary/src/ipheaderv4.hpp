@@ -12,6 +12,7 @@ public:
 	IpHeaderv4();
 	// frame in little endian
 	IpHeaderv4(vector<bool> frame);
+	~IpHeaderv4();
 
 	void calculateHeaderLength();
 	void calculateChecksum();

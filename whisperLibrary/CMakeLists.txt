@@ -14,6 +14,7 @@ set(SOURCES
 	src/socketSender.cpp
 	src/networkconnector.cpp
 	src/ipheaderv4.cpp
+	src/ethernetheader.cpp
 )
 
 set(HEADERS
@@ -32,6 +33,7 @@ set(HEADERS
 	src/rawSocketProtocol.hpp
 	src/networkconnector.hpp
 	src/ipheaderv4.hpp
+	src/ethernetheader.hpp
 )
 
 set(TESTS

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "ipheaderv4.hpp"
 #include <boost/algorithm/string.hpp>
+#include "ethernetheader.hpp"
 
 namespace whisper_library {
 	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {
@@ -157,28 +158,6 @@ namespace whisper_library {
 		}
 	}
 
-	vector<bool> NetworkConnector::hexToBin(string mac) {
-		vector<string> parts;
-		boost::split(parts, mac, boost::is_any_of("-"), boost::token_compress_on);
-		vector<bool> binary;
-		for (unsigned int i = 0; i < parts.size(); i++) {
-			string hex = "0x" + parts[i];
-			unsigned char byte = stoul(hex, nullptr, 16);
-			for (unsigned int j = 0; j < 8; j++) {
-				unsigned char bit = byte >> (7 - j);
-				bit = bit & 0x01;
-				if (bit == 0) {
-					binary.push_back(false);
-				}
-				else {
-					binary.push_back(true);
-				}
-			}
-		}
-
-		return binary;
-	}
-
 	// Sending
 	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
 		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
@@ -197,18 +176,13 @@ namespace whisper_library {
 			m_socket->sendTcp(source_ip, ip, packet);
 		#else
 			vector<bool> frame;
-			// Ethernet
-			string destination_MAC = "78-92-9c-2d-49-74"; // 6 byte
-			string source_MAC = "bc-5f-f4-5d-e9-c5";	// 6 byte
-			string ethernet_type = "08-00";	// 16 bit, ipv4
-
-			vector<bool> destination_mac_bin = hexToBin(destination_MAC);
-			vector<bool> source_mac_bin = hexToBin(source_MAC);
-			vector<bool> ehternet_type_bin = hexToBin(ethernet_type);
-
-			frame.insert(frame.end(), destination_mac_bin.begin(), destination_mac_bin.end());
-			frame.insert(frame.end(), source_mac_bin.begin(), source_mac_bin.end());
-			frame.insert(frame.end(), ehternet_type_bin.begin(), ehternet_type_bin.end());
+			// Ethernet - TODO find MAC address
+			EthernetHeader ethernet_header;
+			ethernet_header.setDestinationMAC("78:92:9c:2d:49:74"); // 6 byte
+			ethernet_header.setSourceMAC("bc:5f:f4:5d:e9:c5");	// 6 byte
+			ethernet_header.setEthernetType(2048); // Ipv4
+			vector<bool> ethernet_header_bin = ethernet_header.toVector();
+			frame.insert(frame.end(), ethernet_header_bin.begin(), ethernet_header_bin.end());
 
 			// ip header
 			IpHeaderv4 ip_header;
@@ -227,7 +201,6 @@ namespace whisper_library {
 			vector<bool> tcp = packet.packet();
 			frame.insert(frame.end(), tcp.begin(), tcp.end());
 		
-			//cout << "packet sent!" << endl;
 			vector<bool> frame_big_endian = switchEndian(frame);
 			m_pcap->sendPacket(m_adapter.c_str(), frame_big_endian);
 		#endif
