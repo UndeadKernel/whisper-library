@@ -116,7 +116,7 @@ namespace whisper_library {
 
 	vector<char> MorseCoder::checkString(string message) {
 		vector<char> unsupported_letters;
-		for (int i = 0; i < message.length(); i++) {
+		for (unsigned int i = 0; i < message.length(); i++) {
 			if (message[i] != ' ') {
 				try {
 					m_morse_map.left.at(toupper(message[i]));
