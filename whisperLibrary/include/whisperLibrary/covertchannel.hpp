@@ -36,6 +36,7 @@ namespace whisper_library {
 */
 class CovertChannel {
 public:
+
 	
 	/** \brief Contructor
 
@@ -43,17 +44,20 @@ public:
 	*/ 
 	CovertChannel() {};
 	
+	
 	/** \brief Destructor
 
 		Virtual destructor so that the destructor of derived classes is called
 	*/ 
 	virtual ~CovertChannel() {};
 	
+	
 	/** \brief sends a message
 
 		Call this function to send a message using the covert channel.
 	*/ 
 	virtual void sendMessage(std::string message) = 0;
+	
 	
 	/** \brief receives a packet
 
@@ -65,10 +69,12 @@ public:
 	*/ 
 	virtual std::string name() const = 0;
 	
+	
 	/**
 		Returns some information about the covert channel
 	*/ 
 	virtual std::string info() const = 0;
+
 
 };
 }
