@@ -71,7 +71,7 @@ namespace whisper_library {
 
 
 	// Connection
-	bool NetworkConnector::openConnection(string ip, CovertChannel* channel) {
+	bool NetworkConnector::openListener(string ip, CovertChannel* channel) {
 		if (!validIP(ip) || channel == NULL || m_adapter.compare("") == 0) {
 			return false;
 		}
@@ -91,7 +91,7 @@ namespace whisper_library {
 		return true;
 	}
 
-	void NetworkConnector::closeConnection(string ip) {
+	void NetworkConnector::closeListener(string ip) {
 		if (m_adapter_open) {
 			removeFilter(ip);
 			m_connection_count--;
@@ -160,12 +160,8 @@ namespace whisper_library {
 
 	// Sending
 	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
-		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
-		if (adapter_id < 0) {
-			return;
-		}
-		vector<char *> addresses = m_pcap->adapterAddresses(adapter_id);
-		string source_ip = "";
+		vector<string> addresses = adapterAddresses();
+		string source_ip;
 		for (unsigned int i = 0; i < addresses.size(); i++) {
 			if(validIP(addresses[i])) {
 				source_ip = addresses[i];

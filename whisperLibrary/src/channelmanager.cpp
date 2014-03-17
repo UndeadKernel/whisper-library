@@ -174,11 +174,11 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 	CovertChannel* channel = createChannel(ip, channel_id);
 	m_ip_mapping.emplace(ip, channel);
-	return m_network->openConnection(ip, channel);
+	return m_network->openListener(ip, channel);
 }
 
 void ChannelManager::closeConnection(string ip) {
-	m_network->closeConnection(ip);
+	m_network->closeListener(ip);
 	CovertChannel* channel = m_ip_mapping.at(ip);
 	delete channel;
 	m_ip_mapping.erase(ip);
