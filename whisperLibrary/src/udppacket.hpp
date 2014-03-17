@@ -36,8 +36,8 @@ class UdpPacket
 public:
   UdpPacket();
 
-  unsigned char sourcePort() const;
-  unsigned char destinationPort() const;
+  unsigned short sourcePort() const;
+  unsigned short destinationPort() const;
   unsigned short length() const;
   unsigned short checksum() const;
   std::vector<char> data() const;
