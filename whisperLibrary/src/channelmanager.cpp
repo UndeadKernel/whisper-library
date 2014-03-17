@@ -71,7 +71,7 @@ UdpPacket ChannelManager::getUdpPacket() {
 
 void ChannelManager::packetReceived(GenericPacket packet) {
 	if (m_current_channel != NULL) {
-		m_current_channel->receiveMessage(packet);
+		m_current_channel->receivePacket(packet);
 	}
 }
 

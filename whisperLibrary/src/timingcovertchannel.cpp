@@ -23,7 +23,7 @@
 
 namespace whisper_library {
 	
-		// delay_short is used to encode a short signal (in milliseconds)
+	// delay_short is used to encode a short signal (in milliseconds)
 	const unsigned int TimingCovertChannel::DELAY_SHORT = 10;
 
 	// delay_long is used to encode a long signal (in milliseconds)
@@ -65,7 +65,7 @@ namespace whisper_library {
 		}
 	}
 
-	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
+	void TimingCovertChannel::receivePacket(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
 		m_timeout_end = chrono::high_resolution_clock::now() + chrono::seconds(2);
