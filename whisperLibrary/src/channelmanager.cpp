@@ -104,10 +104,17 @@ void ChannelManager::setOutputStream(std::ostream* stream) {
 	m_output_stream = stream;
 }
 
-void ChannelManager::outputMessage(std::string message){
+void ChannelManager::outputMessage(string ip, string message){
 	if (m_output_stream != NULL) {
 		(*m_output_stream) << message << endl;
 	}
+	if (m_message_callback != NULL) {
+		m_message_callback(ip, message);
+	}
+}
+
+void ChannelManager::setMessageCallback(function<void(string, string)> message_callback) {
+	m_message_callback = message_callback;
 }
 
 TcpPacket ChannelManager::getTcpPacket(){
@@ -152,13 +159,14 @@ void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 }
 
 CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
+	function<void(string, string)> output_message = std::bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
 	if (channel_id == 0) {
-		return new TcpHeaderCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+		return new TcpHeaderCovertChannel(output_message,
 			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getTcpPacket, this));
 	}
 	// else
-	return new TimingCovertChannel(std::bind(&ChannelManager::outputMessage, this, std::placeholders::_1),
+	return new TimingCovertChannel(output_message,
 			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getUdpPacket, this, std::placeholders::_1));
 }

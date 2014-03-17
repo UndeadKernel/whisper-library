@@ -32,9 +32,6 @@
 #include <functional>
 #include <genericpacket.hpp>
 #include "../../src/udppacket.hpp"
-#include <regex>
-#include <pcapwrapper.hpp>
-#include "../../src/socketSender.hpp"
 #include <map>
 #include "../../src/networkconnector.hpp"
 
@@ -65,6 +62,7 @@ public:
 	*/
 	void setErrorStream(std::ostream* stream);
 	void outputErrorMessage(string message);
+	void setMessageCallback(function<void(string, string)> message_callback);
 
 	// Covert channel
 	vector<string> getChannelInfos();
@@ -91,7 +89,7 @@ public:
 	* \brief Writes a message to the selected output stream, stored in m_output_stream.
 	* \param message the message to be written
 	*/
-	void outputMessage(std::string message);
+	void outputMessage(string ip, string message);
 
 	/** 
 	 * \brief Is called, when the socket receives a packet of the communication
@@ -130,6 +128,7 @@ private:
 	NetworkConnector* m_network;
 	map<string, CovertChannel*> m_ip_mapping;
 	const unsigned int CHANNEL_COUNT = 2;
+	function<void(string, string)> m_message_callback;
 };
 }
 #endif // CHANNEL_MANAGER
