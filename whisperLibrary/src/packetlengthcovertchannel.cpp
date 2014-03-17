@@ -35,31 +35,31 @@ namespace whisper_library {
 
 	void PacketLengthCovertChannel::sendMessage(std::string message){
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
-		m_send(m_getPacket(8 + m_baseLength + packetLengths.size()));
-		for (int i = 0; i < packetLengths.size(); i++){
-			m_send(m_getPacket(packetLengths[i]));
+		m_send(m_get_packet(8 + m_baselength + packetLengths.size()));
+		for (unsigned int i = 0; i < packetLengths.size(); i++){
+			m_send(m_get_packet(packetLengths[i]));
 		}
 	}
 
 	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
-		UdpPacket udpPacket;
+		UdpPacket udp_packet;
 		std::vector<bool> content = packet.content();
-		udpPacket.setPacket(content);
-		if (m_packetCount == -1){
-			if (udpPacket.length() == 8 + m_baseLength){
+		udp_packet.setPacket(content);
+		if (m_packetcount == -1){
+			if (udp_packet.length() == 8 + m_baselength){
 				m_output("");
 				return;
 			}
-			m_packetCount = udpPacket.length()-8-m_baseLength;
+			m_packetcount = udp_packet.length()-8-m_baselength;
 		}
 		else {
-			m_packetLengths.push_back(udpPacket.length());
+			m_packetlengths.push_back(udp_packet.length());
 			m_received++;
 		}
-		if (m_received == m_packetCount){
-			m_output(m_coder->decodeMessage(m_packetLengths));
+		if (m_received == m_packetcount){
+			m_output(m_coder->decodeMessage(m_packetlengths));
 			m_received = 0;
-			m_packetCount = -1;
+			m_packetcount = -1;
 		}
 	}
 

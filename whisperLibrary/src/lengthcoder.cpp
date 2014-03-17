@@ -30,8 +30,8 @@ namespace whisper_library {
 		std::vector<bitset<4>> parts;
 		BitSetCoder<4> coder;
 		parts = coder.encodeMessage(message); //split into parts of 4 bit
-		for (int i = 0; i < parts.size(); i++){
-			result.push_back(parts[i].to_ulong()+8+m_baseLength); //calculate packet length
+		for (unsigned int i = 0; i < parts.size(); i++){
+			result.push_back(parts[i].to_ulong()+8+m_baselength); //calculate packet length
 		}
 		return result;
 	}
@@ -39,8 +39,8 @@ namespace whisper_library {
 	std::string LengthCoder::decodeMessage(std::vector<unsigned int> lengths){
 		std::string result;
 		std::vector<bitset<4>> parts;
-		for (int i = 0; i < lengths.size(); i++){ //get packetlengths as bits
-			int length = lengths[i] - 8 - m_baseLength;
+		for (unsigned int i = 0; i < lengths.size(); i++){ //get packetlengths as bits
+			int length = lengths[i] - 8 - m_baselength;
 			parts.push_back(bitset<4>((length<0||length>15)?0:length));
 		}
 		BitSetCoder<4> coder;

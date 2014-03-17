@@ -42,7 +42,7 @@ namespace whisper_library {
 			packet length
 			\param baseLength length offset for every packet
 		*/
-		LengthCoder(int baseLength) :m_baseLength(baseLength){};
+		LengthCoder(int baselength) :m_baselength(baselength){};
 		/** \brief encodes a message to packet lengths
 			
 			The given message gets translated to packet lengths variing from baseLength
@@ -61,7 +61,7 @@ namespace whisper_library {
 		*/
 		std::string decodeMessage(std::vector<unsigned int> lengths);
 	private:
-		int m_baseLength;///< gets added/substracted from the packet lengths
+		int m_baselength;///< gets added/substracted from the packet lengths
 	};
 }
 

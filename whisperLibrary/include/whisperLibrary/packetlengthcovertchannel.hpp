@@ -48,15 +48,15 @@ public:
 	*/
 	PacketLengthCovertChannel(function<void(std::string)> output,
 		function<void(UdpPacket)> send,
-		function<UdpPacket(int)> getPacket)
+		function<UdpPacket(int)> get_packet)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
-		m_getPacket(getPacket),
+		m_get_packet(get_packet),
 		m_received(0),
-		m_packetCount(-1),
-		m_baseLength(10),
-		m_coder(new LengthCoder(m_baseLength)){};
+		m_packetcount(-1),
+		m_baselength(10),
+		m_coder(new LengthCoder(m_baselength)){};
 
 	/** \brief Deletes the PacketLengthCovertChannel
 
@@ -74,9 +74,9 @@ public:
 		
 		The given packet is interpreted as an udp packet and the length of the packet is used to
 		reassemble the message.
-		\param udpPacket the packet that gets interpreted
+		\param udp_packet the packet that gets interpreted
 	*/
-	void receivePacket(GenericPacket& udpPacket);
+	void receivePacket(GenericPacket& udp_packet);
 	/**
 		returns the name of the covert channel
 	*/
@@ -89,11 +89,11 @@ public:
 private:
 	function<void(string)> m_output;///< function used to return received messages as a string
 	function<void(UdpPacket)> m_send;///< function used to send Udp Packets via the socket
-	function<UdpPacket(int)> m_getPacket;///< function used to retrieve valid udp packets with given length
-	std::vector<unsigned int> m_packetLengths;///< holds the packet lengths send or received
+	function<UdpPacket(int)> m_get_packet;///< function used to retrieve valid udp packets with given length
+	std::vector<unsigned int> m_packetlengths;///< holds the packet lengths send or received
 	int m_received;///< counts the received packets
-	int m_packetCount;///< number of packets for the current transmission
-	int m_baseLength;///< minimal length of data payload of the udp packets
+	int m_packetcount;///< number of packets for the current transmission
+	int m_baselength;///< minimal length of data payload of the udp packets
 	LengthCoder* m_coder;///< used to encode and decode messages
 };
 }
