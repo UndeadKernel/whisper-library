@@ -69,7 +69,6 @@ namespace whisper_library {
 		return string_addresses;
 	}
 
-
 	// Connection
 	bool NetworkConnector::openListener(string ip, CovertChannel* channel) {
 		if (!validIP(ip) || channel == NULL || m_adapter.compare("") == 0) {
@@ -81,7 +80,7 @@ namespace whisper_library {
 			}
 			m_adapter_open = true;
 			m_connection_count++;
-			std::thread packet_receiver(std::bind(&NetworkConnector::retrievePacket, this));
+			thread packet_receiver(std::bind(&NetworkConnector::retrievePacket, this));
 			packet_receiver.detach();
 		}
 		else {
@@ -126,16 +125,17 @@ namespace whisper_library {
 		}
 		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
 	}
-	vector<bool> NetworkConnector::switchEndian(vector<bool> big_endian) {
-		vector<bool> little_endian;
-		for (unsigned int i = 0; i < big_endian.size()-7; i = i+8) {
+
+	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {
+		vector<bool> switched_endian;
+		for (unsigned int i = 0; i < binary.size()-7; i = i+8) {
 			vector<bool> byte;
 			for (unsigned int j = 0; j < 8; j++) {
-				byte.push_back(big_endian[i + (7-j)]);
+				byte.push_back(binary[i + (7-j)]);
 			}
-			little_endian.insert(little_endian.end(), byte.begin(), byte.end());
+			switched_endian.insert(switched_endian.end(), byte.begin(), byte.end());
 		}
-		return little_endian;
+		return switched_endian;
 	}
 
 	void NetworkConnector::retrievePacket() {
@@ -200,7 +200,6 @@ namespace whisper_library {
 			vector<bool> frame_big_endian = switchEndian(frame);
 			m_pcap->sendPacket(m_adapter.c_str(), frame_big_endian);
 		#endif
-
 	}
 
 	void NetworkConnector::sendUdp(string ip, UdpPacket packet) {

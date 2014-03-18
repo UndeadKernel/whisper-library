@@ -52,6 +52,7 @@ public:
 
 		Opens a network adapter that has to be set via 'setAdapter' and listens for packets
 		that are received from the given ip, port and protocol as specified in the covert channel.
+		The listener is started in a seperate thread.
 		Received packets are returned with the callback method set in the constructor.
 		\param ip The destination IP of the connection
 		\param The covert channel that is used for the connection
@@ -78,8 +79,9 @@ public:
 	unsigned int adapterCount();
 	/** \brief Sets the adapter that is used to listen for packets and send them (sending win32 only).
 		
-		Sets the network adapter that is used to listen for incoming packets. Sending tcp using that adapter is
-		only available on win32 using wpcap. The unique names of the adapters can be retrieved by calling 'adapters'.
+		Sets the network adapter that is used to listen for incoming packets. Has no effect if an adapter
+		is open. Sending tcp using that adapter is only available on win32 using wpcap. 
+		The unique names of the adapters can be retrieved by calling 'adapters'.
 
 		\param adapter_name Unique name of the adapter
 	*/
@@ -93,27 +95,53 @@ public:
 	*/
 	string adapterDescription(string adapter_name);
 	/** \brief Returns a vector with all network addesses of the currently selected adapter.
-		\returns Vector of network addresses of the currently selected adapter
+		\return Vector of network addresses of the currently selected adapter
 	*/
 	vector<string> adapterAddresses();
 
 private:
+	/** \brief Loop that retrieves packets from the selected network adapter.
+
+		Starts a loop that runs as long as an adapter is open. It retrieves packets from the
+		selected adapter and forwards the application layer part via the callback function m_packet_received,
+		that is set in the constructor. Packets are retrieved with a maximum delay of 1 ms.
+	*/
 	void retrievePacket();
+	/** \brief Checks if the given ip is a valid IPv4 address.
+		\param ip The ip to check
+		\return True if the ip is a valid Ipv4 address, otherwise false
+	*/
 	bool validIP(string ip);
+	/** \brief Adds a capture filter for the opened adapter.
+		
+		Only packets with matching ip, port and protocol are received.
+		Multiple filters are linked with 'or'.
+		/param ip The ip, that packets are received from in dotted form
+		/param port the port, that received packets should have
+		/param protocol the protocol, that received packets should have
+	*/
 	void addFilter(string ip, unsigned short port, string protocol);
+	/** \brief Removes a capture filter
+		\param ip the ip, that you no longer want to receive messages from
+	*/
 	void removeFilter(string ip);
+	/** \brief Has to be called when the filter map 'm_filter' has changed to refresh the capture filter.
+	*/
 	void rebuildFilter();
-	vector<bool> switchEndian(vector<bool> big_endian);
-	PcapWrapper* m_pcap;
-	SocketSender* m_socket;
+	/** \brief Switches binary from big endian to little endian and the other way around
+		\return Vector that contains the switched binary
+	*/
+	vector<bool> switchEndian(vector<bool> binary);
+	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
+	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.
 
-
-
-	unsigned int m_connection_count;
-	string m_adapter;
-	bool m_adapter_open;
-	map<string, string> m_filter;
-	function<void(string, GenericPacket)> m_packet_received;
+	unsigned int m_connection_count; ///< Counts the number of open connections
+	string m_adapter; ///< Holds the unique adapter name, that is currently selected
+	bool m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
+	map<string, string> m_filter; ///< map, that stores the capture filter rule for every ip. The key is the ip, the capture filter belongs to.
+	function<void(string, GenericPacket)> m_packet_received; ///< Callback method that is called, when a new packet arrived. 
+															 // First parameter is the ip it was sent from, the second is the application layer 
+															 // part of the packet in a generic format
 };
 
 }
