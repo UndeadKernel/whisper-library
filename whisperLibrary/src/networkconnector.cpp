@@ -238,7 +238,8 @@ namespace whisper_library {
 		
 		// m_adapter_addresses unset
 		if (!m_adapter_addresses) {
-
+			cout << "fetching adapter addresses" << endl;
+			
 			int maximum_tries  = 25;
 			DWORD return_value = 0;
 			do {
@@ -289,6 +290,7 @@ namespace whisper_library {
 							case AF_INET6: {
 								// TODO: IPv6
 								// Needs alternative SOCKADRR handling, so we could "outsource" it.
+											   cout << "found ipv6 address" << endl;
 								break;
 							}
 						}
