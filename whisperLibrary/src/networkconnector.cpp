@@ -22,7 +22,7 @@ namespace whisper_library {
 		delete m_pcap;
 		delete m_socket;
 		#ifdef WIN32
-		if(m_adapter_addresses) { (m_adapter_addresses); }
+		if(m_adapter_addresses) { free(m_adapter_addresses); }
 		#endif
 	}
 
@@ -237,7 +237,7 @@ namespace whisper_library {
 		SOCKADDR_IN* gateway_adress;
 		
 		// m_adapter_addresses unset
-		if (!m_adapter_addresses) {
+		if (!(m_adapter_addresses) ) {
 			cout << "fetching adapter addresses" << endl;
 			
 			int maximum_tries  = 25;
@@ -256,7 +256,7 @@ namespace whisper_library {
 			} while (i++ < maximum_tries && return_value == ERROR_BUFFER_OVERFLOW);
 
 			if (return_value == NO_ERROR) {
-				m_adapter_addresses = &adapter_addresses;
+				m_adapter_addresses = adapter_addresses;
 			} else {
 				fprintf(stderr, "Error(#%d): Failed to retrieve adapter addresses.\n", return_value);
 				if (adapter_addresses) { free(adapter_addresses); }
@@ -266,7 +266,7 @@ namespace whisper_library {
 
 		// m_adapter_addresses set
 		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
-		current_addresses = *m_adapter_addresses;
+		current_addresses = m_adapter_addresses;
 		while (current_addresses) {
 			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
 			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
