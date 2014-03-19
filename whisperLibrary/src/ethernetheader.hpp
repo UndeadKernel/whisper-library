@@ -17,6 +17,7 @@ public:
 	void setSourceMAC(string mac);
 	void setSourceMAC(const char* mac_bitstring);
 	void setDestinationMAC(string mac);
+	void setDestinationMAC(const char* mac_bitstring);
 	void setEthernetType(unsigned long type);
 
 	vector<bool> toVector();

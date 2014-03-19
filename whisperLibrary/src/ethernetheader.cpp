@@ -36,6 +36,12 @@ namespace whisper_library {
 		}
 	}
 
+	void EthernetHeader::setDestinationMAC(const char* mac_bitstring) {
+		if (!mac_bitstring) { return; }
+		memcpy(m_head, mac_bitstring, 6);
+		//strncpy(reinterpret_cast<char*>(m_head), mac_bitstring, 14);
+	}
+
 	void EthernetHeader::setSourceMAC(string mac) {
 		vector<string> parts;
 		boost::split(parts, mac, boost::is_any_of(":"), boost::token_compress_on);
@@ -46,7 +52,7 @@ namespace whisper_library {
 
 	void EthernetHeader::setSourceMAC(const char* mac_bitstring) {
 		if (!mac_bitstring) { return;  }
-		strncpy(reinterpret_cast<char*>(m_head), mac_bitstring, 14); 
+		memcpy(m_head+6, mac_bitstring, 6);
 	}
 
 	void EthernetHeader::setEthernetType(unsigned long type) {
