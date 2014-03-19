@@ -49,6 +49,10 @@ set(Boost_USE_STATIC_LIBS ON)               # Use static libs.
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
 find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework REQUIRED)
 
+if (UNIX)
+	find_package(Threads)
+endif (UNIX)
+
 add_definitions(-D_SCL_SECURE_NO_WARNINGS)	# disable warning C4996 in MSVC
 
 include_directories(
@@ -75,10 +79,20 @@ add_dependencies(tests
     	whisperLibrary
 )
 
-target_link_libraries(tests
-    	whisperLibrary
+if (UNIX)
+	target_link_libraries(
+		tests
+    		whisperLibrary
 		${Boost_LIBRARIES}
-)
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+else (UNIX)
+	target_link_libraries(
+		tests
+    		whisperLibrary
+		${Boost_LIBRARIES}
+	)
+endif (UNIX)
 
 #add_definitions(-DWHISPER_BUILD)
 

@@ -24,6 +24,7 @@
 #define LENGTH_CODER
 
 #include <vector>
+#include <string>
 
 namespace whisper_library {
 	/*
