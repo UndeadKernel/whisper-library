@@ -4,6 +4,7 @@
 #include <iostream>
 #include <functional>
 #include <vector>
+#include "../src/ethernetheader.hpp"
 
 using namespace std;
 
@@ -11,8 +12,7 @@ struct NetworkConnectorFixture {
 	NetworkConnectorFixture() {
 		network = new whisper_library::NetworkConnector(bind(&NetworkConnectorFixture::packetReceived, this, placeholders::_1, placeholders::_2));
 		adapters = network->adapters();
-		network->setAdapter(adapters[0].c_str());
-		network->o
+
 	}
 	whisper_library::NetworkConnector * network;
 	vector<string> adapters;
@@ -24,24 +24,10 @@ struct NetworkConnectorFixture {
 
 BOOST_FIXTURE_TEST_SUITE(networkConnector, NetworkConnectorFixture)
 
-BOOST_AUTO_TEST_CASE(send_tcp_test) {
-	uint sourcePort = 8080;
-	uint destPort = 8080;
-	ulong sequenceNumber = 1;
-	bitset<4> dataOffset("1010");
-	ulong ackNumber = 0;
-	uint windowSize = 2;
-	vector<bool> options;
-	whisper_library::TcpPacket packet(sourcePort,
-		destPort,
-		sequenceNumber,
-		ackNumber,
-		dataOffset,
-		windowSize,
-		options);
-	packet.setAcknowledgementFlag(0);
-	packet.setSynchronisationFlag(1);
-	network->sendTcp("192.168.2.104", packet);
+BOOST_AUTO_TEST_CASE(get_destination_mac) {
+	whisper_library::EthernetHeader header;
+	header.setSourceMAC(network->getDestinationMAC("192.168.2.105", "192.168.2.1"));
+	cout << header.toString() << endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

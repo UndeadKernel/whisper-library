@@ -298,19 +298,25 @@ namespace whisper_library {
 		return values; // possible case where one of the array fields is empty if method is used on bonded devices. 
 	}
 
-	string NetworkConnector::getDestinationMAC(string source_ip, string destination_ip) {
+	const char* NetworkConnector::getDestinationMAC(string source_ip, string destination_ip) {
 		if (!(validIP(source_ip) && validIP(destination_ip))) {
 			return "";
 		}
 		DWORD return_value;
-		ULONG mac_address[2];
+		char mac_address[6]; // 6 byte
 		ULONG adress_length = 6;
 		IPAddr source_ip_ulong = inet_addr(source_ip.c_str());
 		IPAddr destination_ip_ulong = inet_addr(destination_ip.c_str());
 
-		memset(&mac_address, 0xff, sizeof (mac_address));
+		return_value = SendARP(destination_ip_ulong, source_ip_ulong, mac_address, &adress_length);
 
-		return_value = SendARP(destination_ip_ulong, source_ip_ulong, &mac_address, &adress_length);
+		if (return_value == NO_ERROR) {
+			cout << "mac found" << endl;
+			return mac_address;
+		}
+		else {
+			return "";
+		}
 	}
 #endif
 }
