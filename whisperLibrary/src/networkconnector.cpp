@@ -173,21 +173,20 @@ namespace whisper_library {
 				source_ip = addresses[i];
 			}
 		}
-		cout << "Sending tcp packet from: " << source_ip << endl;
+		std::cout << "Sending tcp packet from: " << source_ip << endl;
 		#ifndef WIN32
 			// UNIX
 			m_socket->sendTcp(source_ip, ip, packet);
 		#else
 			vector<bool> frame;
 			EthernetHeader ethernet_header;
-			cout << "getting mac and gateway.." << endl;
 			MAC_AND_GATEWAY mac_and_gateway = win32FetchMACAddressAndGateway();
-			cout << "got mac and gateway.." << endl;
-			ethernet_header.setSourceMAC(mac_and_gateway.mac_address.c_str());	// 6 byte
-			cout << "getting destination mac.. " << endl;
-			ethernet_header.setDestinationMAC(win32GetDestinationMAC(inet_addr(source_ip.c_str()),mac_and_gateway.gateway_address)); // 6 byte
+			ethernet_header.setSourceMAC(mac_and_gateway.mac_address);
+			char* mac_address = new char[6];
+			win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address);
+			ethernet_header.setDestinationMAC(mac_address); // 6 byte
+			delete mac_address;
 			ethernet_header.setEthernetType(2048); // Ipv4
-			cout << "Ethernet Header: " << endl << ethernet_header.toString() << endl;
 			vector<bool> ethernet_header_bin = ethernet_header.toVector();
 			frame.insert(frame.end(), ethernet_header_bin.begin(), ethernet_header_bin.end());
 
@@ -227,7 +226,7 @@ namespace whisper_library {
 // Win32 only
 #ifdef WIN32
 	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::win32FetchMACAddressAndGateway() {
-		MAC_AND_GATEWAY values = { "", NULL };
+		MAC_AND_GATEWAY values = { 0, NULL };
 		if (m_adapter.empty()) { return values; }
 		int i = 0;
 		string adapter_name = m_adapter.substr(12, string::npos);
@@ -269,7 +268,7 @@ namespace whisper_library {
 			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
 				if (current_addresses->PhysicalAddressLength != 0) {
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
-						values.mac_address.append(std::to_string(static_cast<int>(current_addresses->PhysicalAddress[i])));
+						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
 				if (current_addresses->FirstGatewayAddress != 0 && current_addresses->FirstGatewayAddress->Length > 0) {
@@ -293,19 +292,18 @@ namespace whisper_library {
 		return values; // there is a possible case where one of the struct fields >might< be empty if method is used on bonded devices. 
 	}
 
-	const char* NetworkConnector::win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip) {
+	int NetworkConnector::win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip, char* mac_address) {
 		DWORD return_value;
-		char mac_address[6]; // 6 byte
 		ULONG adress_length = 6;
 
 		return_value = SendARP(destination_ip, source_ip, mac_address, &adress_length);
 
 		if (return_value == NO_ERROR) {
-			return mac_address;
+			return 1;
 		}
 		else {
 			cout << "destination mac not found" << endl;
-			return "";
+			return -1;
 		} 
 	}
 #endif
