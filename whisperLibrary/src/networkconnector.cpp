@@ -22,7 +22,9 @@ namespace whisper_library {
 		delete m_pcap;
 		delete m_socket;
 		#ifdef WIN32
-		if(m_adapter_addresses) { free(m_adapter_addresses); }
+		if(m_adapter_addresses) {
+			free(m_adapter_addresses);
+		}
 		#endif
 	}
 
@@ -185,7 +187,7 @@ namespace whisper_library {
 			char* mac_address = new char[6];
 			if (win32GetDestinationMAC(inet_addr(source_ip.c_str()), inet_addr(ip.c_str()), mac_address) == -1) {
 				// ip not found locally, get gateway mac
-				win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address)
+				win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address);
 			}
 			ethernet_header.setDestinationMAC(mac_address); // 6 byte
 			delete mac_address;
