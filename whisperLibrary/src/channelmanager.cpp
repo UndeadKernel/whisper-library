@@ -83,13 +83,15 @@ unsigned int ChannelManager::channelCount() {
 }
 
 void ChannelManager::sendMessage(string ip, string message) {
+	CovertChannel* channel;
 	try {
-		CovertChannel* channel = m_ip_mapping.at(ip);
-		channel->sendMessage(message);
+		 channel = m_ip_mapping.at(ip);
 	}
 	catch (out_of_range e) {
 		outputErrorMessage("No connection to " + ip);
+		return;
 	}
+	channel->sendMessage(message);
 }
 
 void ChannelManager::setChannelArguments(CovertChannel* channel, string arguments) {

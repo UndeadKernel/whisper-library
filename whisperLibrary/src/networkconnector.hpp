@@ -154,7 +154,7 @@ private:
 	*/
 	MAC_AND_GATEWAY win32FetchMACAddressAndGateway();
 
-	const char* win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip);
+	int win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip, char* mac_address);
 
 	PIP_ADAPTER_ADDRESSES* m_adapter_addresses; // List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
 #endif
