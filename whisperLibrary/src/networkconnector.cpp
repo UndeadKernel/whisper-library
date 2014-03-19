@@ -173,16 +173,21 @@ namespace whisper_library {
 				source_ip = addresses[i];
 			}
 		}
+		cout << "Sending tcp packet from: " << source_ip << endl;
 		#ifndef WIN32
 			// UNIX
 			m_socket->sendTcp(source_ip, ip, packet);
 		#else
 			vector<bool> frame;
 			EthernetHeader ethernet_header;
+			cout << "getting mac and gateway.." << endl;
 			MAC_AND_GATEWAY mac_and_gateway = win32FetchMACAddressAndGateway();
-			ethernet_header.setSourceMAC(mac_and_gateway.mac_address);	// 6 byte
+			cout << "got mac and gateway.." << endl;
+			ethernet_header.setSourceMAC(mac_and_gateway.mac_address.c_str());	// 6 byte
+			cout << "getting destination mac.. " << endl;
 			ethernet_header.setDestinationMAC(win32GetDestinationMAC(inet_addr(source_ip.c_str()),mac_and_gateway.gateway_address)); // 6 byte
 			ethernet_header.setEthernetType(2048); // Ipv4
+			cout << "Ethernet Header: " << endl << ethernet_header.toString() << endl;
 			vector<bool> ethernet_header_bin = ethernet_header.toVector();
 			frame.insert(frame.end(), ethernet_header_bin.begin(), ethernet_header_bin.end());
 
@@ -259,15 +264,11 @@ namespace whisper_library {
 		}
 
 		// m_adapter_addresses set
-		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
 		current_addresses = *m_adapter_addresses;
 		while (current_addresses) {
-			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
 			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
 				if (current_addresses->PhysicalAddressLength != 0) {
-					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
-						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
 						values.mac_address.append(std::to_string(static_cast<int>(current_addresses->PhysicalAddress[i])));
 					}
 				}
@@ -303,6 +304,7 @@ namespace whisper_library {
 			return mac_address;
 		}
 		else {
+			cout << "destination mac not found" << endl;
 			return "";
 		} 
 	}
