@@ -173,7 +173,7 @@ namespace whisper_library {
 				source_ip = addresses[i];
 			}
 		}
-		std::cout << "Sending tcp packet from: " << source_ip << endl;
+	//	std::cout << "Sending tcp packet from: " << source_ip << endl;
 		#ifndef WIN32
 			// UNIX
 			m_socket->sendTcp(source_ip, ip, packet);
@@ -183,7 +183,10 @@ namespace whisper_library {
 			MAC_AND_GATEWAY mac_and_gateway = win32FetchMACAddressAndGateway();
 			ethernet_header.setSourceMAC(mac_and_gateway.mac_address);
 			char* mac_address = new char[6];
-			win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address);
+			if (win32GetDestinationMAC(inet_addr(source_ip.c_str()), inet_addr(ip.c_str()), mac_address) == -1) {
+				// ip not found locally, get gateway mac
+				win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address)
+			}
 			ethernet_header.setDestinationMAC(mac_address); // 6 byte
 			delete mac_address;
 			ethernet_header.setEthernetType(2048); // Ipv4
@@ -251,6 +254,7 @@ namespace whisper_library {
 				return_value = GetAdaptersAddresses(static_cast<unsigned long>(AF_UNSPEC), GAA_FLAG_INCLUDE_GATEWAYS, NULL, adapter_addresses, &output_buffer_length);
 				if (return_value == ERROR_BUFFER_OVERFLOW) {
 					free(adapter_addresses);
+					fprintf(stderr, "Error: Buffer overflow. \n");
 					adapter_addresses = NULL;
 				} else { break;	}
 			} while (i++ < maximum_tries && return_value == ERROR_BUFFER_OVERFLOW);
@@ -268,12 +272,12 @@ namespace whisper_library {
 		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
 		current_addresses = m_adapter_addresses;
 		while (current_addresses) {
-			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
+//			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
 			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
 				if (current_addresses->PhysicalAddressLength != 0) {
-					fprintf(stdout, "MAC-Address: ");
+//					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
-						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
+	//					fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
 						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
@@ -284,13 +288,12 @@ namespace whisper_library {
 						switch (gateway_adress->sin_family) {
 							case AF_INET: {
 								values.gateway_address = (static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
-								fprintf(stdout, "Gateway-Address: %d\n", static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
+	//							fprintf(stdout, "Gateway-Address: %d\n", static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
 								break;
 							}
 							case AF_INET6: {
 								// TODO: IPv6
 								// Needs alternative SOCKADRR handling, so we could "outsource" it.
-											   cout << "found ipv6 address" << endl;
 								break;
 							}
 						}
