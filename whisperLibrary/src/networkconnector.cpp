@@ -216,6 +216,8 @@ namespace whisper_library {
 		return (ec ? false : true);
 	}
 
+// Win32 only
+#ifdef WIN32
 	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::fetchAdapterMACAddressAndGateway() {
 		MAC_AND_GATEWAY values = { "", NULL };
 		if (m_adapter.empty()) { return values; }
@@ -295,4 +297,20 @@ namespace whisper_library {
 		#endif
 		return values; // possible case where one of the array fields is empty if method is used on bonded devices. 
 	}
+
+	string NetworkConnector::getDestinationMAC(string source_ip, string destination_ip) {
+		if (!(validIP(source_ip) && validIP(destination_ip))) {
+			return "";
+		}
+		DWORD return_value;
+		ULONG mac_address[2];
+		ULONG adress_length = 6;
+		IPAddr source_ip_ulong = inet_addr(source_ip.c_str());
+		IPAddr destination_ip_ulong = inet_addr(destination_ip.c_str());
+
+		memset(&mac_address, 0xff, sizeof (mac_address));
+
+		return_value = SendARP(destination_ip_ulong, source_ip_ulong, &mac_address, &adress_length);
+	}
+#endif
 }

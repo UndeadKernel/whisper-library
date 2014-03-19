@@ -153,9 +153,9 @@ endif()
 
 #ws2_32
 if (WIN32)
-	 target_link_libraries(whisperLibrary ws2_32)
-	 target_link_libraries(tests ws2_32)
-	 target_link_libraries(systemtest ws2_32)
+	 target_link_libraries(whisperLibrary ws2_32 Iphlpapi)
+	 target_link_libraries(tests ws2_32 Iphlpapi)
+	 target_link_libraries(systemtest ws2_32 Iphlpapi)
 endif()
 add_definitions(-DWHISPER_BUILD)
 
