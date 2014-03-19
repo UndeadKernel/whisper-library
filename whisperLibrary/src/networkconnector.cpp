@@ -18,6 +18,9 @@ namespace whisper_library {
 	NetworkConnector::~NetworkConnector() {
 		delete m_pcap;
 		delete m_socket;
+		#ifdef WIN32
+		if(m_adapter_addresses) { (m_adapter_addresses); }
+		#endif
 	}
 
 	// Adapter Handling
@@ -210,9 +213,86 @@ namespace whisper_library {
 	bool NetworkConnector::validIP(string ip) {
 		boost::system::error_code ec;
 		boost::asio::ip::address::from_string(ip, ec);
-		if (ec) {
-			return false;
+		return (ec ? false : true);
+	}
+
+	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::fetchAdapterMACAddressAndGateway() {
+		MAC_AND_GATEWAY values = { "", NULL };
+		if (m_adapter.empty()) { return values; }
+
+		#ifndef WIN32
+		// TODO: get MAC-Address from libcap (pcapwrapper) for Unix- & MacOS-Systems
+		fprintf(stderr, "Error - fetchMACAddress: Only win32-systems supported at the moment.");
+		return NULL;
+		#else
+
+		int i = 0;
+		PIP_ADAPTER_ADDRESSES current_addresses		= NULL;
+		PIP_ADAPTER_ADDRESSES adapter_addresses		= NULL;
+		unsigned long output_buffer_length			= 15000;
+
+		SOCKADDR_IN* gateway_adress;
+
+
+		// m_adapter_addresses unset
+		if (!m_adapter_addresses) {
+			
+			int maximum_tries = 100;
+			DWORD return_value = 0;
+			do {
+				adapter_addresses = (IP_ADAPTER_ADDRESSES *) malloc(output_buffer_length);
+				if (adapter_addresses == NULL) {
+					fprintf(stderr, "Error: Out of memory.\n");
+					return values;
+				}
+				return_value = GetAdaptersAddresses(static_cast<unsigned long>(AF_UNSPEC), GAA_FLAG_INCLUDE_GATEWAYS, NULL, adapter_addresses, &output_buffer_length);
+				if (return_value == ERROR_BUFFER_OVERFLOW) {
+					free(adapter_addresses);
+					adapter_addresses = NULL;
+				} else { break;	}
+			} while (i++ < maximum_tries && return_value == ERROR_BUFFER_OVERFLOW);
+
+			if (return_value == NO_ERROR) {
+				m_adapter_addresses = &adapter_addresses;
+			} else {
+				fprintf(stderr, "Error(#%d): Failed to retrieve adapter addresses.\n", return_value);
+				if (adapter_addresses) { free(adapter_addresses); }
+				return values;
+			}
 		}
-		return true;
+
+		// m_adapter_addresses set
+		fprintf(stdout, "Assigned adapter name: %s\n", m_adapter);
+		current_addresses = *m_adapter_addresses;
+		while (current_addresses) {
+			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
+			if (strcmp(m_adapter.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
+				if (current_addresses->PhysicalAddressLength != 0) {
+					fprintf(stdout, "MAC-Address: ");
+					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
+						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
+						values.mac_address.append(reinterpret_cast<const char*>(current_addresses->PhysicalAddress[i]));
+					}
+				}
+				if (current_addresses->FirstGatewayAddress != 0 && current_addresses->FirstGatewayAddress->Length > 0) {
+					gateway_adress = ((SOCKADDR_IN*)current_addresses->FirstGatewayAddress->Address.lpSockaddr);
+					 switch (gateway_adress->sin_family) {
+					 case AF_INET: {
+							values.gateway_address = ((IPAddr)gateway_adress->sin_addr.S_un.S_addr);
+							break;
+					 }
+					 case AF_INET6:  // TODO: IPv6
+					 default: {
+								  return values;
+					 }
+					 }
+					 return values;
+				}
+				break;
+			}
+			current_addresses = current_addresses->Next;
+		}	
+		#endif
+		return values; // possible case where one of the array fields is empty if method is used on bonded devices. 
 	}
 }

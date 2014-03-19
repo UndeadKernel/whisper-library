@@ -159,7 +159,7 @@ void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 }
 
 CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
-	function<void(string, string)> output_message = std::bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
+	function<void(string)> output_message = std::bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
 	if (channel_id == 0) {
 		return new TcpHeaderCovertChannel(output_message,
 			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),

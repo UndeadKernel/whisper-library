@@ -15,6 +15,7 @@ public:
 	unsigned long ethernetType();
 
 	void setSourceMAC(string mac);
+	void setSourceMAC(const char* mac_bitstring);
 	void setDestinationMAC(string mac);
 	void setEthernetType(unsigned long type);
 

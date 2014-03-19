@@ -44,6 +44,11 @@ namespace whisper_library {
 		}
 	}
 
+	void EthernetHeader::setSourceMAC(const char* mac_bitstring) {
+		if (!mac_bitstring) { return;  }
+		strncpy(reinterpret_cast<char*>(m_head), mac_bitstring, 14); 
+	}
+
 	void EthernetHeader::setEthernetType(unsigned long type) {
 		m_head[12] = (type >> 8);
 		m_head[13] = type & 0xff;

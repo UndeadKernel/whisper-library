@@ -14,6 +14,10 @@
 #include "socketSender.hpp"
 #include <covertchannel.hpp>
 
+#ifdef WIN32
+	#include <iphlpapi.h>
+#endif
+
 using namespace std;
 
 namespace whisper_library {
@@ -132,6 +136,17 @@ private:
 		\return Vector that contains the switched binary
 	*/
 	vector<bool> switchEndian(vector<bool> binary);
+	#ifdef WIN32
+	typedef struct {
+		string		mac_address;
+		IPAddr		gateway_address;
+	} MAC_AND_GATEWAY;
+
+
+	MAC_AND_GATEWAY fetchAdapterMACAddressAndGateway();
+	
+	PIP_ADAPTER_ADDRESSES* m_adapter_addresses; // List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
+	#endif
 	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
 	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.
 
