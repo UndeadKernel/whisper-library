@@ -222,7 +222,7 @@ namespace whisper_library {
 // Win32 only
 #ifdef WIN32
 	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::win32FetchMACAddressAndGateway() {
-		MAC_AND_GATEWAY values = { "", NULL };
+		MAC_AND_GATEWAY values = { 0, NULL };
 		if (m_adapter.empty()) { return values; }
 		int i = 0;
 		string adapter_name = m_adapter.substr(12, string::npos);
@@ -268,7 +268,7 @@ namespace whisper_library {
 					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
 						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
-						values.mac_address.append(std::to_string(static_cast<int>(current_addresses->PhysicalAddress[i])));
+						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
 				if (current_addresses->FirstGatewayAddress != 0 && current_addresses->FirstGatewayAddress->Length > 0) {

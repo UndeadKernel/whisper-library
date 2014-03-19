@@ -143,7 +143,7 @@ private:
 
 #ifdef WIN32
 	typedef struct {
-		string		mac_address;
+		char		mac_address[6];
 		IPAddr		gateway_address;
 	} MAC_AND_GATEWAY;
 
