@@ -299,7 +299,7 @@ namespace whisper_library {
 	}
 
 	const char* NetworkConnector::getDestinationMAC(string source_ip, string destination_ip) {
-		if (!(validIP(source_ip) && validIP(destination_ip))) {
+	if (!(validIP(source_ip) && validIP(destination_ip))) {
 			return "";
 		}
 		DWORD return_value;
@@ -311,12 +311,11 @@ namespace whisper_library {
 		return_value = SendARP(destination_ip_ulong, source_ip_ulong, mac_address, &adress_length);
 
 		if (return_value == NO_ERROR) {
-			cout << "mac found" << endl;
 			return mac_address;
 		}
 		else {
 			return "";
-		}
+		} 
 	}
 #endif
 }

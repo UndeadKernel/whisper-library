@@ -11,6 +11,9 @@ namespace whisper_library {
 	EthernetHeader::EthernetHeader(unsigned char* header) {
 		m_head = header;
 	}
+	EthernetHeader::~EthernetHeader() {
+		delete m_head;
+	}
 	string EthernetHeader::destinationMAC() {
 		string mac = intToHex(m_head[0]);
 		for (unsigned int i = 1; i < 6; i++) {

@@ -103,11 +103,6 @@ public:
 	*/
 	vector<string> adapterAddresses();
 
-#ifdef WIN32
-	// public for testing
-	const char* getDestinationMAC(string source_ip, string destination_ip);
-#endif
-
 private:
 	/** \brief Loop that retrieves packets from the selected network adapter.
 
@@ -150,6 +145,7 @@ private:
 
 
 	MAC_AND_GATEWAY fetchAdapterMACAddressAndGateway();
+	const char* getDestinationMAC(string source_ip, string destination_ip);
 	
 	PIP_ADAPTER_ADDRESSES* m_adapter_addresses; // List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
 #endif

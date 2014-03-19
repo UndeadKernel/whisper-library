@@ -14,6 +14,9 @@ struct NetworkConnectorFixture {
 		adapters = network->adapters();
 
 	}
+	~NetworkConnectorFixture() {
+		delete network;
+	}
 	whisper_library::NetworkConnector * network;
 	vector<string> adapters;
 

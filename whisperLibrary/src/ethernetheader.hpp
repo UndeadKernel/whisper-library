@@ -10,6 +10,7 @@ class EthernetHeader {
 public:
 	EthernetHeader();
 	EthernetHeader(unsigned char* header);
+	~EthernetHeader();
 	string sourceMAC();
 	string destinationMAC();
 	unsigned long ethernetType();
