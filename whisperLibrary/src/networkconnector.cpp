@@ -238,7 +238,7 @@ namespace whisper_library {
 		
 		// m_adapter_addresses unset
 		if (!m_adapter_addresses) {
-			
+
 			int maximum_tries  = 25;
 			DWORD return_value = 0;
 			do {
@@ -279,7 +279,7 @@ namespace whisper_library {
 				gateway_addresses = current_addresses->FirstGatewayAddress;
 				while (gateway_addresses && !values.gateway_address) {
 					if (gateway_addresses->Length > 0) {
-						gateway_adress = (reinterpret_cast<SOCKADDR_IN*>(current_addresses->FirstGatewayAddress->Address.lpSockaddr));
+						gateway_adress = (reinterpret_cast<SOCKADDR_IN*>(gateway_addresses->Address.lpSockaddr));
 						switch (gateway_adress->sin_family) {
 							case AF_INET: {
 								values.gateway_address = (static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
