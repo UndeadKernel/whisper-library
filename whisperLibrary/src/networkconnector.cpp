@@ -264,11 +264,15 @@ namespace whisper_library {
 		}
 
 		// m_adapter_addresses set
+		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
 		current_addresses = *m_adapter_addresses;
 		while (current_addresses) {
+			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
 			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
 				if (current_addresses->PhysicalAddressLength != 0) {
+					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
+						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
 						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
