@@ -226,9 +226,10 @@ namespace whisper_library {
 		if (m_adapter.empty()) { return values; }
 		int i = 0;
 		string adapter_name = m_adapter.substr(12, string::npos);
-		PIP_ADAPTER_ADDRESSES current_addresses		= NULL;
-		PIP_ADAPTER_ADDRESSES adapter_addresses		= NULL;
-		unsigned long output_buffer_length			= 15000;
+		PIP_ADAPTER_ADDRESSES current_addresses				= NULL;
+		PIP_ADAPTER_ADDRESSES adapter_addresses				= NULL;
+		PIP_ADAPTER_GATEWAY_ADDRESS_LH gateway_addresses	= NULL;
+		unsigned long output_buffer_length					= 15000;
 		SOCKADDR_IN* gateway_adress;
 		
 		// m_adapter_addresses unset
@@ -271,21 +272,28 @@ namespace whisper_library {
 						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
-				if (current_addresses->FirstGatewayAddress != 0 && current_addresses->FirstGatewayAddress->Length > 0) {
-					gateway_adress = (reinterpret_cast<SOCKADDR_IN*>(current_addresses->FirstGatewayAddress->Address.lpSockaddr));
-					 switch (gateway_adress->sin_family) {
-						case AF_INET: {
-							values.gateway_address = (static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
-							break;
+				gateway_addresses = current_addresses->FirstGatewayAddress;
+				while (gateway_addresses && !values.gateway_address) {
+					if (gateway_addresses->Length > 0) {
+						gateway_adress = (reinterpret_cast<SOCKADDR_IN*>(current_addresses->FirstGatewayAddress->Address.lpSockaddr));
+						switch (gateway_adress->sin_family) {
+							case AF_INET: {
+								values.gateway_address = (static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
+								fprintf(stdout, "Gateway-Address: %d\n", static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
+								break;
+							}
+							case AF_INET6: {
+								// TODO: IPv6
+								// Needs alternative SOCKADRR handling, so we could "outsource" it.
+								break;
+							}
 						}
-						case AF_INET6: {
-							// TODO: IPv6
-							// Needs alternative SOCKADRR handling, so we could "outsource" it.
-							break;
-						}
-					 }
+					}
+					gateway_addresses = gateway_addresses->Next;
 				}
-				break; // jump out of loop
+				if (values.gateway_address) {
+					break; // jump out of loop
+				}
 			}
 			current_addresses = current_addresses->Next;
 		}	
