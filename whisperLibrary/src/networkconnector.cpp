@@ -13,6 +13,9 @@ namespace whisper_library {
 		m_connection_count = 0;
 		m_packet_received = packet_received;
 		m_adapter = "";
+		#ifdef WIN32
+		m_adapter_addresses = NULL;
+		#endif
 	}
 
 	NetworkConnector::~NetworkConnector() {
@@ -175,10 +178,10 @@ namespace whisper_library {
 			m_socket->sendTcp(source_ip, ip, packet);
 		#else
 			vector<bool> frame;
-			// Ethernet - TODO find MAC address
 			EthernetHeader ethernet_header;
-			ethernet_header.setDestinationMAC("78:92:9c:2d:49:74"); // 6 byte
-			ethernet_header.setSourceMAC("bc:5f:f4:5d:e9:c5");	// 6 byte
+			MAC_AND_GATEWAY mac_and_gateway = win32FetchMACAddressAndGateway();
+			ethernet_header.setSourceMAC(mac_and_gateway.mac_address);	// 6 byte
+			ethernet_header.setDestinationMAC(win32GetDestinationMAC(inet_addr(source_ip.c_str()),mac_and_gateway.gateway_address)); // 6 byte
 			ethernet_header.setEthernetType(2048); // Ipv4
 			vector<bool> ethernet_header_bin = ethernet_header.toVector();
 			frame.insert(frame.end(), ethernet_header_bin.begin(), ethernet_header_bin.end());
@@ -218,31 +221,23 @@ namespace whisper_library {
 
 // Win32 only
 #ifdef WIN32
-	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::fetchAdapterMACAddressAndGateway() {
+	NetworkConnector::MAC_AND_GATEWAY NetworkConnector::win32FetchMACAddressAndGateway() {
 		MAC_AND_GATEWAY values = { "", NULL };
 		if (m_adapter.empty()) { return values; }
-
-		#ifndef WIN32
-		// TODO: get MAC-Address from libcap (pcapwrapper) for Unix- & MacOS-Systems
-		fprintf(stderr, "Error - fetchMACAddress: Only win32-systems supported at the moment.");
-		return NULL;
-		#else
-
 		int i = 0;
+		string adapter_name = m_adapter.substr(12, string::npos);
 		PIP_ADAPTER_ADDRESSES current_addresses		= NULL;
 		PIP_ADAPTER_ADDRESSES adapter_addresses		= NULL;
 		unsigned long output_buffer_length			= 15000;
-
 		SOCKADDR_IN* gateway_adress;
-
-
+		
 		// m_adapter_addresses unset
 		if (!m_adapter_addresses) {
 			
-			int maximum_tries = 100;
+			int maximum_tries  = 25;
 			DWORD return_value = 0;
 			do {
-				adapter_addresses = (IP_ADAPTER_ADDRESSES *) malloc(output_buffer_length);
+				adapter_addresses = static_cast<IP_ADAPTER_ADDRESSES *>(malloc(output_buffer_length));
 				if (adapter_addresses == NULL) {
 					fprintf(stderr, "Error: Out of memory.\n");
 					return values;
@@ -264,51 +259,45 @@ namespace whisper_library {
 		}
 
 		// m_adapter_addresses set
-		fprintf(stdout, "Assigned adapter name: %s\n", m_adapter);
+		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
 		current_addresses = *m_adapter_addresses;
 		while (current_addresses) {
 			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
-			if (strcmp(m_adapter.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
+			if (strcmp(adapter_name.c_str(), reinterpret_cast<char*>(current_addresses->AdapterName)) == 0) { // equal
 				if (current_addresses->PhysicalAddressLength != 0) {
 					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
 						fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
-						values.mac_address.append(reinterpret_cast<const char*>(current_addresses->PhysicalAddress[i]));
+						values.mac_address.append(std::to_string(static_cast<int>(current_addresses->PhysicalAddress[i])));
 					}
 				}
 				if (current_addresses->FirstGatewayAddress != 0 && current_addresses->FirstGatewayAddress->Length > 0) {
-					gateway_adress = ((SOCKADDR_IN*)current_addresses->FirstGatewayAddress->Address.lpSockaddr);
+					gateway_adress = (reinterpret_cast<SOCKADDR_IN*>(current_addresses->FirstGatewayAddress->Address.lpSockaddr));
 					 switch (gateway_adress->sin_family) {
-					 case AF_INET: {
-							values.gateway_address = ((IPAddr)gateway_adress->sin_addr.S_un.S_addr);
+						case AF_INET: {
+							values.gateway_address = (static_cast<IPAddr>(gateway_adress->sin_addr.S_un.S_addr));
 							break;
+						}
+						case AF_INET6: {
+							// TODO: IPv6
+							// Needs alternative SOCKADRR handling, so we could "outsource" it.
+							break;
+						}
 					 }
-					 case AF_INET6:  // TODO: IPv6
-					 default: {
-								  return values;
-					 }
-					 }
-					 return values;
 				}
-				break;
+				break; // jump out of loop
 			}
 			current_addresses = current_addresses->Next;
 		}	
-		#endif
-		return values; // possible case where one of the array fields is empty if method is used on bonded devices. 
+		return values; // there is a possible case where one of the struct fields >might< be empty if method is used on bonded devices. 
 	}
 
-	const char* NetworkConnector::getDestinationMAC(string source_ip, string destination_ip) {
-	if (!(validIP(source_ip) && validIP(destination_ip))) {
-			return "";
-		}
+	const char* NetworkConnector::win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip) {
 		DWORD return_value;
 		char mac_address[6]; // 6 byte
 		ULONG adress_length = 6;
-		IPAddr source_ip_ulong = inet_addr(source_ip.c_str());
-		IPAddr destination_ip_ulong = inet_addr(destination_ip.c_str());
 
-		return_value = SendARP(destination_ip_ulong, source_ip_ulong, mac_address, &adress_length);
+		return_value = SendARP(destination_ip, source_ip, mac_address, &adress_length);
 
 		if (return_value == NO_ERROR) {
 			return mac_address;

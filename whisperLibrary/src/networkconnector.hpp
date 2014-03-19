@@ -31,6 +31,7 @@ public:
 								part of the packet in a generic format.
 	*/
 	NetworkConnector(function<void(string, GenericPacket)> packet_received);
+
 	/** \brief Destructor of NetworkConnector
 	*/
 	~NetworkConnector();
@@ -137,20 +138,26 @@ private:
 	*/
 	vector<bool> switchEndian(vector<bool> binary);
 
+	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
+	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.
+
 #ifdef WIN32
 	typedef struct {
 		string		mac_address;
 		IPAddr		gateway_address;
 	} MAC_AND_GATEWAY;
 
+	/**
+	\fn Win32fetchMACAddressAndGateway()
+	\brief Retrieves the MAC-Address of the current m_adapter and its first Gateway (if set)
+	\return a struct of type MAC_AND_GATEWAY, containing the MAC Address as a string and the Gateway Address as a IPAddr struct.
+	*/
+	MAC_AND_GATEWAY win32FetchMACAddressAndGateway();
 
-	MAC_AND_GATEWAY fetchAdapterMACAddressAndGateway();
-	const char* getDestinationMAC(string source_ip, string destination_ip);
-	
+	const char* win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip);
+
 	PIP_ADAPTER_ADDRESSES* m_adapter_addresses; // List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
 #endif
-	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
-	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.
 
 	unsigned int m_connection_count; ///< Counts the number of open connections
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
