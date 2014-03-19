@@ -31,6 +31,10 @@ UdpPacket::UdpPacket(){
 	std::fill(m_head, m_head + sizeof(m_head), 0);
 }
 
+UdpPacket::UdpPacket(std::vector<bool> content){
+	setPacket(content);
+}
+
 unsigned short UdpPacket::sourcePort() const { 
 	return decode(0, 1); 
 }
@@ -53,7 +57,7 @@ std::vector<char> UdpPacket::data() const {
 
 std::vector<bool> UdpPacket::packet() const {
 	std::vector<bool> result;
-	for (int i = 0; i < 8; i++){
+	for (unsigned int i = 0; i < 8; i++){
 		std::bitset<8> bits(m_head[i]);
 		for (int j = 0; j < 8; j++){
 			result.push_back(bits[j]);
@@ -97,7 +101,7 @@ void UdpPacket::setPacket(std::vector<bool> packet){
 		}
 		parts.push_back(part.to_ulong());
 	}
-	for (int j = 0; j < 8; j++){
+	for (unsigned int j = 0; j < 8; j++){
 		m_head[j] = parts[j];
 	}
 	m_data = std::vector<char>(parts.begin() + 8, parts.end());

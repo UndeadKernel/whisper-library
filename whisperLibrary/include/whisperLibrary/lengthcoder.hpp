@@ -27,7 +27,8 @@
 #include <string>
 
 namespace whisper_library {
-	/*
+	/** \brief Converts between messages and packet lengths (used by PacketLengthCovertChannel)
+
 		A LengthCoder can be used to encode messages into udp packet lengths and decode
 		udp packet lengths into a message. A base length/offset for the packet lengths
 		can be set to avoid packets with no data payload (length = 8).
@@ -41,7 +42,7 @@ namespace whisper_library {
 
 			Creates an LengthCoder and sets the base length, which is added to every
 			packet length
-			\param baseLength length offset for every packet
+			\param baselength length offset for every packet
 		*/
 		LengthCoder(int baselength) :m_baselength(baselength){};
 		/** \brief encodes a message to packet lengths

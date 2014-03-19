@@ -21,7 +21,7 @@ struct PacketLengthCovertChannelFixture {
 
 	void send(whisper_library::UdpPacket packet){
 		whisper_library::GenericPacket gpacket;
-		gpacket.setContent(packet.packet());
+		gpacket.setPacket(packet.packet());
 		m_channel->receivePacket(gpacket);
 	}
 

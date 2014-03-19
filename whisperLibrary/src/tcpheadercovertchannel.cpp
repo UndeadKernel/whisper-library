@@ -44,7 +44,7 @@ namespace whisper_library {
 
 	void TcpHeaderCovertChannel::receivePacket(GenericPacket& packet) {
 		TcpPacket tcp_packet;
-		tcp_packet.setPacket(packet.content());
+		tcp_packet.setPacket(packet.packet());
 		bitset<3> data = extractData(tcp_packet);
 		//cout << "received: " << data << endl;
 		if (m_remaining_packets == 0) {					// no message received yet

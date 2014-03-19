@@ -34,7 +34,8 @@
 using namespace std;
 
 namespace whisper_library {
-	/**
+	/** \brief A covert channel using inter packet delays
+
 		The TimingCovertChannel implements a covert channel, that uses inter-packet 
 		delays to transmit morse. The receiver measures the delays between incoming 
 		packets to decode the message. To use the channel, call 'sendMessage' with 
@@ -47,17 +48,11 @@ public:
 	/*
 		TODO: calculate delays based on connection
 	*/
-	// delay_short is used to encode a short signal (in milliseconds)
-	static const unsigned int DELAY_SHORT;
+	static const unsigned int DELAY_SHORT;///< used to encode a short signal (in milliseconds)	
+	static const unsigned int DELAY_LONG;///< used to encode a long signal (in milliseconds)	
+	static const unsigned int DELAY_LETTER;///< used to encode the end of a letter (in milliseconds)
+	static const unsigned int DELAY_SPACE;///< used to encode space between words (in milliseconds)
 
-	// delay_long is used to encode a long signal (in milliseconds)
-	static const unsigned int DELAY_LONG;
-
-	// delay_letter is used to encode the end of a letter (in milliseconds)
-	static const unsigned int DELAY_LETTER;
-
-	// delay_space is used to encode space between words (in milliseconds)
-	static const unsigned int DELAY_SPACE;
 	/** \brief Constructor
 
 		output is a function pointer that is called, when a complete message arrived. 

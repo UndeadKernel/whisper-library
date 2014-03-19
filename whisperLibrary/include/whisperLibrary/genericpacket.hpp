@@ -26,16 +26,27 @@
 
 using namespace std;
 namespace whisper_library {
-
-	class GenericPacket {
-	public:
-		GenericPacket() {};
-		GenericPacket(vector<bool> content) : m_content(content) {};
-		void setContent(vector<bool> content);
-		vector<bool> content();
-	private:
-		vector<bool> m_content;
-	};
+/** \brief Represents a network packet
+*/
+class GenericPacket {
+public:
+	/** \brief Creates a GenericPacket
+	*/
+	GenericPacket() {};
+	/** \brief Creates a GenericPacket with the given content
+		\param content The bits used to fill the packet
+	*/
+	GenericPacket(vector<bool> content) : m_content(content) {};
+	/** \brief Sets the content of the packet
+		\param content The new content
+	*/
+	void setPacket(vector<bool> content);
+	/** \return the packets content
+	*/
+	vector<bool> packet() const;
+private:
+	vector<bool> m_content;///< holds the packets content
+};
 
 }
 
