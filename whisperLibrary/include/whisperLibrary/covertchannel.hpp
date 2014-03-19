@@ -30,7 +30,8 @@
 namespace whisper_library {
 
 
-/**
+/** \brief The interface used by all covert channels
+
 	CovertChannel is the abstract class all covert channels you want to use have to inherit from. It defines the
 	interface for a covert channel. You can add CovertChannel objects to the ChannelManager to use them.
 */

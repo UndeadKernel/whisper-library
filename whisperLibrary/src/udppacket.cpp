@@ -31,6 +31,10 @@ UdpPacket::UdpPacket(){
 	std::fill(m_head, m_head + sizeof(m_head), 0);
 }
 
+UdpPacket::UdpPacket(std::vector<bool> content){
+	setPacket(content);
+}
+
 unsigned short UdpPacket::sourcePort() const { 
 	return decode(0, 1); 
 }

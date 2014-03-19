@@ -32,7 +32,8 @@ typedef boost::bimap<char, string> morse_map;
 typedef morse_map::value_type morse;
 
 namespace whisper_library {
-	/**
+	/**	\brief converts messages and timing intervals back and forth (used by TimingCovertChannel)
+
 		MorseCoder converts a message into time intervals using morse and decodes morse back to a message.
 		To do so, call 'encodeMessage' with the message or 'decodeMessage' with time intervals. 
 		Use 'checkString' to check if the given message contains characters, that are not supported by morse.
@@ -56,7 +57,7 @@ namespace whisper_library {
 			\param message the message as string
 		*/
 		vector<unsigned int> encodeMessage(string message);
-		/*
+		/**
 			decodeMessage takes a sequence of delays representing morse and converts them back to a message.
 			The delays have to be exactly the ones set in the constructor.
 

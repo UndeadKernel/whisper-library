@@ -37,7 +37,8 @@ using namespace std;
 
 namespace whisper_library {
 
-	/**
+	/** \brief A covert channel using tcp header fields
+
 		Covert Channel, that uses 3 bits of the TCP Header, that are not used, to hide a message.
 		To use this class, call 'sendMessage' with your message as a string. Received packets are used to call 'receiveMessage'.
 		The decoded message is given to the callback function 'm_output'.

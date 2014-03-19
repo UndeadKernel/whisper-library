@@ -29,20 +29,26 @@
 #include "lengthcoder.hpp"
 
 namespace whisper_library {
+	/** \brief A covert channel using packet lengths
 
+		A PacketLengthCovertChannel can be used to send and receive messages coded in the
+		length of udp packets. It uses a base length of ten and increases this length
+		depending on the send message.
+	*/
 class PacketLengthCovertChannel : public CovertChannel {
 public:
-	static const std::string NAME;///< the name of the covert channel
-	static const std::string INFO;///< some information about the covert channel
+	static const std::string NAME;///< The name of the covert channel
 
-	/** \brief Creates an PacketLenghtCovertChannel
+	static const std::string INFO;///< Some information about the covert channel
+
+	/** \brief Creates an PacketLengthCovertChannel
 
 		Creates a new PacketLengthCovertChannel. An PacketLengthCovertChannel needs three
 		function pointers. It than can be use to send and receive messages.
 		\param output a function the covert channel calls with the message he received as 
 					an argument
 		\param send a function the covert channel uses to send udp packets
-		\param getPacket a function the covert channel uses to get udp packets with a
+		\param get_packet a function the covert channel uses to get udp packets with a
 						certain length
 		
 	*/
@@ -63,7 +69,7 @@ public:
 		Deletes this instance of PacketLengthCovertChannel and frees all memory.
 	*/
 	~PacketLengthCovertChannel();
-	/** \brief sends a message over the packet length covert channel
+	/** \brief sends a message
 
 		The message gets encoded as packet lengths and then udp packets with this lengths get
 		send using the function passed in the constructor.
