@@ -4,6 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include "ethernetheader.hpp"
 #include <boost/asio.hpp>
+#include <chrono>
 
 namespace whisper_library {
 	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {
@@ -128,14 +129,22 @@ namespace whisper_library {
 
 	void NetworkConnector::retrievePacket() {
 		vector<bool> packet_data;
-		
 		const char * adapter_c_str = m_adapter.c_str();
+		chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
+		chrono::high_resolution_clock::time_point end;
+		chrono::duration<unsigned int, milli> time_elapsed;
 		while (m_adapter_open) {
 			packet_data = m_pcap->retrievePacketAsVector(adapter_c_str);
 
 			if (!packet_data.empty()) {
+				end = chrono::high_resolution_clock::now();
+				time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - start);
+				start = end;
+				unsigned int delay = time_elapsed.count();
+				cout << "received delay: " << delay << " ms" << endl; 
 				thread packet_received(bind(&NetworkConnector::packetReceived, this, packet_data));
 				packet_received.detach();
+				//packetReceived(packet_data);
 			}
 		}
 	}
@@ -154,6 +163,7 @@ namespace whisper_library {
 		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 
+	// Capture Filter
 	void NetworkConnector::addFilter(string ip, unsigned short port, string protocol) {
 		string filter_rule = "src " + ip + " and port " + to_string(port) + " and " + protocol;
 		m_filter.emplace(ip, filter_rule);
