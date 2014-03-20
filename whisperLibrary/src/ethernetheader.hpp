@@ -16,15 +16,17 @@ public:
 	unsigned long ethernetType();
 
 	void setSourceMAC(string mac);
-	void setSourceMAC(const char* mac_bitstring);
+	void setSourceMAC(unsigned char* mac_bitstring);
 	void setDestinationMAC(string mac);
-	void setDestinationMAC(const char* mac_bitstring);
+	void setDestinationMAC(unsigned char* mac_bitstring);
 	void setEthernetType(unsigned long type);
+
+	static string toMacString(unsigned char* buffer);
 
 	vector<bool> toVector();
 	string toString();
 private:
-	string intToHex(unsigned int i);
+	static string intToHex(unsigned int i);
 	unsigned char hexToInt(string hex);
 	unsigned char * m_head;
 };

@@ -6,6 +6,7 @@
 #include <functional>
 #include <map>
 #include <thread>
+#include <atomic>
 
 #include <genericpacket.hpp>
 #include "tcppacket.hpp"
@@ -143,8 +144,8 @@ private:
 
 #ifdef WIN32
 	typedef struct {
-		char		mac_address[6];
-		IPAddr		gateway_address;
+		unsigned char		mac_address[6];
+		IPAddr				gateway_address;
 	} MAC_AND_GATEWAY;
 
 	/**
@@ -154,14 +155,17 @@ private:
 	*/
 	MAC_AND_GATEWAY win32FetchMACAddressAndGateway();
 
-	int win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip, char* mac_address);
+	string win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip);
 
 	PIP_ADAPTER_ADDRESSES m_adapter_addresses; ///< List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
+	map<string,string> m_destination_macs;
+	PcapWrapper* m_pcap_sender;
 #endif
 
+	string m_source_ip;
 	unsigned int m_connection_count; ///< Counts the number of open connections
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
-	bool m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
+	atomic<bool> m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
 	map<string, string> m_filter; ///< map, that stores the capture filter rule for every ip. The key is the ip, the capture filter belongs to.
 	function<void(string, GenericPacket)> m_packet_received; ///< Callback method that is called, when a new packet arrived. 
 															 // First parameter is the ip it was sent from, the second is the application layer 

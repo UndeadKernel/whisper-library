@@ -15,6 +15,7 @@ namespace whisper_library {
 		m_adapter = "";
 		#ifdef WIN32
 		m_adapter_addresses = NULL;
+		m_pcap_sender = new PcapWrapper();
 		#endif
 	}
 
@@ -25,6 +26,7 @@ namespace whisper_library {
 		if(m_adapter_addresses) {
 			free(m_adapter_addresses);
 		}
+		delete m_pcap_sender;
 		#endif
 	}
 
@@ -32,6 +34,12 @@ namespace whisper_library {
 	void NetworkConnector::setAdapter(string adapter_name) {
 		if (m_pcap->adapterId(adapter_name.c_str(), m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
 			m_adapter = adapter_name;
+			vector<string> addresses = adapterAddresses();
+			for (unsigned int i = 0; i < addresses.size(); i++) {
+				if (validIP(addresses[i])) {
+					m_source_ip = addresses[i];
+				}
+			}
 		}
 	}
 
@@ -86,6 +94,11 @@ namespace whisper_library {
 			if (m_pcap->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 				return false;
 			}
+#ifdef WIN32
+			if (m_pcap_sender->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
+				return false;
+			}
+#endif
 			m_adapter_open = true;
 			m_connection_count++;
 			thread packet_receiver(std::bind(&NetworkConnector::retrievePacket, this));
@@ -104,7 +117,33 @@ namespace whisper_library {
 			m_connection_count--;
 			if (m_connection_count == 0) {
 				m_pcap->closeAdapter(m_adapter.c_str());
+#ifdef WIN32
+				m_pcap_sender->closeAdapter(m_adapter.c_str());
+#endif
 				m_adapter_open = false;
+			}
+		}
+	}
+
+	void NetworkConnector::retrievePacket() {
+		vector<bool> packet_data;
+		GenericPacket generic_packet;
+		vector<bool> packet_little_endian;
+		unsigned int length_bit;
+		vector<bool> application_layer;
+		const char * adapter_c_str = m_adapter.c_str();
+		while (m_adapter_open) {
+			packet_data = m_pcap->retrievePacketAsVector(adapter_c_str);
+
+			if (!packet_data.empty()) {
+				packet_little_endian = switchEndian(packet_data);
+
+				IpHeaderv4 ip_header(packet_little_endian);
+				length_bit = ip_header.ipHeaderLength() * 32;
+
+				application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
+				generic_packet.setContent(application_layer);
+				m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 			}
 		}
 	}
@@ -134,63 +173,39 @@ namespace whisper_library {
 		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
 	}
 
-	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {
-		vector<bool> switched_endian;
-		for (unsigned int i = 0; i < binary.size()-7; i = i+8) {
-			vector<bool> byte;
-			for (unsigned int j = 0; j < 8; j++) {
-				byte.push_back(binary[i + (7-j)]);
-			}
-			switched_endian.insert(switched_endian.end(), byte.begin(), byte.end());
-		}
-		return switched_endian;
-	}
-
-	void NetworkConnector::retrievePacket() {
-		vector<bool> packet_data;
-		GenericPacket generic_packet;
-		while (m_adapter_open) {
-			packet_data = m_pcap->retrievePacketAsVector(m_adapter.c_str());
-
-			if (!packet_data.empty()) {
-				vector<bool> packet_little_endian = switchEndian(packet_data);
-
-				IpHeaderv4 ip_header(packet_little_endian);
-				unsigned int length_bit = ip_header.ipHeaderLength() * 32;
-
-				vector<bool> application_layer;
-				application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-				generic_packet.setContent(application_layer);
-				m_packet_received(ip_header.sourceIpDotted(), generic_packet);
-			}
-		}
-	}
-
 	// Sending
 	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
-		vector<string> addresses = adapterAddresses();
-		string source_ip;
-		for (unsigned int i = 0; i < addresses.size(); i++) {
-			if(validIP(addresses[i])) {
-				source_ip = addresses[i];
+		#ifdef WIN32
+			if (!m_adapter_open) {
+				return;
 			}
-		}
-	//	std::cout << "Sending tcp packet from: " << source_ip << endl;
-		#ifndef WIN32
-			// UNIX
-			m_socket->sendTcp(source_ip, ip, packet);
-		#else
+			// WIN32
 			vector<bool> frame;
 			EthernetHeader ethernet_header;
 			MAC_AND_GATEWAY mac_and_gateway = win32FetchMACAddressAndGateway();
 			ethernet_header.setSourceMAC(mac_and_gateway.mac_address);
-			char* mac_address = new char[6];
-			if (win32GetDestinationMAC(inet_addr(source_ip.c_str()), inet_addr(ip.c_str()), mac_address) == -1) {
-				// ip not found locally, get gateway mac
-				win32GetDestinationMAC(inet_addr(source_ip.c_str()), mac_and_gateway.gateway_address, mac_address);
+			string destination_mac;
+			try {
+				destination_mac = m_destination_macs.at(ip);
 			}
-			ethernet_header.setDestinationMAC(mac_address); // 6 byte
-			delete mac_address;
+			catch (out_of_range) {
+				// mac not found in cache, send arp request
+				destination_mac = win32GetDestinationMAC(inet_addr(m_source_ip.c_str()), inet_addr(ip.c_str()));
+				if (destination_mac.compare("") == 0) { // equal
+					// ip not found locally, get gateway mac
+					if (mac_and_gateway.gateway_address != 0) {
+						destination_mac = win32GetDestinationMAC(inet_addr(m_source_ip.c_str()), mac_and_gateway.gateway_address);
+					}
+					else {
+						fprintf(stderr, "No default gateway found.\n");
+						return;
+					}
+				}
+				m_destination_macs.emplace(ip, destination_mac);  // save in cache
+			}
+
+			
+			ethernet_header.setDestinationMAC(destination_mac); // 6 byte 
 			ethernet_header.setEthernetType(2048); // Ipv4
 			vector<bool> ethernet_header_bin = ethernet_header.toVector();
 			frame.insert(frame.end(), ethernet_header_bin.begin(), ethernet_header_bin.end());
@@ -202,7 +217,7 @@ namespace whisper_library {
 			ip_header.setTotalLength(ip_header.ipHeaderLength()*4 + packet.packet().size() / 8);
 			ip_header.setTimeToLive(128);
 			ip_header.setProtocol(IpHeaderv4::TCP);
-			ip_header.setSourceIp(source_ip);
+			ip_header.setSourceIp(m_source_ip);
 			ip_header.setDestinationIp(ip);
 			ip_header.calculateChecksum();
 			vector<bool> ip_header_bin = ip_header.toVector();
@@ -213,7 +228,10 @@ namespace whisper_library {
 			frame.insert(frame.end(), tcp.begin(), tcp.end());
 		
 			vector<bool> frame_big_endian = switchEndian(frame);
-			m_pcap->sendPacket(m_adapter.c_str(), frame_big_endian);
+			m_pcap_sender->sendPacket(m_adapter.c_str(), frame_big_endian);
+		#else
+			// UNIX
+			m_socket->sendTcp(source_ip, ip, packet);
 		#endif
 	}
 
@@ -226,6 +244,18 @@ namespace whisper_library {
 		boost::system::error_code ec;
 		boost::asio::ip::address::from_string(ip, ec);
 		return (ec ? false : true);
+	}
+
+	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {
+		vector<bool> switched_endian;
+		for (unsigned int i = 0; i < binary.size() - 7; i = i + 8) {
+			vector<bool> byte;
+			for (unsigned int j = 0; j < 8; j++) {
+				byte.push_back(binary[i + (7 - j)]);
+			}
+			switched_endian.insert(switched_endian.end(), byte.begin(), byte.end());
+		}
+		return switched_endian;
 	}
 
 // Win32 only
@@ -243,7 +273,7 @@ namespace whisper_library {
 		
 		// m_adapter_addresses unset
 		if (!(m_adapter_addresses) ) {
-			cout << "fetching adapter addresses" << endl;
+		//	cout << "fetching adapter addresses" << endl;
 			
 			int maximum_tries  = 25;
 			DWORD return_value = 0;
@@ -271,7 +301,7 @@ namespace whisper_library {
 		}
 
 		// m_adapter_addresses set
-		fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
+	//	fprintf(stdout, "Assigned adapter name: %s\n", adapter_name.c_str());
 		current_addresses = m_adapter_addresses;
 		while (current_addresses) {
 //			fprintf(stdout, "Adapter name: %s\n", reinterpret_cast<char*>(current_addresses->AdapterName));
@@ -280,7 +310,7 @@ namespace whisper_library {
 //					fprintf(stdout, "MAC-Address: ");
 					for (i = 0; i < static_cast<int>(current_addresses->PhysicalAddressLength); i++) {
 	//					fprintf(stdout, ((i + 1) == static_cast<int>(current_addresses->PhysicalAddressLength) ? "%.2X\n" : "%.2X:"), static_cast<int>(current_addresses->PhysicalAddress[i]));
-						values.mac_address[i] = static_cast<char>(current_addresses->PhysicalAddress[i]);
+						values.mac_address[i] = static_cast<unsigned char>(current_addresses->PhysicalAddress[i]);
 					}
 				}
 				gateway_addresses = current_addresses->FirstGatewayAddress;
@@ -311,18 +341,19 @@ namespace whisper_library {
 		return values; // there is a possible case where one of the struct fields >might< be empty if method is used on bonded devices. 
 	}
 
-	int NetworkConnector::win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip, char* mac_address) {
+	string NetworkConnector::win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip) {		
 		DWORD return_value;
 		ULONG adress_length = 6;
+		unsigned char mac_address[6];
 
 		return_value = SendARP(destination_ip, source_ip, mac_address, &adress_length);
 
 		if (return_value == NO_ERROR) {
-			return 1;
+			return EthernetHeader::toMacString(mac_address);
 		}
 		else {
 			cout << "destination mac not found" << endl;
-			return -1;
+			return "";
 		} 
 	}
 #endif
