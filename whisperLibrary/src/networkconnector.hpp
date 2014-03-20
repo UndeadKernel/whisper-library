@@ -138,6 +138,7 @@ private:
 		\return Vector that contains the switched binary
 	*/
 	vector<bool> switchEndian(vector<bool> binary);
+	void packetReceived(vector<bool> packet_data);
 
 	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
 	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.

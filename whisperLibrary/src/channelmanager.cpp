@@ -108,7 +108,7 @@ void ChannelManager::setOutputStream(std::ostream* stream) {
 
 void ChannelManager::outputMessage(string ip, string message){
 	if (m_output_stream != NULL) {
-		(*m_output_stream) << message << endl;
+		(*m_output_stream) << message;
 	}
 	if (m_message_callback != NULL) {
 		m_message_callback(ip, message);

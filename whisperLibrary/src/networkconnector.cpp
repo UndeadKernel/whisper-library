@@ -128,25 +128,30 @@ namespace whisper_library {
 
 	void NetworkConnector::retrievePacket() {
 		vector<bool> packet_data;
-		GenericPacket generic_packet;
-		vector<bool> packet_little_endian;
-		unsigned int length_bit;
-		vector<bool> application_layer;
+		
 		const char * adapter_c_str = m_adapter.c_str();
 		while (m_adapter_open) {
 			packet_data = m_pcap->retrievePacketAsVector(adapter_c_str);
 
 			if (!packet_data.empty()) {
-				packet_little_endian = switchEndian(packet_data);
-
-				IpHeaderv4 ip_header(packet_little_endian);
-				length_bit = ip_header.ipHeaderLength() * 32;
-
-				application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-				generic_packet.setContent(application_layer);
-				m_packet_received(ip_header.sourceIpDotted(), generic_packet);
+				thread packet_received(bind(&NetworkConnector::packetReceived, this, packet_data));
+				packet_received.detach();
 			}
 		}
+	}
+	void NetworkConnector::packetReceived(vector<bool> packet_data) {
+		GenericPacket generic_packet;
+		vector<bool> packet_little_endian;
+		unsigned int length_bit;
+		vector<bool> application_layer;
+		packet_little_endian = switchEndian(packet_data);
+
+		IpHeaderv4 ip_header(packet_little_endian);
+		length_bit = ip_header.ipHeaderLength() * 32;
+
+		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
+		generic_packet.setContent(application_layer);
+		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 
 	void NetworkConnector::addFilter(string ip, unsigned short port, string protocol) {
@@ -203,7 +208,7 @@ namespace whisper_library {
 					}
 				}
 				m_destination_macs.emplace(ip, destination_mac);  // save in cache
-			}
+			} 
 
 			
 			ethernet_header.setDestinationMAC(destination_mac); // 6 byte 
