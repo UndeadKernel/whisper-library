@@ -7,3 +7,5 @@
 *.nav
 *.txt~
 Thumbs.db
+
+/doc/doxygen/output
