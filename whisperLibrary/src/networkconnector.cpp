@@ -3,6 +3,7 @@
 #include "ipheaderv4.hpp"
 #include <boost/algorithm/string.hpp>
 #include "ethernetheader.hpp"
+#include <boost/asio.hpp>
 
 namespace whisper_library {
 	NetworkConnector::NetworkConnector(function<void(string, GenericPacket)> packet_received) {

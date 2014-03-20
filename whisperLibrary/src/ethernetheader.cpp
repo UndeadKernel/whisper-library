@@ -1,7 +1,6 @@
 #include "ethernetheader.hpp"
 #include <sstream>
 #include <boost/algorithm/string.hpp>
-#include <iostream>
 
 namespace whisper_library {
 	EthernetHeader::EthernetHeader() {
