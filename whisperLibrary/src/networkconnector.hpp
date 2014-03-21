@@ -138,32 +138,58 @@ private:
 		\return Vector that contains the switched binary
 	*/
 	vector<bool> switchEndian(vector<bool> binary);
+	/** \brief Is called in a new thread when a packet is received.
+		
+		The function extracts the application layer header and data from 
+		the complete frame and transforms it to little endian. It then calls the callback function m_packet_received
+		to give the packet back to the channelmanager.
+
+		\param packet_data binary representation of a complete frame, that was retrieved from an adapter
+	
+	*/
 	void packetReceived(vector<bool> packet_data);
 
 	PcapWrapper* m_pcap; ///< Pointer to the pcap wrapper. Is used to listen for packets and sending packets.
 	SocketSender* m_socket; ///< Pointer to a socket class. Is used to send packets using a raw socket.
 
+	// Win32 only
 #ifdef WIN32
 	typedef struct {
-		unsigned char		mac_address[6];
-		IPAddr				gateway_address;
-	} MAC_AND_GATEWAY;
+		unsigned char		mac_address[6]; ///< 6 byte mac address
+		IPAddr				gateway_address; ///< default gateway address
+	} AdapterInfo;
 
 	/**
-	\fn Win32fetchMACAddressAndGateway()
-	\brief Retrieves the MAC-Address of the current m_adapter and its first Gateway (if set)
-	\return a struct of type MAC_AND_GATEWAY, containing the MAC Address as a string and the Gateway Address as a IPAddr struct.
+		\fn win32GetAdapterInfo()
+		\brief Retrieves the MAC-Address of the current m_adapter and its first (default) gateway (if set)
+		\return a struct of type AdapterInfo, containing the MAC address and the default gateway address.
 	*/
-	MAC_AND_GATEWAY win32FetchMACAddressAndGateway();
+	AdapterInfo win32GetAdapterInfo();
+	/** \brief Returns the mac address of a destination ip
 
-	string win32GetDestinationMAC(IPAddr source_ip, IPAddr destination_ip);
+		Checks the cache for an entry for the given destination ip. If no entry was found, it sends an arp request for that ip.
+		If there is no answer, it returns the mac of the default gateway.
+		/param source_ip your local ipv4 address
+		/param destination_ip ipv4 address of the destination host whose MAC you want to retrieve
+		/param adapter_info adapterInfo struct of the currently used adapter. Is retrieved by calling 'win32GetAdapterInfo'.
+		\return Returns the mac address as a hex string in the format ff:ff:ff:ff:ff:ff
+	*/
+	string win32GetDestinationMAC(string source_ip, string destination_ip, AdapterInfo adapter_info);
+	/** \brief Uses ARP to get the mac address of a destination ip
+
+		\param source_ip own ip
+		\param destination_ip ip of the destination host whose MAC you want to retrieve
+		\return Returns the mac address as a hex string in the format ff:ff:ff:ff:ff:ff
+
+	*/
+	string win32SendArp(IPAddr source_ip, IPAddr destination_ip);
 
 	PIP_ADAPTER_ADDRESSES m_adapter_addresses; ///< List of IP_ADAPTER_ADDRESSES from getAdapterAddresses() (Win32-only)
-	map<string,string> m_destination_macs;
-	PcapWrapper* m_pcap_sender;
+	map<string,string> m_destination_macs;	   ///< arp request cache that stores mac addresses of IPs
+	PcapWrapper* m_pcap_sender;	///< instance of PcapWrapper, that is only used to send tcp packets.
 #endif
 
-	string m_source_ip;
+	string m_source_ip;	///< your own ip (ipv4), is set after changing the adapter (setAdapter)
 	unsigned int m_connection_count; ///< Counts the number of open connections
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
 	atomic<bool> m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
