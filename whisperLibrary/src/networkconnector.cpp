@@ -159,7 +159,7 @@ namespace whisper_library {
 	// Capture Filter
 	void NetworkConnector::addFilter(string ip, unsigned short port, string protocol) {
 		string filter_rule = "src " + ip + " and port " + to_string(port) + " and " + protocol;
-		m_filter.emplace(ip, filter_rule);
+		m_filter.insert(pair<string, string>(ip, filter_rule));
 		rebuildFilter();
 	}
 
@@ -225,7 +225,7 @@ namespace whisper_library {
 			m_pcap_sender->sendPacket(m_adapter.c_str(), frame_big_endian);
 		#else
 			// UNIX
-			m_socket->sendTcp(source_ip, ip, packet);
+			m_socket->sendTcp(m_source_ip, ip, packet);
 		#endif
 	}
 

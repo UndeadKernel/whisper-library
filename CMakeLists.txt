@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(CovertChannels)
 
-# Makes Linux use c++11 
+# Makes Linux use c++11
+if (UNIX)
 if(CMAKE_COMPILER_IS_GNUCXX)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
@@ -17,7 +18,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 else(CMAKE_COMPILER_IS_GNUCXX)
    add_definitions("-std=c++0x") 
 endif(CMAKE_COMPILER_IS_GNUCXX)
-
+endif(UNIX)
 # Put all executables and libraries into a common directory.
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/bin")
 set(LIBRARY_OUTPUT_PATH    "${PROJECT_BINARY_DIR}/bin")

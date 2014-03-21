@@ -50,25 +50,25 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
-		chrono::steady_clock::time_point sending_time;
+		chrono::time_point<chrono::system_clock> sending_time;
 		m_send(m_getPacket(port()));
-		chrono::steady_clock::time_point start = chrono::steady_clock::now();
+		chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
 		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
 			UdpPacket packet = m_getPacket(port());
 			sending_time = start + chrono::milliseconds(*it);
 			this_thread::sleep_until(sending_time);
 			m_send(packet);
-			start = chrono::steady_clock::now();
+			start = chrono::system_clock::now();
 		}
 	}
 
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
-		m_timeout_end = chrono::steady_clock::now() + chrono::seconds(m_timeout);
+		m_timeout_end = chrono::system_clock::now() + chrono::seconds(m_timeout);
 		if (!m_receiving) {
 			// first packet arrived
-			m_receive_start = chrono::steady_clock::now();
+			m_receive_start = chrono::system_clock::now();
 			m_receiving = true;
 			// start timeout
 			std::thread timeout(bind(&TimingCovertChannel::startTimeoutTimer, this));
@@ -76,7 +76,7 @@ namespace whisper_library {
 		}
 		else {
 			// measure time since last packet
-			chrono::steady_clock::time_point end = chrono::steady_clock::now();
+			chrono::time_point<chrono::system_clock> end = chrono::system_clock::now();
 			chrono::duration<unsigned int, milli> time_elapsed;
 			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;

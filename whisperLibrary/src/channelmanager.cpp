@@ -27,9 +27,8 @@ using namespace std;
 
 namespace whisper_library {
 
-ChannelManager::ChannelManager(){
+ChannelManager::ChannelManager():CHANNEL_COUNT(2){
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
-
 	// create a list of all available channels to display names and descriptions
 	for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
 		m_channels.push_back(createChannel("", i));
@@ -183,7 +182,7 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 
 bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 	CovertChannel* channel = createChannel(ip, channel_id);
-	m_ip_mapping.emplace(ip, channel);
+	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
 	return m_network->openListener(ip, channel);
 }
 

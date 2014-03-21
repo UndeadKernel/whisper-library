@@ -127,7 +127,7 @@ private:
 
 	NetworkConnector* m_network;
 	map<string, CovertChannel*> m_ip_mapping;
-	const unsigned int CHANNEL_COUNT = 2;
+	const unsigned int CHANNEL_COUNT;
 	function<void(string, string)> m_message_callback;
 };
 }

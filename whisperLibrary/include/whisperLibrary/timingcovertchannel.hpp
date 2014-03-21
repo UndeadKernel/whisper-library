@@ -130,13 +130,13 @@ private:
 	function<UdpPacket(unsigned short)> m_getPacket;
 
 	// Marks the time the last packet was received to measure inter-packet delays
-	chrono::steady_clock::time_point m_receive_start;
+	chrono::time_point<chrono::system_clock> m_receive_start;
 
 	/*
 		Marks the time point at which the timeout ends. 
 		It is increased by 2 seconds each time a packet is received.
 	*/
-	chrono::steady_clock::time_point m_timeout_end;
+	chrono::time_point<chrono::system_clock> m_timeout_end;
 
 	// signals 'startTimeoutTimer' that the timeout end point has changed.
 	atomic<bool> m_timeout_changed;
