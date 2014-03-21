@@ -81,6 +81,7 @@ namespace whisper_library {
 			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
+			cout << "delay: " << delay << endl;
 			// check which delay was received
 			if (delay < m_threshold_delay_short) {
 				m_received_delays.push_back(m_delay_short);

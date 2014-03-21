@@ -78,10 +78,6 @@ struct CommunicationFixture {
 			}
 
 		}
-		if (arguments[0].compare("argument") == 0) {
-			channelmanager.setChannelArguments(destination_ip, arguments[1]);
-			return 0;
-		}
 		cout << "Command '" << command << "' unknown." << endl;
 		return 0;
 	}
@@ -90,6 +86,21 @@ struct CommunicationFixture {
 		if (message.compare("exit") == 0) {
 			channelmanager.closeConnection(destination_ip);
 			return 1;
+		}
+		vector<string> arguments;
+		boost::split(arguments, message, boost::is_any_of(" "), boost::token_compress_on);
+		if (arguments[0].compare("argument") == 0) {
+			if (arguments.size() < 2) {
+				cout << "Not enough arguments" << endl;
+				return 0;
+			}
+			string argument_list = arguments[1];
+			for (unsigned int i = 2; i < arguments.size(); i++) {
+				argument_list += " " + arguments[i];
+			}
+			channelmanager.setChannelArguments(destination_ip, argument_list);
+			cout << "Set channel argument to '" << argument_list << "'." << endl;
+			return 0;
 		}
 		if (message.compare("help") == 0) {
 			cout << "Help not available in chat mode. Close chat first with 'exit'" << endl;
