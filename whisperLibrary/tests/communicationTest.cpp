@@ -78,7 +78,7 @@ struct CommunicationFixture {
 			}
 
 		}
-		if (arguments[0].compare("arguments") == 0) {
+		if (arguments[0].compare("argument") == 0) {
 			channelmanager.setChannelArguments(destination_ip, arguments[1]);
 			return 0;
 		}
@@ -138,7 +138,7 @@ struct CommunicationFixture {
 		cout << "displayCC: Displays a list of available Covert Channels" << endl;
 		cout << "displayAdapters: Displays a list of available network adapters" << endl;
 		cout << "selectCC [ID]: Select the covert channel with ID [ID]" << endl;
-		cout << "arguments [string]: Gives [string] as an argument to the channel" << endl;
+		cout << "argument [string]: Gives [string] as an argument to the channel" << endl;
 		cout << "selectAdapter [ID]: Select the network adapter with ID [ID]" << endl;
 		cout << "connect [IP]: Connect to IP using the selected Covert Channel and adapter." << endl;
 		cout << "exit: Exit the chat/program" << endl;
