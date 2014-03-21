@@ -10,7 +10,7 @@ struct CommunicationFixture {
 		channelmanager.setErrorStream(&cout);
 		channelmanager.setOutputStream(&cout);
 		destination_ip = "";
-		channel_id = 1;
+		channel_id = 0;
 	}
 	whisper_library::ChannelManager channelmanager;
 	vector<string> last_adapters;
@@ -149,7 +149,7 @@ struct CommunicationFixture {
 		cout << "displayCC: Displays a list of available Covert Channels" << endl;
 		cout << "displayAdapters: Displays a list of available network adapters" << endl;
 		cout << "selectCC [ID]: Select the covert channel with ID [ID]" << endl;
-		cout << "argument [string]: Gives [string] as an argument to the channel" << endl;
+		cout << "argument [string]: Gives [string] as an argument to the channel. Only usable during chat" << endl;
 		cout << "selectAdapter [ID]: Select the network adapter with ID [ID]" << endl;
 		cout << "connect [IP]: Connect to IP using the selected Covert Channel and adapter." << endl;
 		cout << "exit: Exit the chat/program" << endl;
