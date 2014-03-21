@@ -20,6 +20,8 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include <timingcovertchannel.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace whisper_library {
 	string TimingCovertChannel::name() const{
@@ -79,7 +81,6 @@ namespace whisper_library {
 			time_elapsed = chrono::duration_cast<chrono::duration<unsigned int, milli>>(end - m_receive_start);
 			m_receive_start = end;
 			unsigned int delay = time_elapsed.count();
-			cout << "received delay timingchannel: " << delay << " ms" << endl;
 			// check which delay was received
 			if (delay < m_threshold_delay_short) {
 				m_received_delays.push_back(m_delay_short);
@@ -97,6 +98,23 @@ namespace whisper_library {
 					}
 				}
 			}
+		}
+	}
+
+	void TimingCovertChannel::setArguments(string arguments) {
+		vector<string> parts;
+		boost::split(parts, arguments, boost::is_any_of(" "), boost::token_compress_on);
+		if (parts[0].compare("-set_timings") == 0 && parts.size() == 5) {
+			m_delay_short = boost::lexical_cast<unsigned int>(parts[1]);
+			m_delay_long = boost::lexical_cast<unsigned int>(parts[2]);
+			m_delay_letter = boost::lexical_cast<unsigned int>(parts[3]);
+			m_delay_space = boost::lexical_cast<unsigned int>(parts[4]);
+			calculateTresholds();
+			delete m_coder;
+			m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
+		}
+		else {
+			cerr << "Couldn't parse argument string" << endl;
 		}
 	}
 

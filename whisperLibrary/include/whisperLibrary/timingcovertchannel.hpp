@@ -62,10 +62,10 @@ public:
 		m_receiving(false)
 	{
 		m_timeout = 2;
-		m_delay_short = 10;
-		m_delay_long = 30;
-		m_delay_letter = 50;
-		m_delay_space = 70;
+		m_delay_short = 100;
+		m_delay_long = 300;
+		m_delay_letter = 500;
+		m_delay_space = 700;
 		calculateTresholds();
 		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 	};
@@ -85,8 +85,13 @@ public:
 	*/
 	void receiveMessage(GenericPacket& packet);
 
-	// No available arguments - empty function
-	void setArguments(string arguments) {};
+	/** \brief Gives arguments to the channel to configure the delays
+
+		Available arguments: -set_timings [short] [long] [letter] [space]
+		[short] [long] [letter] [space] are the delays used for morse encoding in milliseconds
+		\param arguments string that is parsed for channel arguments
+	*/
+	void setArguments(string arguments);
 
 	// Returns a string with the name of the covert channel "Timing Covert Channel"
 	string name() const;

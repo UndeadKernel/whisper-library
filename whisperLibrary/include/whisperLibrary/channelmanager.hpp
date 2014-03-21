@@ -73,7 +73,7 @@ public:
 	The string arguments is parsed by the channel to set channel specific options.
 	More information on which arguments are supported can be found in the specific covertchannel source.
 	*/
-	void setChannelArguments(CovertChannel* channel, string arguments);
+	void setChannelArguments(string ip, string arguments);
 
 	// Callbacks for Covert Channels
 

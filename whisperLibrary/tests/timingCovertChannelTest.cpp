@@ -8,6 +8,7 @@ struct timingCovertChannelFixture {
 		uut = new whisper_library::TimingCovertChannel(std::bind(&timingCovertChannelFixture::outputMessage, this, std::placeholders::_1),
 			std::bind(&timingCovertChannelFixture::sendPacket, this, std::placeholders::_1),
 			std::bind(&timingCovertChannelFixture::getPacket, this, std::placeholders::_1));
+		uut->setArguments("-set_timings 10 30 50 70");
 	}
 	~timingCovertChannelFixture() {
 		delete uut;

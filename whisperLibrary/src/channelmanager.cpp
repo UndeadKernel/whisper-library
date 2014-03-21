@@ -94,7 +94,15 @@ void ChannelManager::sendMessage(string ip, string message) {
 	channel->sendMessage(message);
 }
 
-void ChannelManager::setChannelArguments(CovertChannel* channel, string arguments) {
+void ChannelManager::setChannelArguments(string ip, string arguments) {
+	CovertChannel* channel;
+	try {
+		channel = m_ip_mapping.at(ip);
+	}
+	catch (out_of_range) {
+		outputErrorMessage("No channel found for ip: " + ip);
+		return; 
+	}
 	if (channel != NULL) {
 		channel->setArguments(arguments);
 	}
