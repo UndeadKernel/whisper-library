@@ -25,7 +25,7 @@ struct SocketTestFixture {
 
 	void openAllAdapters() {
 		unsigned int count = pcap->adapterCount();
-		for (unsigned int i = 0; i < count; < i++) {
+		for (unsigned int i = 0; i < count; i++) {
 			if (pcap->openAdapter(i, pcap->DEFAULT_MAXPACKETSIZE, true, 10) == 0) { //successfully opened
 				adapter_ids.push_back(i);
 			}
@@ -41,10 +41,13 @@ struct SocketTestFixture {
 
 	whisper_library::GenericPacket retrievePacket() {
 		vector<bool> frame;
-		for (unsigned int i = 0; i < adapter_ids.size(); i++) {
-			frame = pcap->retrievePacketAsVector(adapter_ids[i]);
-			if (!frame.empty()) {
-				return extractApplicationLayer(frame);
+		for (unsigned int j = 0; j < 100; j++) { // try 100 times
+			for (unsigned int i = 0; i < adapter_ids.size(); i++) {
+				frame = pcap->retrievePacketAsVector(adapter_ids[i]);
+				if (!frame.empty()) {
+					whisper_library::GenericPacket udp = extractApplicationLayer(frame);
+					return udp;
+				}
 			}
 		}
 		whisper_library::GenericPacket empty_packet;
@@ -104,6 +107,20 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 	sender->sendUdp(destination_ip, packet);
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::UdpPacket received_udp_packet;
+	received_udp_packet.setPacket(received_packet.content());
+
+	BOOST_CHECK(!received_udp_packet.packet().empty());
+	BOOST_CHECK_EQUAL(received_udp_packet.sourcePort(), packet.sourcePort());
+	BOOST_CHECK_EQUAL(received_udp_packet.destinationPort(), packet.destinationPort());
+	BOOST_CHECK_EQUAL(received_udp_packet.length(), packet.length());
+	BOOST_CHECK_EQUAL(received_udp_packet.sourcePort(), packet.sourcePort());
+	BOOST_CHECK_EQUAL(received_udp_packet.data().size(), packet.data().size());
+	vector<char> received_data = received_udp_packet.data();
+	if (received_data.size() == data.size()) {
+		for (unsigned int i = 0; i < data.size(); i++) {
+			BOOST_CHECK_EQUAL(received_data[i], data[i]);
+		}
+	}
 }
 
 BOOST_AUTO_TEST_CASE(sendTcpPacket){
