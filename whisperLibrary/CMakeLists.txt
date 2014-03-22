@@ -42,6 +42,7 @@ set(TESTS
 	tests/timingCovertChannelTest.cpp
 	tests/packetLengthCovertChannelTest.cpp
 	tests/lengthCoderTest.cpp
+	tests/udpPacketGeneratorTest.cpp
 )
 
 # Boost library
