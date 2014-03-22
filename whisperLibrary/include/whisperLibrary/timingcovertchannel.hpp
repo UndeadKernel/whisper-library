@@ -66,7 +66,6 @@ public:
 		m_delay_long = 300;
 		m_delay_letter = 500;
 		m_delay_space = 700;
-		m_timeout = m_delay_space*1.5;
 		calculateTresholds();
 		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 	};

@@ -61,14 +61,14 @@ namespace whisper_library {
 			m_send(packet);
 			start = chrono::system_clock::now();
 		}
-		this_thread::sleep_for(chrono::seconds(m_timeout));
+		this_thread::sleep_for(chrono::milliseconds(m_timeout));
 		m_mutex_sending.unlock();
 	}
 
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
-		m_timeout_end = chrono::system_clock::now() + chrono::seconds(m_timeout);
+		m_timeout_end = chrono::system_clock::now() + chrono::milliseconds(m_timeout);
 		if (!m_receiving) {
 			// first packet arrived
 			m_receive_start = chrono::system_clock::now();
