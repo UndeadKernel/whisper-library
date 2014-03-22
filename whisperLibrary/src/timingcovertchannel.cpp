@@ -50,6 +50,7 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
+		m_mutex_sending.lock();
 		chrono::time_point<chrono::system_clock> sending_time;
 		m_send(m_getPacket(port()));
 		chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
@@ -60,6 +61,7 @@ namespace whisper_library {
 			m_send(packet);
 			start = chrono::system_clock::now();
 		}
+		m_mutex_sending.unlock();
 	}
 
 	void TimingCovertChannel::receiveMessage(GenericPacket& packet){

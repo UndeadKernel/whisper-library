@@ -85,7 +85,6 @@ namespace whisper_library {
 		for (vector<char*>::iterator it = addresses.begin(); it != addresses.end(); it++) {
 			string_addresses.push_back(*it);
 		}
-
 		return string_addresses;
 	}
 
@@ -120,11 +119,11 @@ namespace whisper_library {
 			removeFilter(ip);
 			m_connection_count--;
 			if (m_connection_count == 0) {
+				m_adapter_open = false;
 				m_pcap->closeAdapter(m_adapter.c_str());
 				#ifdef WIN32
 					m_pcap_sender->closeAdapter(m_adapter.c_str());
 				#endif
-				m_adapter_open = false;
 			}
 		}
 	}
