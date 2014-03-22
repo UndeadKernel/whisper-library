@@ -26,7 +26,7 @@ struct PacketLengthCovertChannelFixture {
 	}
 
 	whisper_library::UdpPacket getUdpPacket(int length){
-		 return whisper_library::UdpPacketGenerator::packetWithLength(23,length);	
+		 return whisper_library::UdpPacketGenerator::generatePacketWithLength(23,length);	
 	}
 
 	std::string m_received;

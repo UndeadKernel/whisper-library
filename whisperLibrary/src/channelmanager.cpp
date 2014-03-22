@@ -78,7 +78,7 @@ UdpPacket ChannelManager::getUdpPacket() {
 }
 
 UdpPacket ChannelManager::getUdpPacketWithLength(int length){
-	return whisper_library::UdpPacketGenerator::packetWithLength(23, length);
+	return whisper_library::UdpPacketGenerator::generatePacketWithLength(23, length);
 }
 
 void ChannelManager::packetReceived(GenericPacket packet) {
