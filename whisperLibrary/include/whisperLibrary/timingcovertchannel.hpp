@@ -169,7 +169,7 @@ private:
 	// delay_space is used to encode space between words (in milliseconds)
 	unsigned int m_delay_space;
 
-	mutex m_mutex_sending ///< mutex to prevent different threads from sending simultaneously
+	mutex m_mutex_sending; ///< mutex to prevent different threads from sending simultaneously
 };
 }
 #endif // TIMING_COVERT_CHANNEL
