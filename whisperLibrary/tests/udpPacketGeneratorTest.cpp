@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_CASE(udp_generate_random_length_test) {
 	BOOST_CHECK_EQUAL(packet.checksum(), 0);
 	vector<char> data = packet.data();
 	BOOST_CHECK_EQUAL(packet.length(), data.size() + 8);
-	BOOST_CHECK(data.size() >= 50 && data.size() <= 150);
+	BOOST_CHECK(data.size() >= 42 && data.size() <= 142);
 }
 
 BOOST_AUTO_TEST_CASE(udp_generate_fixed_length_test) {
