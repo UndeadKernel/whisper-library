@@ -61,6 +61,7 @@ namespace whisper_library {
 			m_send(packet);
 			start = chrono::system_clock::now();
 		}
+		this_thread::sleep_for(chrono::seconds(m_timeout));
 		m_mutex_sending.unlock();
 	}
 
@@ -137,5 +138,6 @@ namespace whisper_library {
 		m_threshold_delay_short = (m_delay_long + m_delay_short) / 2;
 		m_threshold_delay_long = (m_delay_long + m_delay_letter) / 2;
 		m_threshold_delay_letter = (m_delay_letter + m_delay_space) / 2;
+		m_timeout = m_delay_space*1.5;
 	}
 }

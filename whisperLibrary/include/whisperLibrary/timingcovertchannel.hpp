@@ -62,11 +62,11 @@ public:
 		m_getPacket(getPacket),
 		m_receiving(false)
 	{
-		m_timeout = 2;
 		m_delay_short = 100;
 		m_delay_long = 300;
 		m_delay_letter = 500;
 		m_delay_space = 700;
+		m_timeout = m_delay_space*1.5;
 		calculateTresholds();
 		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 	};
