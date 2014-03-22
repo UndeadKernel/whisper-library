@@ -181,6 +181,10 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 }
 
 bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
+	if (connection(ip)) {
+		outputErrorMessage("There is a connection to " + ip + " already.");
+		return false;
+	}
 	CovertChannel* channel = createChannel(ip, channel_id);
 	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
 	return m_network->openListener(ip, channel);
