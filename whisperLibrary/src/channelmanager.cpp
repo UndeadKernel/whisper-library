@@ -197,6 +197,16 @@ unsigned int ChannelManager::connectionCount() {
 	return m_ip_mapping.size();
 }
 
+bool ChannelManager::connection(string ip) {
+	try {
+		m_ip_mapping.at(ip);
+	}
+	catch (out_of_range) {
+		return false;
+	}
+	return true;
+}
+
 // Adapter handling
 void ChannelManager::setAdapter(string name) {
 	return m_network->setAdapter(name);

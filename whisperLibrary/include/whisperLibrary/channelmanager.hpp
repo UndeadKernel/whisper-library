@@ -102,6 +102,7 @@ public:
 	bool openConnection(string ip, unsigned int channel_id);
 	void closeConnection(string ip);
 	unsigned int connectionCount();
+	bool connection(string ip);
 	/**
 	* \brief Sends a message through the currently selected covert channel
 	* \param the message as string

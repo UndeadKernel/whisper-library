@@ -147,7 +147,7 @@ private:
 	// indicates, if the channel is currently receiving a message
 	atomic<bool> m_receiving;
 
-	// timeout in seconds after the last received message until the delays are interpreted
+	// timeout in milliseconds after the last received message until the delays are interpreted
 	unsigned int m_timeout;
 
 	/*
