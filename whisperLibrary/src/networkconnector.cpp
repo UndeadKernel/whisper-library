@@ -40,7 +40,7 @@ namespace whisper_library {
 			m_adapter = adapter_name;
 			vector<string> addresses = adapterAddresses();
 			for (unsigned int i = 0; i < addresses.size(); i++) {
-				if (validIP(addresses[i])) {
+				if (validIPv4(addresses[i])) {
 					m_source_ip = addresses[i];
 				}
 			}
@@ -70,7 +70,7 @@ namespace whisper_library {
 
 	// Connection
 	bool NetworkConnector::openListener(string ip, CovertChannel* channel) {
-		if (!validIP(ip) || channel == NULL || m_adapter.compare("") == 0) {
+		if (!validIPv4(ip) || channel == NULL || m_adapter.compare("") == 0) {
 			return false;
 		}
 		if (!m_adapter_open) {
@@ -212,10 +212,10 @@ namespace whisper_library {
 	}
 
 	// Utility
-	bool NetworkConnector::validIP(string ip) {
+	bool NetworkConnector::validIPv4(string ip) {
 		boost::system::error_code ec;
-		boost::asio::ip::address::from_string(ip, ec);
-		return (!ec);
+		boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, ec);
+		return (!ec) && address.is_v4();
 	}
 
 	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {

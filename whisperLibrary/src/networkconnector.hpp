@@ -117,7 +117,7 @@ private:
 		\param ip The ip to check
 		\return True if the ip is a valid Ipv4 address, otherwise false
 	*/
-	bool validIP(string ip);
+	bool validIPv4(string ip);
 	/** \brief Adds a capture filter for the opened adapter.
 		
 		Only packets with matching ip, port and protocol are received.
