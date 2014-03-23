@@ -36,7 +36,7 @@ namespace whisper_library {
 		m_last_return_codes.clear();
 	}
 	
-inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
+	inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		if (m_adapter_data.empty()) {
 			// unsafe call
 			fprintf(stderr, "Warning: Adapter requested while all adapters are freed. Retrieving adapters...");
@@ -50,7 +50,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), true);
 	}
 
-	const char* PcapWrapper::adapterName(int adapter_id) {
+	std::string PcapWrapper::adapterName(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -58,21 +58,21 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), m_adapter_data[adapter_id][ADAPTER_NAME]);
 	}
 
-	std::vector<char*> PcapWrapper::adapterNames() {
+	std::vector<std::string> PcapWrapper::adapterNames() {
 		/* we could use getAdapterName(adapter_id) here, 
 		but constant checking for the adapter_id would be a unnecessary waste of performance */
-		std::vector<char*> ret;
-		for (std::vector<char*> adapter : m_adapter_data) {
+		std::vector<std::string> ret;
+		for (std::vector<std::string> adapter : m_adapter_data) {
 			ret.push_back(adapter[ADAPTER_NAME]);
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int PcapWrapper::adapterId(const char* value, int key, bool increment_key) {
+	int PcapWrapper::adapterId(std::string value, int key, bool increment_key) {
 		int i, j;
 		for (i = 0; i < static_cast<int>(m_adapter_data.size()); ++i) {
 			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; ++j) {
-				if (strcmp(m_adapter_data[i][j], value) == 0) {
+				if (value.compare(m_adapter_data[i][j]) == 0) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
 			}
@@ -80,12 +80,12 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	int PcapWrapper::adapterId(const char* adapter_value, int value_type) {
+	int PcapWrapper::adapterId(std::string adapter_value, int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
-	std::vector<char*> PcapWrapper::adapterAddresses(int adapter_id) {
-		std::vector<char*> ret;
+	std::vector<std::string> PcapWrapper::adapterAddresses(int adapter_id) {
+		std::vector<std::string> ret;
 		if (!checkForAdapterId(adapter_id)) { return ret; }  // specified adapter not found
 		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); ++i) {
 			ret.push_back(m_adapter_data[adapter_id][i]);
@@ -93,7 +93,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	const char*	PcapWrapper::adapterDescription(int adapter_id) {
+	std::string	PcapWrapper::adapterDescription(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -126,7 +126,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 			*/
 			if (!adapter->addresses) { continue; }
 
-			std::vector<char*> current_adapter;
+			std::vector<std::string> current_adapter;
 			current_adapter.push_back(adapter->name);					// adapter/device name in the system (for example /dev/eth0)
 			current_adapter.push_back(adapter->description);			// adapter descriptional name (usually the product name of the network card o.s.)
 			bpf_u_int32 netmask;
@@ -138,9 +138,10 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 
 			DEBUG(1, "Device Name: %s\nDescription: %s\nFlags: #%d\n", adapter->name, adapter->description, adapter->flags);
 			// get adapter addresses
+			char* address_buffer;
+			size_t buffer_size = 0;
 			for (pcap_addr* address = adapter->addresses; address; address = address->next) {
-				char* address_buffer;
-				size_t buffer_size = 0;
+				buffer_size = 0;
 				switch (address->addr->sa_family) {
 					// address families with 32 bit addresses 
 					case AF_INET: {		// UDP, TCP, ...
@@ -169,8 +170,9 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 				// currently only addresses up to 128bit and known to getnameinfo are supported by ipToString
 				ipToString(address->addr, address_buffer, buffer_size);
 				if (address_buffer) {
-					current_adapter.push_back(address_buffer);
+					current_adapter.push_back(std::string(address_buffer));
 				}
+				free(address_buffer);
 			}
 			// Set global adapter_data
 			m_adapter_data.push_back(current_adapter);
@@ -188,20 +190,20 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 			m_adapter_handles.resize(adapter_id + 1);
 		}
 		// open handle for live capturing
-		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0], max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
+		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0].c_str(), max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
 		if (!m_adapter_handles[adapter_id]) {
-			fprintf(stderr, "Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0], error_buffer);
+			fprintf(stderr, "Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0].c_str(), error_buffer);
 			RETURN_CODE(RC(ERROR_OPENING_HANDLE));
 		}
 		DEBUG(1, "Capturing started on device #%d\n", adapter_id);
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::openAdapter(const char* adapter_name, int max_packet_size, bool promiscuous_mode, int timeout) {
+	int PcapWrapper::openAdapter(std::string adapter_name, int max_packet_size, bool promiscuous_mode, int timeout) {
 		return openAdapter(adapterId(adapter_name, ADAPTER_NAME), max_packet_size, promiscuous_mode, timeout);
 	}
 
-	int PcapWrapper::closeAdapter(const char* adapter_name) {
+	int PcapWrapper::closeAdapter(std::string adapter_name) {
 		return closeAdapter(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
@@ -223,14 +225,6 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		for (pcap_t* handle : m_adapter_handles) {
 			if (handle) { pcap_close(handle); }
 		}
-		unsigned int i;
-		for (std::vector<char*> adapter : m_adapter_data) {
-			// i >= 2 := Address strings
-			for (i = 2; i < adapter.size(); ++i) {
-				// Free allocated memory
-				free(adapter[i]);
-			}
-		}
 		// clear vector content
 		m_adapter_data.clear();
 		m_adapter_handles.clear();
@@ -242,10 +236,9 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::applyFilter(int adapter_id, const char* filter) {
+	int PcapWrapper::applyFilter(int adapter_id, std::string filter) {
 		
 		if (!checkForAdapterId(adapter_id)) { return -1; } // specified adapter not found
-		const char*			filter_string = (filter ? filter : ""); // If given filter is NULL, replace with empty(/ANY) filter
 		struct bpf_program	filter_compiled;
 		pcap_t*				handle = NULL;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
@@ -262,7 +255,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 			netmask = PCAP_NETMASK_UNKNOWN;
 		}
 
-		if (pcap_compile(handle, &filter_compiled, filter_string, 1, netmask) < 0) {
+		if (pcap_compile(handle, &filter_compiled, filter.c_str(), 1, netmask) < 0) {
 			fprintf(stderr, "Error: Failed to compile given filter.\n");
 			RETURN_CODE(RC(ERROR_COMPILING_FILTER));
 		}
@@ -270,20 +263,20 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 			fprintf(stderr, "Error: Failed to apply the given filter.\n");
 			RETURN_CODE(RC(ERROR_APPLYING_FILTER));
 		}
-		DEBUG(1, "Filter successfully applied.\nFilter: %s\n", filter_string);
+		DEBUG(1, "Filter successfully applied.\nFilter: %s\n", filter.c_str());
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::applyFilter(const char* adapter_name, const char* filter) {
+	int PcapWrapper::applyFilter(std::string adapter_name, std::string filter) {
 		return applyFilter(adapterId(adapter_name, ADAPTER_NAME), filter);
 	}
 
-	int PcapWrapper::removeFilter(const char* adapter_name) {
-		return applyFilter(adapter_name, NULL);
+	int PcapWrapper::removeFilter(std::string adapter_name) {
+		return applyFilter(adapter_name, "");
 	}
 
 	int PcapWrapper::removeFilter(int adapter_id) {
-		return applyFilter(adapter_id, NULL);
+		return applyFilter(adapter_id, "");
 	}
 
 	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(int adapter_id) {
@@ -326,7 +319,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_VALUE(RC((return_code == 1 ? NORMAL_EXECUTION : EMPTY_PACKET_DATA)), packet);
 	}
 
-	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(const char* adapter_name) {
+	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(std::string adapter_name) {
 		return retrievePacket(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
@@ -346,7 +339,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), bitVector);
 	}
 
-	std::vector<bool> PcapWrapper::retrievePacketAsVector(const char* adapter_name) {
+	std::vector<bool> PcapWrapper::retrievePacketAsVector(std::string adapter_name) {
 		return retrievePacketAsVector(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
@@ -394,7 +387,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 	#endif
 	}
 
-	int	PcapWrapper::sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size) {
+	int	PcapWrapper::sendPacket(std::string adapter_name, unsigned char* packet_buffer, int buffer_size) {
 		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_buffer, buffer_size);
 	}
 
@@ -422,7 +415,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		RETURN_CODE(return_code);
 	}
 
-	int	PcapWrapper::sendPacket(const char* adapter_name, std::vector<bool> packet_data) {
+	int	PcapWrapper::sendPacket(std::string adapter_name, std::vector<bool> packet_data) {
 		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_data);
 	}
 } 

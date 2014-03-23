@@ -36,7 +36,7 @@ namespace whisper_library {
 
 	// Adapter Handling
 	void NetworkConnector::setAdapter(string adapter_name) {
-		if (m_pcap->adapterId(adapter_name.c_str(), m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
+		if (m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
 			m_adapter = adapter_name;
 			vector<string> addresses = adapterAddresses();
 			for (unsigned int i = 0; i < addresses.size(); i++) {
@@ -48,27 +48,15 @@ namespace whisper_library {
 	}
 
 	vector<string> NetworkConnector::adapters() {
-		vector<char *> adapter_list;
-		vector<string> adapter_list_string;
-		adapter_list = m_pcap->adapterNames();
-		for (vector<char*>::iterator it = adapter_list.begin(); it != adapter_list.end(); it++) {
-			adapter_list_string.push_back(*it);
-		}
-		return adapter_list_string;
+		return m_pcap->adapterNames();
 	}
 
 	string NetworkConnector::adapterDescription(string adapter_name) {
-		int adapter_id = m_pcap->adapterId(adapter_name.c_str(), m_pcap->ADAPTER_NAME);
+		int adapter_id = m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME);
 		if (adapter_id < 0) {
 			return "";
 		}
-		const char* description = m_pcap->adapterDescription(adapter_id);
-		if (description == NULL) {
-			return "";
-		}
-		else {
-			return description;
-		}
+		return m_pcap->adapterDescription(adapter_id);
 	}
 
 	unsigned int NetworkConnector::adapterCount() {
@@ -76,16 +64,8 @@ namespace whisper_library {
 	}
 
 	vector<string> NetworkConnector::adapterAddresses() {
-		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
-		vector<string> string_addresses;
-		if (adapter_id < 0) {
-			return string_addresses;
-		}
-		vector<char*> addresses = m_pcap->adapterAddresses(adapter_id);
-		for (vector<char*>::iterator it = addresses.begin(); it != addresses.end(); it++) {
-			string_addresses.push_back(*it);
-		}
-		return string_addresses;
+		int adapter_id = m_pcap->adapterId(m_adapter, m_pcap->ADAPTER_NAME);
+		return (adapter_id < 0 ? vector<string>() : m_pcap->adapterAddresses(adapter_id));
 	}
 
 	// Connection
@@ -94,11 +74,11 @@ namespace whisper_library {
 			return false;
 		}
 		if (!m_adapter_open) {
-			if (m_pcap->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
+			if (m_pcap->openAdapter(m_adapter, m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 				return false;
 			}
 			#ifdef WIN32
-				if (m_pcap_sender->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
+				if (m_pcap_sender->openAdapter(m_adapter, m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 					return false;
 				}
 			#endif
@@ -120,9 +100,9 @@ namespace whisper_library {
 			m_connection_count--;
 			if (m_connection_count == 0) {
 				m_adapter_open = false;
-				m_pcap->closeAdapter(m_adapter.c_str());
+				m_pcap->closeAdapter(m_adapter);
 				#ifdef WIN32
-					m_pcap_sender->closeAdapter(m_adapter.c_str());
+					m_pcap_sender->closeAdapter(m_adapter);
 				#endif
 			}
 		}
@@ -130,9 +110,8 @@ namespace whisper_library {
 
 	void NetworkConnector::retrievePacket() {
 		vector<bool> packet_data;
-		const char * adapter_c_str = m_adapter.c_str();
 		while (m_adapter_open) {
-			packet_data = m_pcap->retrievePacketAsVector(adapter_c_str);
+			packet_data = m_pcap->retrievePacketAsVector(m_adapter);
 
 			if (!packet_data.empty()) {
 				thread packet_received(bind(&NetworkConnector::packetReceived, this, packet_data));
@@ -178,7 +157,7 @@ namespace whisper_library {
 				complete_filter += " or (" + element.second + ")";
 			}
 		}
-		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
+		m_pcap->applyFilter(m_adapter, complete_filter);
 	}
 
 	// Sending
@@ -221,7 +200,7 @@ namespace whisper_library {
 			frame.insert(frame.end(), tcp.begin(), tcp.end());
 		
 			vector<bool> frame_big_endian = switchEndian(frame);
-			m_pcap_sender->sendPacket(m_adapter.c_str(), frame_big_endian);
+			m_pcap_sender->sendPacket(m_adapter, frame_big_endian);
 		#else
 			// UNIX
 			m_socket->sendTcp(m_source_ip, ip, packet);
