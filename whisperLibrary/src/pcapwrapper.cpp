@@ -301,6 +301,7 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		const u_char*		packet_data; 
 		pcap_t*				handle		= NULL;
 		int					iterations	= 0;
+		int					return_code = 0;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
@@ -316,15 +317,13 @@ inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 			Quote from winpcap doc: "Unfortunately, there is no way to determine whether an error occured or not."
 			( http://www.winpcap.org/docs/docs_412/html/group__wpcapfunc.html#gadf60257f650aaf869671e0a163611fc3 )
 		*/
-		while (pcap_next_ex(handle, &packet_header, &packet_data) == 0 && ++iterations <= 500);
+		while ( (return_code = pcap_next_ex(handle, &packet_header, &packet_data)) == 0 && ++iterations <= 500);
 		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header->len);
-		if (packet_data && iterations <= 500) {
+		if (return_code == 1) {
 			packet.payload = packet_data;
 			packet.header = *packet_header;
-			RETURN_VALUE(RC(NORMAL_EXECUTION), packet);
-		} else {
-			RETURN_VALUE(RC(EMPTY_PACKET_DATA), packet);
 		}
+		RETURN_VALUE(RC((return_code == 1 ? NORMAL_EXECUTION : EMPTY_PACKET_DATA)), packet);
 	}
 
 	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(const char* adapter_name) {
