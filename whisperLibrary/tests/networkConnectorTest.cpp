@@ -37,7 +37,7 @@ struct NetworkConnectorFixture {
 	bool validIPv4(string ip) {
 		boost::system::error_code ec;
 		boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, ec);
-		return (!ec) && address.is_v4();
+		return (!ec) && address.is_v4() && ip.compare("0.0.0.0") != 0;
 	}
 
 	string getSourceAddress() {
@@ -45,6 +45,17 @@ struct NetworkConnectorFixture {
 		for (unsigned int i = 0; i < addresses.size(); i++) {
 			if (validIPv4(addresses[i])) {
 				return addresses[i];
+			}
+		}
+	}
+	unsigned int findSendAdapter() {
+		for (unsigned int i = 0; i < network->adapterCount(); i++) {
+			network->setAdapter(adapters[i]);
+			vector<string> addresses = network->adapterAddresses();
+			for (unsigned j = 0; j < addresses.size(); j++) {
+				if (validIPv4(addresses[j])) {
+					return i;
+				}
 			}
 		}
 	}
@@ -58,7 +69,8 @@ BOOST_FIXTURE_TEST_SUITE(networkConnector, NetworkConnectorFixture)
 
 #ifdef WIN32
 BOOST_AUTO_TEST_CASE(send_tcp_win32_test) {
-	network->setAdapter(adapters[1]);
+	unsigned int adapter_id = findSendAdapter();
+	network->setAdapter(adapters[adapter_id]);
 	string source_ip = getSourceAddress();
 	network->openListener(source_ip, channel); //loopback
 
