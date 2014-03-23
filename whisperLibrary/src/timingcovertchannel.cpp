@@ -24,6 +24,12 @@
 #include <boost/lexical_cast.hpp>
 
 namespace whisper_library {
+	TimingCovertChannel::~TimingCovertChannel() {
+		m_mutex_sending.lock();
+		delete m_coder;
+		m_mutex_sending.unlock();
+	}
+
 	string TimingCovertChannel::name() const{
 		return "Timing Covert Channel";
 	}

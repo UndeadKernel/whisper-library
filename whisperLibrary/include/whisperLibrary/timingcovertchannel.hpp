@@ -71,9 +71,7 @@ public:
 	};
 
 	// Destructor
-	~TimingCovertChannel(){
-		delete m_coder;
-	}
+	~TimingCovertChannel();
 	/*
 		Sends a message using the timing channel. The argument is the message as a string.
 	*/
