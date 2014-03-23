@@ -180,6 +180,7 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 	BOOST_CHECK_EQUAL(packet.sourcePort(), received_tcp.sourcePort());
 	BOOST_CHECK_EQUAL(packet.destPort(), received_tcp.destPort());
 	BOOST_CHECK_EQUAL(packet.sourcePort(), received_tcp.sourcePort());
+	BOOST_CHECK_EQUAL(packet.checksum(), received_tcp.checksum());
 	vector<bool> packet_data = packet.data();
 	vector<bool> received_data = received_tcp.data();
 	if (packet_data.size() == received_data.size()) {
