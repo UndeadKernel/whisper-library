@@ -24,7 +24,7 @@ int main(int argc, char* argv[]){
 	packet_buffer[5] = 1;
 
 	/* set mac source to 2:2:2:2:2:2 */
-	packet_buffer[6] = 2;
+	/*packet_buffer[6] = 2;
 	packet_buffer[7] = 2;
 	packet_buffer[8] = 2;
 	packet_buffer[9] = 2;
@@ -41,9 +41,9 @@ int main(int argc, char* argv[]){
 	// Wireshark display filter: eth.addr == 1:1:1:1:1:1
 	wrapper.sendPacket(0, packet_buffer, buffer_length);
 
-	return 0;
-	/*
-	int id;
+	/*return 0;*/
+	
+	int id = wrapper.adapterId("blubb", wrapper.ADAPTER_NAME); // just for testing purposes
 	vector<char*> names = wrapper.adapterNames();
 	for (char* name : names) {
 		printf("###Name: %s\n", name);
@@ -53,16 +53,17 @@ int main(int argc, char* argv[]){
 		}
 		wrapper.openAdapter(id, wrapper.DEFAULT_MAXPACKETSIZE, true, 1);
 		// http://www.winpcap.org/docs/docs_40_2/html/group__language.html
-		wrapper.applyFilter(id, "");
+		wrapper.applyFilter(id, "udp");
 
-		/*
-		struct pcap_pkthdr:
+
+		/*struct pcap_pkthdr:
 		struct timeval	ts; - system dependent size (either 32 or 64bit)
 		bpf_u_int32		caplen;
-		bpf_u_int32		len;
-		
+		bpf_u_int32		len;*/
+		vector<bool> packet_data;
 		for (int k = 0; k < 10000; k++) {
 			whisper_library::PcapWrapper::PcapPacket packet = wrapper.retrievePacket(id);
+			packet_data = wrapper.retrievePacketAsVector(id);
 			if (packet.payload == NULL) { continue; }
 			unsigned long p_ts, s_ts;
 			unsigned long s_uts, p_uts;
@@ -88,6 +89,6 @@ int main(int argc, char* argv[]){
 		wrapper.closeAdapter(id);
 	}
 	wrapper.freeAdapters();
-	*/
+
 }
 

@@ -36,7 +36,7 @@ namespace whisper_library {
 		m_last_return_codes.clear();
 	}
 	
-	bool PcapWrapper::checkForAdapterId(int adapter_id) {
+inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		if (m_adapter_data.empty()) {
 			// unsafe call
 			fprintf(stderr, "Warning: Adapter requested while all adapters are freed. Retrieving adapters...");
@@ -70,8 +70,8 @@ namespace whisper_library {
 
 	int PcapWrapper::adapterId(const char* value, int key, bool increment_key) {
 		int i, j;
-		for (i = 0; i < static_cast<int>(m_adapter_data.size()); i++) {
-			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; j++) {
+		for (i = 0; i < static_cast<int>(m_adapter_data.size()); ++i) {
+			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; ++j) {
 				if (strcmp(m_adapter_data[i][j], value) == 0) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
@@ -87,7 +87,7 @@ namespace whisper_library {
 	std::vector<char*> PcapWrapper::adapterAddresses(int adapter_id) {
 		std::vector<char*> ret;
 		if (!checkForAdapterId(adapter_id)) { return ret; }  // specified adapter not found
-		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); i++) {
+		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); ++i) {
 			ret.push_back(m_adapter_data[adapter_id][i]);
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
@@ -226,7 +226,7 @@ namespace whisper_library {
 		unsigned int i;
 		for (std::vector<char*> adapter : m_adapter_data) {
 			// i >= 2 := Address strings
-			for (i = 2; i < adapter.size(); i++) {
+			for (i = 2; i < adapter.size(); ++i) {
 				// Free allocated memory
 				free(adapter[i]);
 			}
@@ -289,8 +289,7 @@ namespace whisper_library {
 	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(int adapter_id) {
 		PcapPacket packet = { NULL, NULL };
 		if (!checkForAdapterId(adapter_id)) {
-			// specified adapter not found
-			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), packet);
+			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), packet); // specified adapter not found
 		}
 		/*
 			struct pcap_pkthdr:
@@ -298,9 +297,10 @@ namespace whisper_library {
 				bpf_u_int32		caplen;
 				bpf_u_int32		len;
 		*/
-		struct pcap_pkthdr 	packet_header;
-		const u_char*		packet_data;
-		pcap_t*				handle = NULL;
+		struct pcap_pkthdr*	packet_header;
+		const u_char*		packet_data; 
+		pcap_t*				handle		= NULL;
+		int					iterations	= 0;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
@@ -311,16 +311,16 @@ namespace whisper_library {
 		/* Note: 
 			packet_data can contain NULL if
 			1. an error occured
-			2. no packets were read from live capture (read timeout)
+			2. no packets were read from live capture (due to read timeout) in 500 tries
 			3. no packet passed the filter
 			Quote from winpcap doc: "Unfortunately, there is no way to determine whether an error occured or not."
 			( http://www.winpcap.org/docs/docs_412/html/group__wpcapfunc.html#gadf60257f650aaf869671e0a163611fc3 )
 		*/
-		packet_data  = pcap_next(handle, &packet_header); // returns pointer to the packet data (pcap header not included)
-		packet.header = packet_header;
-		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header.len);
-		if (packet_data) {
+		while (pcap_next_ex(handle, &packet_header, &packet_data) == 0 && ++iterations <= 500);
+		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header->len);
+		if (packet_data && iterations <= 500) {
 			packet.payload = packet_data;
+			packet.header = *packet_header;
 			RETURN_VALUE(RC(NORMAL_EXECUTION), packet);
 		} else {
 			RETURN_VALUE(RC(EMPTY_PACKET_DATA), packet);
@@ -337,14 +337,12 @@ namespace whisper_library {
 		if (packet.payload == NULL) {
 			RETURN_VALUE(RC(EMPTY_PACKET_DATA), bitVector);
 		}
-		unsigned int packet_size	= packet.header.len;
 		const unsigned char* it		= packet.payload;
 		unsigned int i, j;
-		for (i = 0; i < packet_size; i++) {
-			for (j = 0; j < 8; j++) {
+		for (i = 0; i < packet.header.len; ++i, ++it) {
+			for (j = 0; j < 8; ++j) {
 				bitVector.push_back((*it & (1 << j)) != 0);
 			}
-			it++;
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), bitVector);
 	}
@@ -353,7 +351,7 @@ namespace whisper_library {
 		return retrievePacketAsVector(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
-	char* PcapWrapper::ipToString(struct sockaddr* socket_address, char* buffer, size_t buffer_length) {
+	inline char* PcapWrapper::ipToString(struct sockaddr* socket_address, char* buffer, size_t buffer_length) {
 		if (!socket_address) { return NULL; }
 		// sockaddr_storage requires Windows XP, Windows Server 2003 or later
 		socklen_t address_length = sizeof(struct sockaddr_storage);
@@ -412,16 +410,16 @@ namespace whisper_library {
 
 		// convert logical values to numerical
 		int i, j, return_code;
-		for (i = 0; i < buffer_size; i++) {
+		for (i = 0; i < buffer_size; ++i) {
 			buffer[i] = 0; // initialize
-			for (j = 0; j < 8; j++) {
+			for (j = 0; j < 8; ++j) {
 				DEBUG(4, "bit index: %d, data index: %d, value: %d\n", j, j + (i * 8), (packet_data[j + (i * 8)] ? 1 : 0));
 				buffer[i] |= (packet_data[j + (i * 8)] ? 1 : 0) << j;
 			}
 			DEBUG(3, "send buffer char #%d content: %u\n\n", i, buffer[i]);
 		}
 		return_code = sendPacket(adapter_id, buffer, buffer_size);
-		free(buffer);
+		free(buffer); // important!
 		RETURN_CODE(return_code);
 	}
 
