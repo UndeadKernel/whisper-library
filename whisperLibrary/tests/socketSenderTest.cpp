@@ -8,14 +8,14 @@
 #include <thread>
 #include <boost/asio.hpp>
 
-struct SocketTestFixture {
+struct SocketSenderTestFixture {
 
-	SocketTestFixture(){
+	SocketSenderTestFixture(){
 		sender = new whisper_library::SocketSender();
 		pcap = new whisper_library::PcapWrapper();
 	}
 
-	~SocketTestFixture(){
+	~SocketSenderTestFixture(){
 		delete sender;
 		delete pcap;
 	}
@@ -108,7 +108,7 @@ struct SocketTestFixture {
 	whisper_library::PcapWrapper* pcap;
 };
 
-BOOST_FIXTURE_TEST_SUITE (SocketTest, SocketTestFixture)
+BOOST_FIXTURE_TEST_SUITE(socketSenderTest, SocketSenderTestFixture)
 
 BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 	string destination_ip = "20.20.20.20";
