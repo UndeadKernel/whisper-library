@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(send_tcp_win32_test) {
 
 	//wait for packet
 	unsigned int i = 0;
-	while (!received && i < 100) {
+	while (!received && i < 5) {
 		i++;
 		this_thread::sleep_for(chrono::seconds(1));
 	}
@@ -115,7 +115,6 @@ BOOST_AUTO_TEST_CASE(send_tcp_win32_test) {
 	}
 
 	network->closeListener(source_ip);
-
 }
 #endif
 

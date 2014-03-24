@@ -13,16 +13,12 @@ struct SocketTestFixture {
 	SocketTestFixture(){
 		sender = new whisper_library::SocketSender();
 		pcap = new whisper_library::PcapWrapper();
-
 	}
 
 	~SocketTestFixture(){
 		delete sender;
 		delete pcap;
 	}
-
-	whisper_library::SocketSender* sender;
-	whisper_library::PcapWrapper* pcap;
 
 	void openAllAdapters() {
 		unsigned int count = pcap->adapterCount();
@@ -107,6 +103,8 @@ struct SocketTestFixture {
 	}
 	
 	vector<unsigned int> adapter_ids;
+	whisper_library::SocketSender* sender;
+	whisper_library::PcapWrapper* pcap;
 };
 
 BOOST_FIXTURE_TEST_SUITE (SocketTest, SocketTestFixture)

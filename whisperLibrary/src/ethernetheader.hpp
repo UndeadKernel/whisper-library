@@ -22,7 +22,6 @@ public:
 	void setEthernetType(unsigned long type);
 
 	static string toMacString(unsigned char* buffer);
-
 	vector<bool> toVector();
 	string toString();
 private:
