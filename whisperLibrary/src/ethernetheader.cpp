@@ -30,9 +30,9 @@ namespace whisper_library {
 		}
 	}
 
-	void EthernetHeader::setDestinationMAC(unsigned char* mac_bitstring) {
-		if (!mac_bitstring) { return; }
-		memcpy(m_head, mac_bitstring, 6);
+	void EthernetHeader::setDestinationMAC(unsigned char* char_array) {
+		if (!char_array) { return; }
+		memcpy(m_head, char_array, 6);
 	}
 
 	void EthernetHeader::setSourceMAC(string mac) {
@@ -43,9 +43,9 @@ namespace whisper_library {
 		}
 	}
 
-	void EthernetHeader::setSourceMAC(unsigned char* mac_bitstring) {
-		if (!mac_bitstring) { return;  }
-		memcpy(m_head+6, mac_bitstring, 6);
+	void EthernetHeader::setSourceMAC(unsigned char* char_array) {
+		if (!char_array) { return; }
+		memcpy(m_head + 6, char_array, 6);
 	}
 
 	void EthernetHeader::setEthernetType(unsigned long type) {
