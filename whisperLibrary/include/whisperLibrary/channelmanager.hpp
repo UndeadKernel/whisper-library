@@ -50,7 +50,8 @@ class CovertChannel;
 class WHISPERAPI ChannelManager {
 
 public:
-	// constructor
+	/** \brief Constructor
+	*/
 	ChannelManager();
 	~ChannelManager();
 

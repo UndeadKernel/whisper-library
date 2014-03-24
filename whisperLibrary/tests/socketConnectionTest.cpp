@@ -94,6 +94,7 @@ struct SocketTestFixture {
 				}
 			}
 		}
+		return "0.0.0.0";
 	}
 
 	bool validIPv4(string ip) {
@@ -169,7 +170,6 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 	openAllAdapters();
 	setFilter(destination_ip, "tcp", port);
 	string source_ip = getSourceIp();
-	cout << "source ip " << source_ip << endl;
 	sender->sendTcp(source_ip, destination_ip, packet); 
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::TcpPacket received_tcp;
