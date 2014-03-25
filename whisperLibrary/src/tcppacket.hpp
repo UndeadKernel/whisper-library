@@ -56,7 +56,7 @@ public:
      * \param inSourcePort The source port as integer. Max value 2^16.
      * \param inDestPort The destination port as integer. Max value 2^16.
      * \param inSequenceNumber The sequence number of the packet. Max value 2^32.
-     * \param inAckNumber The acknowladgement number of the packet. Max value 2^32.
+     * \param inAckNumber The acknowledgement number of the packet. Max value 2^32.
      * \param inDataOffset The length of the options field in bytes. Max value 2^4.
      * \param inWindowSize The size of the packet in bytes. Max value 2^16.
      * \param inOptions The options as a vector of boolean values. Max size .
@@ -73,7 +73,7 @@ public:
     uint sourcePort() const;
     uint destPort() const;
     ulong sequenceNumber() const;
-    ulong acknowlageNumber() const;
+    ulong acknowlegeNumber() const;
     bitset<4> dataOffset() const;
     bitset<3> reserved() const;
     bitset<9> flags() const;
@@ -119,7 +119,7 @@ public:
      *  All packets prior the acknowledgement number have been received.\n
      * 	The first ACK sent by each end acknowledges the initial sequence number, but no data.
      */
-	void setAcknowlageNumber(ulong val);
+	void setAcknowlegeNumber(ulong val);
 	/** \param val The size of the tcp header in 32-bit words. \n
 	 *  The smallest size without options is 5.\n
 	 * 	The maximum size is 15.

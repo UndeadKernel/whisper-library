@@ -15,6 +15,7 @@ set(SOURCES
 	src/networkconnector.cpp
 	src/ipheaderv4.cpp
 	src/ethernetheader.cpp
+	src/tcppacketgenerator.cpp
 )
 
 set(HEADERS
@@ -34,6 +35,7 @@ set(HEADERS
 	src/networkconnector.hpp
 	src/ipheaderv4.hpp
 	src/ethernetheader.hpp
+	src/tcppacketgenerator.hpp
 )
 
 set(TESTS
@@ -46,6 +48,7 @@ set(TESTS
 	tests/pcapWrapperTest.cpp
 	tests/socketSenderTest.cpp
 	tests/networkConnectorTest.cpp
+	tests/tcpPacketGeneratorTest.cpp
 )
 
 # Boost library

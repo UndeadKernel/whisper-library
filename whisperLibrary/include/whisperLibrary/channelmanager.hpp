@@ -34,6 +34,7 @@
 #include "../../src/udppacket.hpp"
 #include <map>
 #include "../../src/networkconnector.hpp"
+#include "../../src/tcppacketgenerator.hpp"
 
 namespace whisper_library {
 
@@ -82,7 +83,7 @@ public:
 	 * \brief creates a valid tcp packet
 	 * \return a tcp packet
 	 */
-	TcpPacket getTcpPacket();
+	TcpPacket getTcpPacket(string ip);
 	UdpPacket getUdpPacket(unsigned short port);
 
 	void setOutputStream(std::ostream* stream);
@@ -129,6 +130,7 @@ private:
 
 	NetworkConnector* m_network;
 	map<string, CovertChannel*> m_ip_mapping;
+	map<string, TcpPacketGenerator*> m_generator_mapping;
 	const unsigned int CHANNEL_COUNT;
 	function<void(string, string)> m_message_callback;
 };
