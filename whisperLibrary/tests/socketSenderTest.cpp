@@ -150,6 +150,8 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 
 #ifndef WIN32
 BOOST_AUTO_TEST_CASE(sendTcpPacket){
+	openAllAdapters();
+	string source_ip = getSourceIp();
 	string destination_ip = "20.20.20.20";
 	unsigned short port = 8080;
 	unsigned long sequenceNumber = 1;
@@ -166,10 +168,9 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 					options);
 	packet.setAcknowledgementFlag(0);
 	packet.setSynchronisationFlag(1);
-
-	openAllAdapters();
+	packet.calculateChecksum(boost::asio::ip::address_v4::from_string(source_ip).to_ulong(),
+							 boost::asio::ip::address_v4::from_string(destination_ip).to_ulong(), 0, 6);
 	setFilter(destination_ip, "tcp", port);
-	string source_ip = getSourceIp();
 	sender->sendTcp(source_ip, destination_ip, packet); 
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::TcpPacket received_tcp;

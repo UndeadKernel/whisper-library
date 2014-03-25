@@ -89,7 +89,8 @@ BOOST_AUTO_TEST_CASE(send_tcp_win32_test) {
 		options);
 	packet.setAcknowledgementFlag(0);
 	packet.setSynchronisationFlag(1);
-
+	packet.calculateChecksum(boost::asio::ip::address_v4::from_string(source_ip).to_ulong(),
+							 boost::asio::ip::address_v4::from_string(source_ip).to_ulong(), 0, 6);
 	network->sendTcp(source_ip, packet); //send packet to own ip
 
 	//wait for packet
