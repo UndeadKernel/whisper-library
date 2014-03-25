@@ -188,17 +188,21 @@ namespace whisper_library {
 
 	int PcapWrapper::openAdapter(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout) {
 		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
+
 		// open handle
 		char error_buffer[PCAP_ERRBUF_SIZE]; // pcap error buffer
 
 		// resize handles vector as needed
 		if (static_cast<int>(m_adapter_handles.size()) <= adapter_id) {
 			m_adapter_handles.resize(adapter_id + 1);
+		} else if (m_adapter_handles[adapter_id]) {
+			fprintf(stderr, "Warning: Tried to open already open adapter #%d\n", adapter_id);
+			RETURN_CODE(RC(OPEN_ON_OPENED_HANDLE));
 		}
 		// open handle for live capturing
 		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0].c_str(), max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
 		if (!m_adapter_handles[adapter_id]) {
-			fprintf(stderr, "Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0].c_str(), error_buffer);
+			fprintf(stderr, "Error: Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0].c_str(), error_buffer);
 			RETURN_CODE(RC(ERROR_OPENING_HANDLE));
 		}
 		DEBUG(1, "Capturing started on device #%d\n", adapter_id);
@@ -214,12 +218,14 @@ namespace whisper_library {
 	}
 
 	int PcapWrapper::closeAdapter(int adapter_id) {
+		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id && m_adapter_handles[adapter_id]) {
 			pcap_close(m_adapter_handles[adapter_id]);
 			m_adapter_handles[adapter_id] = NULL;
 			RETURN_CODE(RC(NORMAL_EXECUTION));
 		}
 		// Nothing to close
+		fprintf(stderr, "Warning: Tried to close unopened adapter #%d\n", adapter_id);
 		RETURN_CODE(RC(CLOSE_ON_UNOPENED_HANDLE));
 	}
 
@@ -361,11 +367,15 @@ namespace whisper_library {
 	}
 
 	std::vector<int> PcapWrapper::lastReturnCodes() {
-		std::vector<int> returnCodes = std::vector<int>(20);
-		for (int rc : m_last_return_codes) {
-			returnCodes.push_back(rc);
+		std::vector<int> returnCodes = std::vector<int>(m_last_return_codes.size());
+		for (int i = 0; i < m_last_return_codes.size(); ++i) {
+			returnCodes[i] = m_last_return_codes[i];
 		}
 		return returnCodes;
+	}
+
+	void PcapWrapper::clearReturnCodes() {
+		m_last_return_codes.clear();
 	}
 
 	int	PcapWrapper::sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size) {
