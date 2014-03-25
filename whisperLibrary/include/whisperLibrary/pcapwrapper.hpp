@@ -117,6 +117,7 @@ namespace whisper_library {
 				NORMAL_EXECUTION			= 0,
 				EMPTY_PACKET_DATA			= 1,
 				CLOSE_ON_UNOPENED_HANDLE	= 2,
+				OPEN_ON_OPENED_HANDLE		= 3,
 				NO_ADAPTERS_FOUND			= 255,
 				UNSPECIFIED_ERROR_OCCURED	= -1,
 				ADAPTER_NOT_FOUND			= -2,
@@ -166,6 +167,12 @@ namespace whisper_library {
 			\brief Returns a pointer to the global return code buffer
 			*/
 			std::vector<int>					lastReturnCodes		();
+
+			/**
+				\fn void clearReturnCodes()
+				\brief empties the PcapWrapper's global return code buffer
+			*/
+			void								clearReturnCodes	();
 			
 			/**
 				\fn int retrieveAdapters()
@@ -179,6 +186,7 @@ namespace whisper_library {
 			int									retrieveAdapters	();
 			/**
 				\fn int openAdapter(std::string adapterName, int maxPacketSize, int promiscuous)
+				\fn int openAdapter(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout)
 				\brief Opens a live capture handle to the given device
 				\param std::string	adapter_name		- Name of the adapter (pcap_if_t->name) to open
 				\param int			max_packet_size		- Maximum number of bytes that should be captured from each packet. 
@@ -194,6 +202,7 @@ namespace whisper_library {
 			int									openAdapter		(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout);
 			/**
 				\fn int closeAdapter(std::string adapter_name)
+				\fn int closeAdapter(int adapter_id)
 				\brief Closes an openend handle on the adapter with the given name/id. 
 			
 			*/
@@ -208,12 +217,14 @@ namespace whisper_library {
 			int									freeAdapters	();
 			/**
 				\fn int applyFilter(int adapter_id, std::string filter)
+				\fn int applyFilter(std::string adapter_name, std::string filter)
 				\brief Applies a given filter with pcap syntax to the selected adapter
 			*/
 			int									applyFilter		(int adapter_id, std::string filter);
 			int									applyFilter		(std::string adapter_name, std::string filter);
 			/**
 				\fn int removeFilter(int adapter_id)
+				\fn int removeFilter(std::string adapter_name)
 				\brief Removes any previously applied filter from the adapter handle
 			*/
 			int									removeFilter	(int adapter_id);
@@ -221,6 +232,7 @@ namespace whisper_library {
 
 			/**
 			\fn PcapPacket retrievePacket(int adapter_id)
+			\fn PcapPacket retrievePacket(std::string adapter_name)
 			\brief Retrieves the next packet from the capture device
 			\return PcapPacket{NULL, NULL} if adapter was not found or if the specified adapter had no open handle \n
 			or PcapPacket{pcap_pkthdr, NULL} if no packet passed through the configured filter\n
@@ -232,6 +244,7 @@ namespace whisper_library {
 
 			/**
 			\fn std::vector<bool> retrievePacketAsVector(int adapter_id)
+			\fn std::vector<bool> retrievePacketAsVector(std::string adapter_name)
 			\brief Calls retrievePacket(adapter_id) and converts the retrieved packet payload in a std::vector<bool>
 			\return bitwise representation of the packet payload from retrievePacket() as a std::vector<bool> 
 			*/
@@ -239,7 +252,10 @@ namespace whisper_library {
 			std::vector<bool>					retrievePacketAsVector	(std::string adapter_name);
 
 			/**
-			\fn sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
+			\fn sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size)
+			\fn sendPacket(std::string adapter_name, unsigned char* packet_buffer, int buffer_size)
+			\fn sendPacket(int adapter_id, std::vector<bool> packet_data)
+			\fn sendPacket(std::string adapter_name, std::vector<bool> packet_data)
 			\brief Sends a packet using a raw socket via the WinPcap driver (Note: libcap on linux currently doesn't allow sending packages)
 			\return RC.NORMAL_EXECUTION - normal execution
 					RC.ADAPTER_NOT_FOUND - adapter with given id not found
@@ -274,7 +290,12 @@ namespace whisper_library {
 		pcap_if_t*								m_adapter_raw_data;
 		// Stores the last 20 method return codes
 		boost::circular_buffer<int>				m_last_return_codes;
+
+		// checkForAdapterId
+		// Checks if a given adapter_id exists.
 		bool									checkForAdapterId(int adapter_id);
+
+		/* Private Getter & Setter */
 		int										adapterId(std::string value, int key, bool increment_key);
 	};
 }
