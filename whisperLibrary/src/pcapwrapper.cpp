@@ -128,7 +128,13 @@ namespace whisper_library {
 
 			std::vector<std::string> current_adapter;
 			current_adapter.push_back(adapter->name);					// adapter/device name in the system (for example /dev/eth0)
-			current_adapter.push_back(adapter->description);			// adapter descriptional name (usually the product name of the network card o.s.)
+			if (adapter->description) {
+				current_adapter.push_back(adapter->description);	// adapter descriptional name (usually the product name of the network card o.s.)
+			}
+			else {
+				current_adapter.push_back("");
+			}
+			
 			bpf_u_int32 netmask;
 			bpf_u_int32 ip4_address;
 			if (pcap_lookupnet(adapter->name, &netmask, &ip4_address, error_buffer) < 0) {
