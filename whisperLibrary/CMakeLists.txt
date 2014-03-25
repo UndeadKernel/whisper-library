@@ -44,7 +44,7 @@ set(TESTS
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
 	tests/pcapWrapperTest.cpp
-	tests/socketConnectionTest.cpp
+	tests/socketSenderTest.cpp
 	tests/networkConnectorTest.cpp
 )
 
