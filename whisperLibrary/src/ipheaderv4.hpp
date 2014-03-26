@@ -28,11 +28,11 @@ public:
 	*/
 	~IpHeaderv4();
 	/** \brief Calculates the length of the header and sets the corresponding field
+	 * 
+	 * Since the options field is not supported yet, the default value '5' is set (5x32bit)
 	*/
 	void calculateHeaderLength();
 	/** \brief Calculates the checksum and sets the corresponding field
-
-		Since the options field is not supported yet, the default value '5' is set (5x32bit)
 	*/
 	void calculateChecksum();
 	/** \brief Prints the content of the ip header as hexadecimal
