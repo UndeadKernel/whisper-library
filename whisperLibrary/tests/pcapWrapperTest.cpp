@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE(win32SendPacket_test) {
 	whisper_library::PcapWrapper::PcapPacket packet;
 	while (i++ < MAXIMUM_TRY_COUNT_SENDING) {
 		// Wireshark display filter: eth.addr == 6:5:4:3:2:1
-		wrapper->sendPacket(0, packet_buffer, buffer_length);
+		wrapper->sendPacket(data.adapter_info.adapter_id, packet_buffer, buffer_length);
 		packet = wrapper->retrievePacket(data.adapter_info.adapter_id);
 		if (packet.payload != NULL && packet.header.len != 0) {
 			received = true;

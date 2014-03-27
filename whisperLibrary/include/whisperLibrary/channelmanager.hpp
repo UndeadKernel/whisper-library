@@ -27,8 +27,6 @@
 #include <vector>
 #include "../../src/tcppacket.hpp"
 #include <iostream>
-#include "tcpheadercovertchannel.hpp"
-#include "timingcovertchannel.hpp"
 #include <functional>
 #include <genericpacket.hpp>
 #include "../../src/udppacket.hpp"
@@ -40,12 +38,12 @@ namespace whisper_library {
 class CovertChannel;
 
 /**
-	\brief A ChannelManager is the connecting part for the covert channel and the framework. 
+	\brief The connecting part for the CovertChannel and the framework. 
 	
 	You can add and remove covert channels you want to use. 
 	You pass the data you want to send to this class.
 	It is connected to the network via a SocketConnector.
-	\class ChannelManager channelmanager.hpp
+	
 */
 class WHISPERAPI ChannelManager {
 
@@ -96,6 +94,10 @@ public:
 		\return Returns a valid udp packet
 	*/
 	UdpPacket getUdpPacket(unsigned short port);
+	/** \brief creates a valid udp packet with given length
+		\param length the desired length
+	*/
+	UdpPacket getUdpPacketWithLength(unsigned short port, int length);
 
 	/**
 	* \brief Sets the stream, that the covert channel uses as the output for received messages
@@ -211,7 +213,7 @@ private:
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 
 													   the message was received from. The second argument is 
-													   the received message.*/
+													   the received message.*/	
 };
 }
 #endif // CHANNEL_MANAGER

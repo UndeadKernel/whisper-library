@@ -42,7 +42,7 @@ namespace whisper_library {
 		return "udp";
 	}
 
-	short TimingCovertChannel::port() const{
+	unsigned short TimingCovertChannel::port() const{
 		return 23;
 	}
 
@@ -71,7 +71,7 @@ namespace whisper_library {
 		m_mutex_sending.unlock();
 	}
 
-	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
+	void TimingCovertChannel::receivePacket(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
 		m_timeout_end = chrono::system_clock::now() + chrono::milliseconds(m_timeout);

@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(send_tcp_win32_test) {
 	}
 
 	whisper_library::TcpPacket received_tcp;
-	received_tcp.setPacket(received_packet.content());
+	received_tcp.setPacket(received_packet.packet());
 	BOOST_CHECK_EQUAL(packet.packet().size(), received_tcp.packet().size());
 	BOOST_CHECK_EQUAL(packet.sourcePort(), received_tcp.sourcePort());
 	BOOST_CHECK_EQUAL(packet.destPort(), received_tcp.destPort());

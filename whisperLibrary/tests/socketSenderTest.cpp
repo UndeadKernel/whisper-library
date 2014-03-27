@@ -68,7 +68,7 @@ struct SocketSenderTestFixture {
 		length_bit = ip_header.ipHeaderLength() * 32;
 
 		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-		generic_packet.setContent(application_layer);
+		generic_packet.setPacket(application_layer);
 
 		return generic_packet;
 	}
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 	sender->sendUdp(destination_ip, packet);
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::UdpPacket received_udp_packet;
-	received_udp_packet.setPacket(received_packet.content());
+	received_udp_packet.setPacket(received_packet.packet());
 
 	BOOST_CHECK(!received_udp_packet.packet().empty());
 	BOOST_CHECK_EQUAL(received_udp_packet.sourcePort(), packet.sourcePort());

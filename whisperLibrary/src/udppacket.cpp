@@ -24,7 +24,6 @@
 #include "udppacket.hpp"
 #include <bitset>
 
-
 namespace whisper_library {
 
 UdpPacket::UdpPacket(){
@@ -111,7 +110,6 @@ void UdpPacket::setPacket(std::vector<bool> packet){
 	}
 
 }
-
 
 unsigned short UdpPacket::decode(int start, int end) const {
 	return (m_head[start] << 8) + m_head[end];

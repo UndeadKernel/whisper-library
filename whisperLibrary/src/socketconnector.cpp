@@ -1,8 +1,8 @@
-/*	<genericpacket.cpp>
-	Copyright(C) 2014   Jan Simon Bunten
-						Simon Kadel
-						Martin Sven Oehler
-						Arne Sven Stühlmeyer
+/*	<socketconnector.cpp>
+	Copyright(C) 2013,2014  Jan Simon Bunten
+							Simon Kadel
+							Martin Sven Oehler
+							Arne Sven Stühlmeyer
 
 	This File is part of the WhisperLibrary
 
@@ -19,14 +19,20 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include <genericpacket.hpp>
 
-namespace whisper_library {
-	vector<bool> GenericPacket::packet() const {
-		return m_content;
-	}
+#include <socketconnector.hpp>
 
-	void GenericPacket::setPacket(vector<bool> packet) {
-		m_content = packet;
-	}
+namespace whisper_library{
+
+void SocketConnector::sendTcpPacket(TcpPacket packet) {
+	//GenericPacket generic_packet(packet.packet());
+	//m_channelmanager->packetReceived(generic_packet);
 }
+
+void SocketConnector::sendUdpPacket(UdpPacket packet) {
+	//GenericPacket generic_packet(packet.packet());
+	//m_channelmanager->packetReceived(generic_packet);
+}
+
+}
+

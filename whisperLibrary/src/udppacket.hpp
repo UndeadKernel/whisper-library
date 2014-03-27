@@ -107,6 +107,9 @@ public:
 		ostream.write(reinterpret_cast<const char*>(packet.m_head), 8);
 		return ostream.write(&packet.m_data[0], packet.m_data.size());
 	}
+	/**
+		Creates a string that contains all header fields.
+	*/
 	string toString();
 
 private:

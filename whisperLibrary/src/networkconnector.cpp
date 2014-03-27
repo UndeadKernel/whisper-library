@@ -130,7 +130,7 @@ namespace whisper_library {
 		length_bit = ip_header.ipHeaderLength() * 32;
 
 		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-		generic_packet.setContent(application_layer);
+		generic_packet.setPacket(application_layer);
 		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 

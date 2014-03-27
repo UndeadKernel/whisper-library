@@ -31,7 +31,7 @@
 using namespace std;
 namespace whisper_library {
 	/**
-	\brief BitSetCoder converts the message, that we want to send, into bit-blocks and reassembles them to a message.
+	\brief Converts the message into bit-blocks and reassembles them to a message (used by TcpHeaderCovertChannel)
 	
 	To use this class, call the function 'encodeMessage' with the message as a string or 'decodeMessage' with the message-blocks in a vector.
 	\class BitSetCoder bitSetCoder.hpp
