@@ -15,7 +15,7 @@ namespace whisper_library {
 
 	TcpPacket TcpPacketGenerator::nextPacket() {
 		if (m_state == ESTABLISHED) {
-			return createPacket(false, false, ""); // TODO enter data
+			return createPacket(false, false, "A"); // TODO enter data
 		}
 	}
 

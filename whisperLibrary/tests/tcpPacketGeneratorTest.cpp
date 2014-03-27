@@ -13,12 +13,10 @@ struct TcpPacketGeneratorFixture {
 	}
 
 	void sendToSender(whisper_library::TcpPacket packet) {
-		cout << "sending to sender ";
 		sender->receivePacket(packet);
 	}
 
 	void sendToReceiver(whisper_library::TcpPacket packet) {
-		cout << "sending to receiver ";
 		receiver->receivePacket(packet);
 	}
 
@@ -36,6 +34,13 @@ BOOST_AUTO_TEST_CASE(tcp_handshake_test) {
 	sender->sendConnect();
 	BOOST_CHECK_EQUAL(sender->status(), whisper_library::TcpPacketGenerator::ESTABLISHED);
 	BOOST_CHECK_EQUAL(receiver->status(), whisper_library::TcpPacketGenerator::ESTABLISHED);
+
+	whisper_library::TcpPacket packet_first = sender->nextPacket();
+	unsigned long first_sequence = packet_first.sequenceNumber();
+	sendToReceiver(packet_first);
+	whisper_library::TcpPacket packet_second = sender->nextPacket();
+	unsigned long second_sequence = packet_second.sequenceNumber();
+	BOOST_CHECK_LT(first_sequence, second_sequence);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
