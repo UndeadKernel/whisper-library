@@ -197,7 +197,7 @@ namespace whisper_library {
 
 			// tcp header+body
 			packet.calculateChecksum(boost::asio::ip::address_v4::from_string(m_source_ip).to_ulong(),
-									 boost::asio::ip::address_v4::from_string(ip).to_ulong(), 0, IpHeaderv4::TCP);
+									 boost::asio::ip::address_v4::from_string(ip).to_ulong(), 0, 6);
 			vector<bool> tcp = packet.packet();
 			frame.insert(frame.end(), tcp.begin(), tcp.end());
 		

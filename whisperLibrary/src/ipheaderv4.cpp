@@ -33,7 +33,7 @@ namespace whisper_library {
 		m_head[0] = 5 + (m_head[0] & 0xf0);
 	}
 	void IpHeaderv4::calculateChecksum() {
-		m_head[10] = 0;
+		m_head[10] = 0; // set checksum to 0
 		m_head[11] = 0;
 		unsigned long sum = 0;
 		for (unsigned int i = 0; i < 19; i = i+2) {

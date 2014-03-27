@@ -292,6 +292,7 @@ void TcpPacket::setPacket(vector<bool> val){
 }
     
 void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
+	setChecksum(0);
     vector<bool> sum;
 	/* 
 		split the tcp packet into 16bit values and add them to 
