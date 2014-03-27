@@ -31,7 +31,7 @@ namespace whisper_library {
 	}
 
 	void EthernetHeader::setDestinationMAC(unsigned char* char_array) {
-		if (!char_array) { return; }
+		if (!char_array || strlen(reinterpret_cast<const char*>(char_array)) < 6) { return; }
 		memcpy(m_head, char_array, 6);
 	}
 
@@ -44,7 +44,7 @@ namespace whisper_library {
 	}
 
 	void EthernetHeader::setSourceMAC(unsigned char* char_array) {
-		if (!char_array) { return; }
+		if (!char_array || strlen(reinterpret_cast<const char*>(char_array)) < 6) { return; }
 		memcpy(m_head + 6, char_array, 6);
 	}
 
@@ -88,6 +88,9 @@ namespace whisper_library {
 	}
 
 	string EthernetHeader::toMacString(unsigned char* buffer) {
+		if (!buffer || strlen(reinterpret_cast<const char*>(buffer)) < 6) {
+			return "";
+		}
 		string mac = intToHex(buffer[0]);
 		for (unsigned int i = 1; i < 6; i++) {
 			mac += ":" + intToHex(buffer[i]);

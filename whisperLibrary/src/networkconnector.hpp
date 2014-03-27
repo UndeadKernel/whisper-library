@@ -194,9 +194,9 @@ private:
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
 	atomic<bool> m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
 	map<string, string> m_filter; ///< map, that stores the capture filter rule for every ip. The key is the ip, the capture filter belongs to.
-	function<void(string, GenericPacket)> m_packet_received; ///< Callback method that is called, when a new packet arrived. 
-															 // First parameter is the ip it was sent from, the second is the application layer 
-															 // part of the packet in a generic format
+	function<void(string, GenericPacket)> m_packet_received; /*< Callback method that is called, when a new packet arrived. 
+															 First parameter is the ip it was sent from, the second is the application layer 
+															 part of the packet in a generic format */
 };
 
 }
