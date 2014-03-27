@@ -81,7 +81,7 @@ public:
     bool congestionWindowReducedFlag() const;
     bool ecnEchoFlag() const;
     bool urgentFlag() const;
-    bool acknowledementFlag() const;
+    bool acknowledgementFlag() const;
     bool pushFlag() const;
     bool resetFlag() const;
     bool synchronisationFlag() const;

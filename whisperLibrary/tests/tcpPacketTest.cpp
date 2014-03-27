@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(testPacketGeneration) {
 	dut->setSourcePort(1645);
 	dut->setDestPort(80);
 	dut->setSequenceNumber(1);
-	dut->setAcknowlageNumber(1);
+	dut->setAcknowlegeNumber(1);
 	dut->setDataOffset(bitset<4> ("1010"));
 	dut->setSynchronisationFlag(1);
 	dut->setWindowSize(128);
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(testImportExport) {
 	dut->setSourcePort(1645);
 	dut->setDestPort(80);
 	dut->setSequenceNumber(1);
-	dut->setAcknowlageNumber(1);
+	dut->setAcknowlegeNumber(1);
 	dut->setDataOffset(bitset<4>("1010"));
 	dut->setSynchronisationFlag(1);
 	dut->setWindowSize(128);

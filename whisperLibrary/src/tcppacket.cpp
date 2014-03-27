@@ -44,7 +44,7 @@ TcpPacket::TcpPacket(	uint inSourcePort,
     setSourcePort(inSourcePort);
     setDestPort(inDestPort);
     setSequenceNumber(inSequenceNumber);
-    setAcknowlageNumber(inAckNumber);
+    setAcknowlegeNumber(inAckNumber);
     setDataOffset(inDataOffset);
     setWindowSize(inWindowSize);
     setOptions(inOptions);
@@ -82,7 +82,7 @@ ulong TcpPacket::sequenceNumber() const{
     return vectorToULong(32, 63, m_header);
 }
 // header: bits 64-95 
-ulong TcpPacket::acknowlageNumber() const{
+ulong TcpPacket::acknowlegeNumber() const{
     return vectorToULong(64, 95, m_header);
 }
 // header: bits 96-99  
@@ -126,7 +126,7 @@ bool TcpPacket::urgentFlag() const{
     return m_header[106];
 }
 // header: bit 107
-bool TcpPacket::acknowledementFlag() const{
+bool TcpPacket::acknowledgementFlag() const{
     return m_header[107];
 }
 // header: bit 108
@@ -192,7 +192,7 @@ void TcpPacket::setSequenceNumber(ulong val){
     uIntToVector(32,63,m_header,val);
 }
 // header: bits 64-95
-void TcpPacket::setAcknowlageNumber(ulong val){
+void TcpPacket::setAcknowlegeNumber(ulong val){
     uIntToVector(64,95,m_header,val);
 }
 // header: bits 96-99  

@@ -126,25 +126,7 @@ void ChannelManager::setMessageCallback(function<void(string, string)> message_c
 	m_message_callback = message_callback;
 }
 
-TcpPacket ChannelManager::getTcpPacket(string ip){
-	/*/
-	uint sourcePort = 8080;
-	uint destPort = 8080;
-	ulong sequenceNumber = 1;
-	bitset<4> dataOffset("1010");
-	ulong ackNumber = 0;
-	uint windowSize = 2;
-	vector<bool> options;
-	whisper_library::TcpPacket packet(sourcePort,
-		destPort,
-		sequenceNumber,
-		ackNumber,
-		dataOffset,
-		windowSize,
-		options);
-	packet.setAcknowledgementFlag(0);
-	packet.setSynchronisationFlag(1);
-	return packet; */
+TcpPacket ChannelManager::getTcpPacket(string ip) {
 	TcpPacketGenerator* generator;
 	try {
 		generator = m_generator_mapping.at(ip);
@@ -181,7 +163,7 @@ void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 		outputErrorMessage("Error: No connection to " + ip);
 		return;
 	}
-	if ((channel->protocol).compare("tcp") == 0) {
+	if (channel->protocol().compare("tcp") == 0) {
 		TcpPacketGenerator* generator;
 		try {
 			generator = m_generator_mapping.at(ip);
@@ -220,13 +202,18 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 	}
 	CovertChannel* channel = createChannel(ip, channel_id);
 	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
-	if ((channel->protocol).compare("tcp") == 0) { //equal
-		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>
-									(ip, new TcpPacketGenerator(bind(&NetworkConnector::sendTcp, m_network, placeholders::_1),
-									                            bind(&CovertChannel::receiveMessage,channel,placeholders::_1)))
-								  );
+	if (!m_network->openListener(ip, channel)) {
+		return false;
 	}
-	return m_network->openListener(ip, channel);
+	if (channel->protocol().compare("tcp") == 0) { //equal
+		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>
+			(ip, new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network,ip, placeholders::_1),
+			bind(&CovertChannel::receiveMessage, channel, placeholders::_1)))
+			);
+		m_generator_mapping.at(ip)->sendConnect();
+	}
+
+	return true;
 }
 
 void ChannelManager::closeConnection(string ip) {
