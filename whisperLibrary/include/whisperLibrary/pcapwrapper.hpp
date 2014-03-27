@@ -77,6 +77,7 @@ do { if (DEBUG_LEVEL >= MinLevel) { \
 #define PCAP_NETMASK_UNKNOWN    0xffffffff 
 #endif
 
+// Import and Export template classes
 IE_TEMPLATE template class WHISPERAPI std::vector<bool>;
 IE_TEMPLATE template class WHISPERAPI std::vector<int>;
 IE_TEMPLATE template class WHISPERAPI std::vector<std::string>;
