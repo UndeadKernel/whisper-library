@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(testShortMessage){
 BOOST_AUTO_TEST_CASE(testLongMessage){
 	std::string msg = "a longer test to see if the packet length covert channel works correct";
 	m_channel->sendMessage(msg);
-	BOOST_CHECK_EQUAL(msg, m_received);
-}
+	BOOST_CHECK_EQUAL(msg, m_received); 
+} 
 
 BOOST_AUTO_TEST_SUITE_END()

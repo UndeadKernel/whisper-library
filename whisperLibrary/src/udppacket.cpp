@@ -59,13 +59,13 @@ std::vector<bool> UdpPacket::packet() const {
 	for (unsigned int i = 0; i < 8; i++){
 		std::bitset<8> bits(m_head[i]);
 		for (int j = 0; j < 8; j++){
-			result.push_back(bits[j]);
+			result.push_back(bits[7-j]);
 		}
 	}
 	for (unsigned int i = 0; i < m_data.size(); i++){
 		std::bitset<8> bits(m_data[i]);
 		for (int j = 0; j < 8; j++){
-			result.push_back(bits[j]);
+			result.push_back(bits[7-j]);
 		}
 	}
 	return result;
@@ -92,11 +92,11 @@ void UdpPacket::setData(std::vector<char> data) {
 }
 
 void UdpPacket::setPacket(std::vector<bool> packet){
-	if (packet.size() >= 32) {
+	if (packet.size() >= 64) {
 		for (unsigned int i = 0; i < 8; i++) {
 			m_head[i] = 0; // initialize
 			for (unsigned int j = 0; j < 8; j++) {
-				m_head[i] |= (packet[j + (i * 8)] ? 1 : 0) << (7 - j);
+				m_head[i] |= (packet[j + (i * 8)] ? 1 : 0) << (7-j);
 			}
 		}
 	}
@@ -104,11 +104,10 @@ void UdpPacket::setPacket(std::vector<bool> packet){
 	for (unsigned int i = 8; i*8 < packet.size(); i++) {
 		char byte = 0;
 		for (unsigned int j = 0; j < 8; j++) {
-			byte |= (packet[j + (i * 8)] ? 1 : 0) << (7 - j);
+			byte |= (packet[j + (i * 8)] ? 1 : 0) << (7-j);
 		}
 		m_data.push_back(byte);
 	}
-
 }
 
 unsigned short UdpPacket::decode(int start, int end) const {

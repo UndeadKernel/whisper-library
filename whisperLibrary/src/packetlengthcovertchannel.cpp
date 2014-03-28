@@ -21,6 +21,7 @@
 */
 
 #include <packetlengthcovertchannel.hpp>
+#include <iostream>
 
 namespace whisper_library {
 
@@ -48,17 +49,17 @@ namespace whisper_library {
 
 	void PacketLengthCovertChannel::receivePacket(GenericPacket& packet){
 		UdpPacket udp_packet;
-		std::vector<bool> content = packet.packet();
-		udp_packet.setPacket(content);
+		udp_packet.setPacket(packet.packet());
+		unsigned int length = udp_packet.length();
 		if (m_packetcount == -1){
-			if (udp_packet.length() == 8 + m_baselength){
+			if (length == 8 + m_baselength){
 				m_output("");
 				return;
 			}
-			m_packetcount = udp_packet.length()-8-m_baselength;
+			m_packetcount = length - 8 - m_baselength;
 		}
 		else {
-			m_packetlengths.push_back(udp_packet.length());
+			m_packetlengths.push_back(length);
 			m_received++;
 		}
 		if (m_received == m_packetcount){
