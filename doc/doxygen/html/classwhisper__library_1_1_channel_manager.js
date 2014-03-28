@@ -1,0 +1,26 @@
+var classwhisper__library_1_1_channel_manager =
+[
+    [ "ChannelManager", "classwhisper__library_1_1_channel_manager.html#a53e0fce199add9509980112a6e70aa01", null ],
+    [ "~ChannelManager", "classwhisper__library_1_1_channel_manager.html#a15f69b7fc919510f5cbb5b788a8416b6", null ],
+    [ "adapterAddresses", "classwhisper__library_1_1_channel_manager.html#a5aa61eb1d6454bca6e3673f867ba060f", null ],
+    [ "adapterCount", "classwhisper__library_1_1_channel_manager.html#af9412c44dca4f99c9bc59d90d29b2968", null ],
+    [ "adapterDescription", "classwhisper__library_1_1_channel_manager.html#abb3e109e5a2d6c2f6bbde1a4859831bd", null ],
+    [ "channelCount", "classwhisper__library_1_1_channel_manager.html#a1eaf8259125da6f48e47d209620caa9d", null ],
+    [ "closeConnection", "classwhisper__library_1_1_channel_manager.html#a2fe62d82228eaf2e26b16073d76f125e", null ],
+    [ "connectionCount", "classwhisper__library_1_1_channel_manager.html#afef3170cafe7134b5901667ecda1619b", null ],
+    [ "getChannelInfos", "classwhisper__library_1_1_channel_manager.html#a01b025f7cb19645c514dd6da628b92ec", null ],
+    [ "getChannelNames", "classwhisper__library_1_1_channel_manager.html#a209952f9b28abac7a41a97a075a25911", null ],
+    [ "getTcpPacket", "classwhisper__library_1_1_channel_manager.html#a7375561a1bbf24c418a86e76828110ff", null ],
+    [ "getUdpPacket", "classwhisper__library_1_1_channel_manager.html#a39cc21e54436a7ad75cfff6e1697698c", null ],
+    [ "networkAdapters", "classwhisper__library_1_1_channel_manager.html#aae9aa9ee18931f3b5b8b24e081508278", null ],
+    [ "openConnection", "classwhisper__library_1_1_channel_manager.html#a1e0c4c9b327c067d48fcffdb9a179f85", null ],
+    [ "outputErrorMessage", "classwhisper__library_1_1_channel_manager.html#a5028a98563f29ce0aebbad9b24871309", null ],
+    [ "outputMessage", "classwhisper__library_1_1_channel_manager.html#acb90efbd74bcbd01bd54445fd2f5925c", null ],
+    [ "packetReceived", "classwhisper__library_1_1_channel_manager.html#a171dd5413659987fc890748231901b59", null ],
+    [ "sendMessage", "classwhisper__library_1_1_channel_manager.html#a460589cb4d863bcf7e7922e64b090bb6", null ],
+    [ "setAdapter", "classwhisper__library_1_1_channel_manager.html#ac3b72fa6bf7353a55600915d0df28554", null ],
+    [ "setChannelArguments", "classwhisper__library_1_1_channel_manager.html#a9dbf228bdd51003b1fee7c0973c3d57e", null ],
+    [ "setErrorStream", "classwhisper__library_1_1_channel_manager.html#a6e09b209193a21430d710d9cc96089c0", null ],
+    [ "setMessageCallback", "classwhisper__library_1_1_channel_manager.html#aa2a9e38b45588b01df64771e65025ff9", null ],
+    [ "setOutputStream", "classwhisper__library_1_1_channel_manager.html#a3e45c6a98f22336ab4481395f9007517", null ]
+];
