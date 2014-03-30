@@ -105,21 +105,15 @@ namespace whisper_library {
 		if (m_state == ESTABLISHED){
 			if (!packet.acknowledgementFlag()) {
 				// data packet
-				// check if packet is new and in order
-				if (packet.sequenceNumber() == m_next_peer_sequence) {
-					cout << "packet data length: " << packet.data().size() << endl;
-					cout << "packet data ";
-					vector<bool> content = packet.data();
-					for (unsigned int i = 0; i < content.size(); i++) {
-						cout << content[i];
-					}
-					cout << endl;
-					m_next_peer_sequence += (packet.data().size() / 8);
-					m_send(createPacket(false, true, ""));
-				}
+				//forward to covert channel
 				GenericPacket generic_packet;
 				generic_packet.setContent(packet.packet());
 				m_forward(generic_packet);
+				// check if packet is new and in order
+				if (packet.sequenceNumber() == m_next_peer_sequence) {
+					m_next_peer_sequence += (packet.data().size() / 8);
+					m_send(createPacket(false, true, ""));
+				}
 			}
 			else {
 				// Acknowledgement
