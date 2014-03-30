@@ -15,13 +15,13 @@ namespace whisper_library {
 
 	TcpPacket TcpPacketGenerator::nextPacket() {
 		if (m_state == ESTABLISHED) {
-			return createPacket(false, false, "A"); // TODO enter data
+			return createPacket(false, false, "AB"); // TODO enter data
 		}
 	}
 
 	TcpPacket TcpPacketGenerator::createPacket(bool syn, bool ack, string data) {
-		bitset<4> data_offset("1010");
-		uint window_size = 2;
+		bitset<4> data_offset("1010"); // 5
+		uint window_size = 15360; // 16 Kilobyte
 		vector<bool> options;
 		ulong ack_number;
 		if (ack) {
@@ -107,7 +107,14 @@ namespace whisper_library {
 				// data packet
 				// check if packet is new and in order
 				if (packet.sequenceNumber() == m_next_peer_sequence) {
-					m_next_peer_sequence = m_next_peer_sequence + (packet.data().size() / 8);
+					cout << "packet data length: " << packet.data().size() << endl;
+					cout << "packet data ";
+					vector<bool> content = packet.data();
+					for (unsigned int i = 0; i < content.size(); i++) {
+						cout << content[i];
+					}
+					cout << endl;
+					m_next_peer_sequence += (packet.data().size() / 8);
 					m_send(createPacket(false, true, ""));
 				}
 				GenericPacket generic_packet;

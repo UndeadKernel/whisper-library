@@ -40,6 +40,11 @@ ChannelManager::~ChannelManager() {
 		pair<string, CovertChannel*> element = *it;
 		delete element.second;
 	}
+	// clean up generators
+	for (map<string, TcpPacketGenerator*>::iterator it = m_generator_mapping.begin(); it != m_generator_mapping.end(); it++) {
+		pair<string, TcpPacketGenerator*> element = *it;
+		delete element.second;
+	}
 	// clean up m_channels
 	for (unsigned int i = 0; i < m_channels.size(); i++) {
 		delete m_channels[i];
@@ -217,8 +222,20 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 }
 
 void ChannelManager::closeConnection(string ip) {
+	CovertChannel* channel;
+	try {
+		channel = m_ip_mapping.at(ip);
+	}
+	catch (out_of_range) {
+		outputErrorMessage("Closing connection failed: No connection to " + ip + ".");
+		return;
+	}
 	m_network->closeListener(ip);
-	CovertChannel* channel = m_ip_mapping.at(ip);
+	if (channel->protocol().compare("tcp") == 0) { //equal
+		TcpPacketGenerator* generator = m_generator_mapping.at(ip);
+		delete generator;
+		m_generator_mapping.erase(ip);
+	}
 	delete channel;
 	m_ip_mapping.erase(ip);
 }
