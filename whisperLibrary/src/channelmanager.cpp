@@ -21,16 +21,13 @@
 */
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
-#include "tcpheadercovertchannel.hpp"
-#include "timingcovertchannel.hpp"
-#include "packetlengthcovertchannel.hpp"
-#include "udppacketgenerator.hpp"
+#include <iostream>
 
 using namespace std;
 
 namespace whisper_library {
 
-ChannelManager::ChannelManager():CHANNEL_COUNT(3){
+ChannelManager::ChannelManager():CHANNEL_COUNT(2){
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
 	for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
@@ -164,14 +161,10 @@ UdpPacket ChannelManager::getUdpPacket(unsigned short port) {
 	return packet;
 }
 
-UdpPacket ChannelManager::getUdpPacketWithLength(unsigned short port, int length){
-	return UdpPacketGenerator::generatePacketWithLength(23, length);
-}
-
 
 void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 	CovertChannel* channel = m_ip_mapping.at(ip);
-	channel->receivePacket(packet);
+	channel->receiveMessage(packet);
 }
 
 CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
@@ -181,22 +174,13 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getTcpPacket, this));
 	}
-	if (channel_id == 1) {
-		return new TimingCovertChannel(output_message,
+	// else
+	return new TimingCovertChannel(output_message,
 			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getUdpPacket, this, std::placeholders::_1));
-	}
-	// else
-	return new PacketLengthCovertChannel(output_message,
-		std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
-		std::bind(&ChannelManager::getUdpPacketWithLength, this, PacketLengthCovertChannel::PORT, std::placeholders::_1));
 }
 
 bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
-	if (connection(ip)) {
-		outputErrorMessage("There is a connection to " + ip + " already.");
-		return false;
-	}
 	CovertChannel* channel = createChannel(ip, channel_id);
 	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
 	return m_network->openListener(ip, channel);
@@ -211,16 +195,6 @@ void ChannelManager::closeConnection(string ip) {
 
 unsigned int ChannelManager::connectionCount() {
 	return m_ip_mapping.size();
-}
-
-bool ChannelManager::connection(string ip) {
-	try {
-		m_ip_mapping.at(ip);
-	}
-	catch (out_of_range) {
-		return false;
-	}
-	return true;
 }
 
 // Adapter handling

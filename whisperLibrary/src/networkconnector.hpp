@@ -8,12 +8,12 @@
 #include <thread>
 #include <atomic>
 
-#include <genericpacket.hpp>
+#include "../include/whisperLibrary/genericpacket.hpp"
 #include "tcppacket.hpp"
 #include "udppacket.hpp"
-#include <pcapwrapper.hpp>
+#include "../include/whisperLibrary/pcapwrapper.hpp"
 #include "socketSender.hpp"
-#include <covertchannel.hpp>
+#include "../include/whisperLibrary/covertchannel.hpp"
 
 #ifdef WIN32
 	#include <iphlpapi.h>
@@ -117,7 +117,7 @@ private:
 		\param ip The ip to check
 		\return True if the ip is a valid Ipv4 address, otherwise false
 	*/
-	bool validIPv4(string ip);
+	bool validIP(string ip);
 	/** \brief Adds a capture filter for the opened adapter.
 		
 		Only packets with matching ip, port and protocol are received.
@@ -194,9 +194,9 @@ private:
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
 	atomic<bool> m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
 	map<string, string> m_filter; ///< map, that stores the capture filter rule for every ip. The key is the ip, the capture filter belongs to.
-	function<void(string, GenericPacket)> m_packet_received; /*< Callback method that is called, when a new packet arrived. 
-															 First parameter is the ip it was sent from, the second is the application layer 
-															 part of the packet in a generic format */
+	function<void(string, GenericPacket)> m_packet_received; ///< Callback method that is called, when a new packet arrived. 
+															 // First parameter is the ip it was sent from, the second is the application layer 
+															 // part of the packet in a generic format
 };
 
 }

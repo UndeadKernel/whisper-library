@@ -15,13 +15,13 @@ set(SOURCES
 	src/networkconnector.cpp
 	src/ipheaderv4.cpp
 	src/ethernetheader.cpp
-	src/packetlengthcovertchannel.cpp
-	src/lengthcoder.cpp
-	src/udppacketgenerator.cpp
+	src/whisper_library_wrapper.cpp
 )
+
 set(HEADERS
 	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
+	include/whisperLibrary/whisper_library_wrapper.hpp
 	include/whisperLibrary/covertchannel.hpp
 	include/whisperLibrary/tcpheadercovertchannel.hpp
 	include/whisperLibrary/bitSetCoder.hpp
@@ -36,9 +36,7 @@ set(HEADERS
 	src/networkconnector.hpp
 	src/ipheaderv4.hpp
 	src/ethernetheader.hpp
-	include/whisperLibrary/packetlengthcovertchannel.hpp
-	include/whisperLibrary/lengthcoder.hpp
-	src/udppacketgenerator.hpp
+	include/whisperLibrary/whisper_library_wrapper.hpp
 )
 
 set(TESTS
@@ -49,11 +47,8 @@ set(TESTS
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
 	tests/pcapWrapperTest.cpp
-	tests/socketSenderTest.cpp
+	tests/socketConnectionTest.cpp
 	tests/networkConnectorTest.cpp
-	tests/packetLengthCovertChannelTest.cpp
-	tests/lengthCoderTest.cpp
-	tests/udpPacketGeneratorTest.cpp
 )
 
 # Boost library
@@ -65,11 +60,11 @@ else (WIN32)
 endif (WIN32)
 
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework REQUIRED)
-
-add_definitions(-D_SCL_SECURE_NO_WARNINGS)	# disable warning C4996 in MSVC
+find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
 
 # Pcap library
+#set(PCAP_LIB_DIR "C:/Libraries/WpdPack_4_1_2/Lib")
+
 if(EXISTS $ENV{PCAP_ROOT})
 	MESSAGE("PCAP_ROOT environment variable set ($ENV{PCAP_ROOT})")
 	find_path(PCAP_INCLUDE_DIR NAMES pcap/pcap.h pcap.h PATHS $ENV{PCAP_ROOT} NO_DEFAULT_PATH PATH_SUFFIXES "Include")
@@ -102,6 +97,16 @@ include_directories(
 		${PCAP_INCLUDES}
 )
 
+add_library(whisperLibrary SHARED
+    ${HEADERS}
+    ${SOURCES}
+)
+
+TARGET_LINK_LIBRARIES(whisperLibrary
+	${Boost_LIBRARIES}
+	${PCAP_LIBRARIES}
+)
+
 add_executable(tests
     	${TESTS}
 		${HEADERS}
@@ -115,28 +120,6 @@ add_executable(systemtest
 		${SOURCES}
 )
 
-add_library(whisperLibrary STATIC
-    ${HEADERS}
-    ${SOURCES}
-)
-
-TARGET_LINK_LIBRARIES(whisperLibrary
-	${Boost_LIBRARIES}
-	${PCAP_LIBRARIES}
-)
-
-target_link_libraries(tests
-    	whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
-)
-
-target_link_libraries(systemtest
-		whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
-)
-
 add_dependencies(tests
     	whisperLibrary
 )
@@ -144,36 +127,40 @@ add_dependencies(systemtest
 		whisperLibrary
 )
 
+target_link_libraries(tests
+    	whisperLibrary
+		${Boost_LIBRARIES}
+		${PCAP_LIBRARIES}
+)
+target_link_libraries(systemtest
+		whisperLibrary
+		${Boost_LIBRARIES}
+		${PCAP_LIBRARIES}
+)
+
 if (UNIX)
 	find_package(Threads)
-	target_link_libraries(systemtest
+	target_link_libraries (
+		systemtest
 		${CMAKE_THREAD_LIBS_INIT}
 	)
-	target_link_libraries(whisperLibrary
+	target_link_libraries (
+		whisperLibrary
 		${CMAKE_THREAD_LIBS_INIT}
 	)
-	target_link_libraries(tests
+	target_link_libraries (
+		tests
 		${CMAKE_THREAD_LIBS_INIT}
 	)	
-endif(UNIX)
+endif()
 
 #ws2_32
 if (WIN32)
-	target_link_libraries(whisperLibrary 
-		ws2_32 
-		Iphlpapi
-	)
-	target_link_libraries(tests 
-		ws2_32 
-		Iphlpapi
-	)
-	target_link_libraries(systemtest 
-		ws2_32
-		Iphlpapi
-	)
-endif(WIN32)
+	 target_link_libraries(whisperLibrary ws2_32 Iphlpapi)
+	 target_link_libraries(tests ws2_32 Iphlpapi)
+	 target_link_libraries(systemtest ws2_32 Iphlpapi)
+endif()
 add_definitions(-DWHISPER_BUILD)
 
-install(TARGETS whisperLibrary 
-        RUNTIME DESTINATION .
-		ARCHIVE DESTINATION .)
+install(TARGETS whisperLibrary RUNTIME DESTINATION .
+				LIBRARY DESTINATION .)

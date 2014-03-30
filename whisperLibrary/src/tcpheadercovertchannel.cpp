@@ -37,7 +37,7 @@ namespace whisper_library {
 		return "tcp";
 	}
 
-	unsigned short TcpHeaderCovertChannel::port() const {
+	short TcpHeaderCovertChannel::port() const {
 		return 8080;
 	}
 
@@ -50,9 +50,9 @@ namespace whisper_library {
 		}
 	}
 
-	void TcpHeaderCovertChannel::receivePacket(GenericPacket& packet) {
+	void TcpHeaderCovertChannel::receiveMessage(whisper_library::GenericPacket& packet) {
 		TcpPacket tcp_packet;
-		tcp_packet.setPacket(packet.packet());
+		tcp_packet.setPacket(packet.content());
 		bitset<3> data = extractData(tcp_packet);
 		//cout << "received: " << data << endl;
 		if (m_remaining_packets == 0) {					// no message received yet

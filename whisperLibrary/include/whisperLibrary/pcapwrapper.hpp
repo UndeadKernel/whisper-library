@@ -27,7 +27,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <boost/circular_buffer.hpp>
 #include <pcap.h>
-#include <string>
 
 #ifndef WIN32
 	#include <sys/socket.h>
@@ -77,11 +76,10 @@ do { if (DEBUG_LEVEL >= MinLevel) { \
 #define PCAP_NETMASK_UNKNOWN    0xffffffff 
 #endif
 
-// Import and Export template classes
 IE_TEMPLATE template class WHISPERAPI std::vector<bool>;
 IE_TEMPLATE template class WHISPERAPI std::vector<int>;
-IE_TEMPLATE template class WHISPERAPI std::vector<std::string>;
-IE_TEMPLATE template class WHISPERAPI std::vector< std::vector<std::string> >;
+IE_TEMPLATE template class WHISPERAPI std::vector<char*>;
+IE_TEMPLATE template class WHISPERAPI std::vector< std::vector<char*> >;
 IE_TEMPLATE template class WHISPERAPI std::vector<pcap_t*>;
 
 namespace whisper_library {
@@ -118,7 +116,6 @@ namespace whisper_library {
 				NORMAL_EXECUTION			= 0,
 				EMPTY_PACKET_DATA			= 1,
 				CLOSE_ON_UNOPENED_HANDLE	= 2,
-				OPEN_ON_OPENED_HANDLE		= 3,
 				NO_ADAPTERS_FOUND			= 255,
 				UNSPECIFIED_ERROR_OCCURED	= -1,
 				ADAPTER_NOT_FOUND			= -2,
@@ -137,43 +134,37 @@ namespace whisper_library {
 			*/
 			int									adapterCount		();
 			/**
-				\fn std::vector<std::string> adapterNames()
+				\fn std::vector<char*> adapterNames()
 				\brief retrieve all adapter/device names (e.g. /dev/eth0) from network adapters with a valid network address
 			*/
-			std::vector<std::string>			adapterNames		(); 
+			std::vector<char*>					adapterNames		();
 			/**
-				\fn std::string adapterName(int adapter_id)
+				\fn char* adapterName(int adapter_id)
 				\brief Get the name from a specific network adapter
 			*/
-			std::string							adapterName			(int adapter_id);
+			const char*							adapterName			(int adapter_id);
 			/**
-			\fn std::vector<std::string> adapterAddresses(int adapter_id)
+			\fn std::vector<char*> adapterAddresses(int adapter_id)
 			\brief Get all network addresses from a specific network adapter
 			*/
-			std::vector<std::string>			adapterAddresses	(int adapter_id);
+			std::vector<char*>					adapterAddresses	(int adapter_id);
 
 			/**
-			\fn const std::string adapterDescription(int adapter_id)
+			\fn const char* adapterDescription(int adapter_id)
 			\brief Get the descriptional text from a specific network adapter (under windows e.g. the name of the hardware network device, under unix often <null>)
 			*/
-			std::string							adapterDescription	(int adapter_id);
+			const char*							adapterDescription	(int adapter_id);
 			/**
-			\fn int adapterId(std::string adapter_value, unsigned int value_type)
+			\fn int adapterId(char* adapter_value, unsigned int value_type)
 			\brief Get the id from an adapter with a specific value\n \
 			Value Types:\n ADAPTER_NAME, ADAPTER_DESCRIPTION, ADAPTER_ADDRESS
 			*/
-			int									adapterId			(std::string adapter_value, int value_type);
+			int									adapterId			(const char* adapter_value, int value_type);
 			/**
 			\fn boost::circular_buffer<int>* returnCodeBuffer()
 			\brief Returns a pointer to the global return code buffer
 			*/
-			std::vector<int>					lastReturnCodes		();
-
-			/**
-				\fn void clearReturnCodes()
-				\brief empties the PcapWrapper's global return code buffer
-			*/
-			void								clearReturnCodes	();
+			std::vector<int>					lastReturnCodes();
 			
 			/**
 				\fn int retrieveAdapters()
@@ -186,29 +177,27 @@ namespace whisper_library {
 			*/
 			int									retrieveAdapters	();
 			/**
-				\fn int openAdapter(std::string adapterName, int maxPacketSize, int promiscuous)
-				\fn int openAdapter(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout)
+				\fn int openAdapter(char* adapterName, int maxPacketSize, int promiscuous)
 				\brief Opens a live capture handle to the given device
-				\param std::string	adapter_name		- Name of the adapter (pcap_if_t->name) to open
-				\param int			max_packet_size		- Maximum number of bytes that should be captured from each packet. 
+				\param char*	adapter_name		- Name of the adapter (pcap_if_t->name) to open
+				\param int		max_packet_size		- Maximum number of bytes that should be captured from each packet. 
 				65535 is enough for the whole packet in most networks.
-				\param bool			promiscuous_mode 	- Open in promiscuous mode? false: No, true: Yes.
-				\param int			timeout				- Specifies a timeout in ms. A value of 0 can cause the process to wait forever.
+				\param bool		promiscuous_mode 	- Open in promiscuous mode? false: No, true: Yes.
+				\param int		timeout				- Specifies a timeout in ms. A value of 0 can cause the process to wait forever.
 				promiscuous mode: capture all packets
 				non-promiscuous:  capture only packets directed to the application
 				\return 0 - normal execution,
 				-1 - Error occured
 			*/
-			int									openAdapter		(std::string adapter_name, int max_packet_size, bool promiscuous_mode, int timeout);
+			int									openAdapter		(const char* adapter_name, int max_packet_size, bool promiscuous_mode, int timeout);
 			int									openAdapter		(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout);
 			/**
-				\fn int closeAdapter(std::string adapter_name)
-				\fn int closeAdapter(int adapter_id)
+				\fn int closeAdapter(char* adapter_name)
 				\brief Closes an openend handle on the adapter with the given name/id. 
 			
 			*/
-			int									closeAdapter	(std::string adapter_name);
-			int									closeAdapter	(int adapter_id);
+			int									closeAdapter(const char* adapter_name);
+			int									closeAdapter(int adapter_name);
 			/**
 				\fn int freeAdapters()
 				\brief Frees unopened adapters and closes previously opened handles.
@@ -217,23 +206,20 @@ namespace whisper_library {
 			*/
 			int									freeAdapters	();
 			/**
-				\fn int applyFilter(int adapter_id, std::string filter)
-				\fn int applyFilter(std::string adapter_name, std::string filter)
+				\fn int applyFilter(int adapter_id, char* filter)
 				\brief Applies a given filter with pcap syntax to the selected adapter
 			*/
-			int									applyFilter		(int adapter_id, std::string filter);
-			int									applyFilter		(std::string adapter_name, std::string filter);
+			int									applyFilter		(int adapter_id, const char* filter);
+			int									applyFilter		(const char* adapter_name, const char* filter);
 			/**
 				\fn int removeFilter(int adapter_id)
-				\fn int removeFilter(std::string adapter_name)
 				\brief Removes any previously applied filter from the adapter handle
 			*/
 			int									removeFilter	(int adapter_id);
-			int									removeFilter	(std::string adapter_name);
+			int									removeFilter	(const char* adapter_name);
 
 			/**
-			\fn PcapPacket retrievePacket(int adapter_id)
-			\fn PcapPacket retrievePacket(std::string adapter_name)
+			\fn const u_char* retrievePacket(int adapter_id)
 			\brief Retrieves the next packet from the capture device
 			\return PcapPacket{NULL, NULL} if adapter was not found or if the specified adapter had no open handle \n
 			or PcapPacket{pcap_pkthdr, NULL} if no packet passed through the configured filter\n
@@ -241,22 +227,18 @@ namespace whisper_library {
 			or PcapPacket{pcap_pkthdr, const u_char*} where  const u_char* is the pointer to the packet data with the maximum size configured in openAdapter()
 			*/
 			PcapPacket							retrievePacket(int adapter_id);
-			PcapPacket							retrievePacket(std::string adapter_name);
+			PcapPacket							retrievePacket(const char* adapter_name);
 
 			/**
 			\fn std::vector<bool> retrievePacketAsVector(int adapter_id)
-			\fn std::vector<bool> retrievePacketAsVector(std::string adapter_name)
 			\brief Calls retrievePacket(adapter_id) and converts the retrieved packet payload in a std::vector<bool>
 			\return bitwise representation of the packet payload from retrievePacket() as a std::vector<bool> 
 			*/
 			std::vector<bool>					retrievePacketAsVector	(int adapter_id);
-			std::vector<bool>					retrievePacketAsVector	(std::string adapter_name);
+			std::vector<bool>					retrievePacketAsVector	(const char* adapter_name);
 
 			/**
-			\fn sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size)
-			\fn sendPacket(std::string adapter_name, unsigned char* packet_buffer, int buffer_size)
-			\fn sendPacket(int adapter_id, std::vector<bool> packet_data)
-			\fn sendPacket(std::string adapter_name, std::vector<bool> packet_data)
+			\fn sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
 			\brief Sends a packet using a raw socket via the WinPcap driver (Note: libcap on linux currently doesn't allow sending packages)
 			\return RC.NORMAL_EXECUTION - normal execution
 					RC.ADAPTER_NOT_FOUND - adapter with given id not found
@@ -264,10 +246,10 @@ namespace whisper_library {
 					RC.UNSPECIFIED_ERROR_OCCURED - otherwise
 			*/
 			int									sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size);
-			int									sendPacket(std::string adapter_name, unsigned char* packet_buffer, int buffer_size);
+			int									sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size);
 
 			int									sendPacket(int adapter_id, std::vector<bool> packet_data);
-			int									sendPacket(std::string adapter_name, std::vector<bool> packet_data);
+			int									sendPacket(const char* adapter_name, std::vector<bool> packet_data);
 
 
 	protected:
@@ -284,20 +266,15 @@ namespace whisper_library {
 		[x][ADAPTER_DESCRIPTION] : adapter description
 		[x][ADAPTER_ADDRESS+] : adapter addresses (NULL if not available)
 		*/
-		std::vector< std::vector<std::string> >	m_adapter_data;
-		std::vector<pcap_t*>					m_adapter_handles;
-		std::vector<bpf_u_int32>				m_adapter_netmasks;
+		std::vector< std::vector<char*> >	m_adapter_data;
+		std::vector<pcap_t*>				m_adapter_handles;
+		std::vector<bpf_u_int32>			m_adapter_netmasks;
 
-		pcap_if_t*								m_adapter_raw_data;
+		pcap_if_t*							m_adapter_raw_data;
 		// Stores the last 20 method return codes
-		boost::circular_buffer<int>				m_last_return_codes;
-
-		// checkForAdapterId
-		// Checks if a given adapter_id exists.
-		bool									checkForAdapterId(int adapter_id);
-
-		/* Private Getter & Setter */
-		int										adapterId(std::string value, int key, bool increment_key);
+		boost::circular_buffer<int>			m_last_return_codes;
+		bool								checkForAdapterId(int adapter_id);
+		int									adapterId(const char* value, int key, bool increment_key);
 	};
 }
 #endif // PCAPWRAPPER

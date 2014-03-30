@@ -6,7 +6,7 @@
 #	ifdef WHISPER_BUILD
 #		define WHISPERAPI __declspec(dllexport)
 #	else
-#		define WHISPERAPI 
+#		define WHISPERAPI __declspec(dllimport)
 #	endif
 #endif
 	

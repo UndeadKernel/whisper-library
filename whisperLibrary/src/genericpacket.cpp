@@ -22,11 +22,11 @@
 #include <genericpacket.hpp>
 
 namespace whisper_library {
-	vector<bool> GenericPacket::packet() const {
+	vector<bool> GenericPacket::content() {
 		return m_content;
 	}
 
-	void GenericPacket::setPacket(vector<bool> packet) {
-		m_content = packet;
+	void GenericPacket::setContent(vector<bool> content) {
+		m_content = content;
 	}
 }

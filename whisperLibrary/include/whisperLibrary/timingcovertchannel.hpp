@@ -31,28 +31,26 @@
 #include <atomic>
 #include <string>
 #include "../../src/udppacket.hpp"
-#include <mutex>
 
 using namespace std;
 
 namespace whisper_library {
-	/** \brief A covert channel using inter packet delays
-
+	/*
 		The TimingCovertChannel implements a covert channel, that uses inter-packet 
 		delays to transmit morse. The receiver measures the delays between incoming 
 		packets to decode the message. To use the channel, call 'sendMessage' with 
 		your message as a string. Received packets are given to 'receiveMessage' 
-		which returns the decoded message after a timeout to the 
+		which returns the decoded message after a timeout of 2 seconds to the 
 		callback function m_output.
 	*/
 class TimingCovertChannel : public CovertChannel {
 public:
-	/** \brief Constructor
-
-		\param output function pointer that is called, when a complete message arrived. 
+	/*
+		Constructor
+		output is a function pointer that is called, when a complete message arrived. 
 			   Its parameter is this message.
-		\param send function pointer that is called to send a UdpPacket via the socket.
-		\param getPacket function pointer, that has to return a valid UdpPacket. The argument is the used port.
+		send is a function pointer that is called to send a UdpPacket via the socket.
+		getPacket is a function pointer, that has to return a valid UdpPacket.
 	*/
 	TimingCovertChannel(function<void(string)> output, 
 						function<void(UdpPacket)> send, 
@@ -63,6 +61,7 @@ public:
 		m_getPacket(getPacket),
 		m_receiving(false)
 	{
+		m_timeout = 2;
 		m_delay_short = 100;
 		m_delay_long = 300;
 		m_delay_letter = 500;
@@ -71,22 +70,20 @@ public:
 		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 	};
 
-	/** Destructor
-	*/
-	~TimingCovertChannel();
-
-	/**
-		Sends a message using the timing channel.
-		\param message Message that is send
+	// Destructor
+	~TimingCovertChannel(){
+		delete m_coder;
+	}
+	/*
+		Sends a message using the timing channel. The argument is the message as a string.
 	*/
 	void sendMessage(string message);
 
-	/**
+	/*
 		Has to be called when a packet is received, with the packet as the argument. 
-		After a timeout the callback m_output is called with the received message.
-		\param packet packet that was received on network
+		After a timeout of 2 seconds the callback m_output is called with the received message.
 	*/
-	void receivePacket(GenericPacket& packet);
+	void receiveMessage(GenericPacket& packet);
 
 	/** \brief Gives arguments to the channel to configure the delays
 
@@ -96,66 +93,80 @@ public:
 	*/
 	void setArguments(string arguments);
 
-	/** \brief Returns a string with the name of the covert channel "Timing Covert Channel"
-	*/ 
+	// Returns a string with the name of the covert channel "Timing Covert Channel"
 	string name() const;
 
-	/** \brief Returns a string with basic information about the timing covert channel
-	*/ 
+	// Returns a string with basic information about the timing covert channel
 	string info() const;
 
-	/** \brief Returns the protocol used by this covert channel (udp)
-	*/
+	// Returns the protocol used by this covert channel (udp)
 	string protocol() const;
 
-	/** \brief	Returns the used port (23)
-	*/
-	unsigned short port() const;
+	// Returns the used port (23)
+	short port() const;
 private:
-	/**
-		Calcules thresholds between the different intervals to compensate for transmitting delays.
-	*/
 	void calculateTresholds();
-	/**
+	/*
 		Starts the timeout. If m_timeout_changed is false and m_timeout_end is in the past, 
 		it calls the callback function m_output.
 	*/
 	void startTimeoutTimer();
 
-	/**
+	/*
 		Sends Udp packets using m_send with inter-packet delays given as the argument.
 	*/
 	void sendDelays(vector<unsigned int> delays);
 
-	MorseCoder* m_coder; ///<MorseCoder is used to encode messages as morse	
-	
-	function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
-	function<void(UdpPacket)> m_send;///< function pointer that is used to send Udp Packets via the socket	
-	function<UdpPacket(unsigned short)> m_getPacket;///< function pointer that is used to retrieve valid udp packets, that are send with delay
-	
-	chrono::time_point<chrono::system_clock> m_receive_start; ///< Marks the time the last packet was received to measure inter-packet delays
-	chrono::time_point<chrono::system_clock> m_timeout_end; ///< Marks the time point at which the timeout ends. It is increased each time a packet is received.
-	atomic<bool> m_timeout_changed; ///< signals 'startTimeoutTimer' that the timeout end point has changed.	
+	// MorseCoder is used to encode messages as morse
+	MorseCoder* m_coder;
 
-	vector<unsigned int> m_received_delays; ///< stores the measured delays
-	atomic<bool> m_receiving; ///< indicates, if the channel is currently receiving a message
-	unsigned int m_timeout; ///< timeout in milliseconds after the last received message until the delays are interpreted
+	// callback function pointer that is used to return received messages as a string
+	function<void(string)> m_output;
+
+	// function pointer that is used to send Udp Packets via the socket
+	function<void(UdpPacket)> m_send;
+
+	// function pointer that is used to retrieve valid udp packets, that are send with delay
+	function<UdpPacket(unsigned short)> m_getPacket;
+
+	// Marks the time the last packet was received to measure inter-packet delays
+	chrono::time_point<chrono::system_clock> m_receive_start;
+
+	/*
+		Marks the time point at which the timeout ends. 
+		It is increased by 2 seconds each time a packet is received.
+	*/
+	chrono::time_point<chrono::system_clock> m_timeout_end;
+
+	// signals 'startTimeoutTimer' that the timeout end point has changed.
+	atomic<bool> m_timeout_changed;
+
+	// stores the measured delays
+	vector<unsigned int> m_received_delays;
+
+	// indicates, if the channel is currently receiving a message
+	atomic<bool> m_receiving;
+
+	// timeout in seconds after the last received message until the delays are interpreted
+	unsigned int m_timeout;
 
 	/*
 		TODO: calculate delays based on connection
 	*/
-	unsigned int m_delay_short;	///< delay_short is used to encode a short signal (in milliseconds)
-	unsigned int m_threshold_delay_short; ///< threshold between short and long delays
+	// delay_short is used to encode a short signal (in milliseconds)
+	unsigned int m_delay_short;
+	unsigned int m_threshold_delay_short;
 
-	unsigned int m_delay_long;	///< delay_long is used to encode a long signal (in milliseconds)
-	unsigned int m_threshold_delay_long; ///< threshold between long and letter delays
+	// delay_long is used to encode a long signal (in milliseconds)
+	unsigned int m_delay_long;
+	unsigned int m_threshold_delay_long;
 
-	unsigned int m_delay_letter; ///< delay_letter is used to encode the end of a letter (in milliseconds)
-	unsigned int m_threshold_delay_letter; ///< threshold between letter and space delays
+	// delay_letter is used to encode the end of a letter (in milliseconds)
+	unsigned int m_delay_letter;
+	unsigned int m_threshold_delay_letter;
 
-	unsigned int m_delay_space; ///< delay_space is used to encode space between words (in milliseconds)
-
-	mutex m_mutex_sending; ///< mutex to prevent different threads from sending simultaneously
+	// delay_space is used to encode space between words (in milliseconds)
+	unsigned int m_delay_space;
 };
 }
 #endif // TIMING_COVERT_CHANNEL

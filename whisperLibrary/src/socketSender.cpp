@@ -81,13 +81,14 @@ void SocketSender::sendUdp(string destination_ip, UdpPacket packet) {
 	}
 }
 
-std::string SocketSender::packetToString(vector<bool> packet_data){
+
+std::string SocketSender::packetToString(vector<bool> packetData){
 	std::string result;
-	for (int i = 0; i < packet_data.size()/8; i++){
+	for (int i = 0; i < packetData.size()/8; i++){
 		int ascii = 0;
 		int value = 1;
 		for (int j = 7; j >= 0; j--) {
-			if (packet_data[i*8 + j]) {
+			if (packetData[i*8 + j]) {
 				ascii += value;
 			}
 			value = value << 1;
