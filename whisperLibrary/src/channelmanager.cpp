@@ -118,11 +118,11 @@ void ChannelManager::outputMessage(string ip, string message){
 		(*m_output_stream) << message;
 	}
 	if (m_message_callback != NULL) {
-		m_message_callback(ip, message);
+		m_message_callback(ip.cstr(), message.cstr());
 	}
 }
 
-void ChannelManager::setMessageCallback(function<void(string, string)> message_callback) {
+void ChannelManager::setMessageCallback(function<void(const char*, const char*)> message_callback) {
 	m_message_callback = message_callback;
 }
 

@@ -62,7 +62,7 @@ public:
 	*/
 	void setErrorStream(std::ostream* stream);
 	void outputErrorMessage(string message);
-	void setMessageCallback(function<void(string, string)> message_callback);
+	void setMessageCallback(function<void(const char*, const char*)> message_callback);
 
 	// Covert channel
 	vector<string> getChannelInfos();
@@ -128,7 +128,7 @@ private:
 	NetworkConnector* m_network;
 	map<string, CovertChannel*> m_ip_mapping;
 	const unsigned int CHANNEL_COUNT;
-	function<void(string, string)> m_message_callback;
+	function<void(const char*, const char*)> m_message_callback;
 };
 }
 #endif // CHANNEL_MANAGER
