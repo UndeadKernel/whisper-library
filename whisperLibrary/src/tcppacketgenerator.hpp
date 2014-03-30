@@ -31,6 +31,7 @@ private:
 	function<void(GenericPacket)> m_forward;
 	unsigned int m_state;
 	unsigned int m_timeout;
+	bool m_server;
 };
 
 }

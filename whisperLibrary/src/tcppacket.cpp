@@ -269,6 +269,23 @@ void TcpPacket::setOptions(vector<bool> val){
 void TcpPacket::setData(vector<bool> val){
     m_data = vector<bool>(val);
 }
+void TcpPacket::setData(string data) {
+	vector<bool> binary;
+	for (unsigned int i = 0; i < data.length(); i++) {
+		char byte = data[i];
+		for (unsigned int j = 0; j < 8; j++) {
+			unsigned char bit = byte >> (7 - j);
+			bit = bit & 0x01;
+			if (bit == 0) {
+				binary.push_back(false);
+			}
+			else {
+				binary.push_back(true);
+			}
+		}
+	}
+	setData(binary);
+}
 // packet
 void TcpPacket::setPacket(vector<bool> val){
 	if (val.size() >= 160) {

@@ -8,14 +8,22 @@ namespace whisper_library {
 	  m_forward(forward),
 	  m_port(port),
 	  m_state(0),
-	  m_timeout(1000) {
+	  m_timeout(1000),
+	  m_server(false) {
 		m_next_sequence = 0; // TODO randomize
 		m_base_sequence = m_next_sequence;
 	}
 
 	TcpPacket TcpPacketGenerator::nextPacket() {
 		if (m_state == ESTABLISHED) {
+			string http_text;
+			if (!m_server) {
+				http_text = ;
+			}
 			return createPacket(false, false, "AB"); // TODO enter data
+		}
+		else {
+			return createPacket(false, false, "Test");
 		}
 	}
 
@@ -40,21 +48,7 @@ namespace whisper_library {
 		packet.setAcknowledgementFlag(ack);
 		packet.setSynchronisationFlag(syn);
 
-		vector<bool> binary;
-		for (unsigned int i = 0; i < data.length(); i++) {
-			char byte = data[i];
-			for (unsigned int j = 0; j < 8; j++) {
-				unsigned char bit = byte >> (7 - j);
-				bit = bit & 0x01;
-				if (bit == 0) {
-					binary.push_back(false);
-				}
-				else {
-					binary.push_back(true);
-				}
-			}
-		}
-		packet.setData(binary);
+		packet.setData(data);
 
 		m_next_sequence = m_next_sequence + data.length();
 		return packet;
@@ -77,7 +71,7 @@ namespace whisper_library {
 		if (m_state == NO_CONNECTION) {
 			if (packet.synchronisationFlag() && !packet.acknowledgementFlag()) {
 				// we are listener, peer wants to connect
-				cout << "received connect request" << endl;
+				m_server = true;
 				m_next_peer_sequence = packet.sequenceNumber() + 1;
 				m_state = RECEIVED_SYN;
 				sendConnectResponse();
@@ -85,7 +79,7 @@ namespace whisper_library {
 			}
 			if (packet.synchronisationFlag() && packet.acknowledgementFlag()) {
 				// we are sender, reponse of peer to connect request
-				cout << "received response to connect request" << endl;
+				m_server = false;
 				m_next_peer_sequence = packet.sequenceNumber() + 1;
 				m_state = ESTABLISHED;
 				// TODO wait for connect-procedure to end
@@ -96,7 +90,6 @@ namespace whisper_library {
 		}
 		if (m_state == RECEIVED_SYN) {
 			if (!packet.synchronisationFlag() && packet.acknowledgementFlag()) {
-				cout << "received last ack" << endl;
 				m_base_sequence = m_next_sequence;
 				m_state = ESTABLISHED;
 			}
