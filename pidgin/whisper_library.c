@@ -79,6 +79,7 @@ void wl_add_buddy(PurpleConnection* connection, PurpleBuddy* buddy, PurpleGroup*
 	}else{
 		purple_blist_add_buddy(buddy, contact, group, NULL);
 		wlAddBuddy(buddy->name, (char*)g_hash_table_lookup(options, "selected channel"));
+		purple_prpl_got_user_status	(m_account, buddy->name, "wl_online"); 
 	}
 }
 
