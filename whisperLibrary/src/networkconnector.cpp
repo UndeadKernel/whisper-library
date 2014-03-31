@@ -129,7 +129,7 @@ namespace whisper_library {
 
 		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + 112 + length_bit, packet_little_endian.begin() + 112 + total_length_bit); // cut of 14 byte ethernet header (112 bit) and ip header and padding
 		GenericPacket generic_packet;
-		generic_packet.setContent(application_layer);
+		generic_packet.setPacket(application_layer);
 		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 
