@@ -120,17 +120,16 @@ namespace whisper_library {
 		}
 	}
 	void NetworkConnector::packetReceived(vector<bool> packet_data) {
-		GenericPacket generic_packet;
-		vector<bool> packet_little_endian;
-		unsigned int length_bit;
 		vector<bool> application_layer;
-		packet_little_endian = switchEndian(packet_data);
+		vector<bool> packet_little_endian = switchEndian(packet_data);
 
 		IpHeaderv4 ip_header(packet_little_endian);
-		length_bit = ip_header.ipHeaderLength() * 32;
+		unsigned int length_bit = ip_header.ipHeaderLength() * 32;
+		unsigned int total_length_bit = ip_header.totalLength() * 8;
 
-		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-		generic_packet.setPacket(application_layer);
+		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + 112 + length_bit, packet_little_endian.begin() + 112 + total_length_bit); // cut of 14 byte ethernet header (112 bit) and ip header and padding
+		GenericPacket generic_packet;
+		generic_packet.setContent(application_layer);
 		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 
