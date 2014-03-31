@@ -49,7 +49,7 @@ void wlSetAdapter(const char* adapter){
 }
 
 unsigned int wlAdapterCount() {
-	m_channel_manager->adapterCount();
+	return m_channel_manager->adapterCount();
 }
 
 const char* wlListAdapters(){
