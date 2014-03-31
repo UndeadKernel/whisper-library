@@ -23,7 +23,6 @@
 #ifndef TCP_HEADER_COVERT_CHANNEL
 #define TCP_HEADER_COVERT_CHANNEL
 
-#include "common.hpp"
 #include "../../src/tcppacket.hpp"
 #include "genericpacket.hpp"
 #include <string>

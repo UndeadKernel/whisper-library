@@ -11,7 +11,7 @@ namespace whisper_library {
 	IpHeaderv4::IpHeaderv4(vector<bool> frame) {
 		m_head = new unsigned char[20];
 
-		int buffer_size = frame.size() / 8;
+		unsigned int buffer_size = frame.size() / 8;
 		unsigned char* packet_buffer = static_cast<unsigned char*>(malloc(buffer_size));
 
 		for (unsigned int i = 0; i < buffer_size; i++) {

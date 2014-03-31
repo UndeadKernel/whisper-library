@@ -47,7 +47,7 @@ void SocketSender::sendTcp(string source_ip, string destination_ip, TcpPacket pa
 	std::string packetString = packetToString(packetData);
 	boost::asio::streambuf send_buffer;
     std::ostream os(&send_buffer);
-	for (int i = 0; i < packetString.size(); i++){
+	for (unsigned int i = 0; i < packetString.size(); i++){
 		os.put(packetString[i]);
 	}
 	//send packet
@@ -83,7 +83,7 @@ void SocketSender::sendUdp(string destination_ip, UdpPacket packet) {
 
 std::string SocketSender::packetToString(vector<bool> packet_data){
 	std::string result;
-	for (int i = 0; i < packet_data.size()/8; i++){
+	for (unsigned int i = 0; i < packet_data.size()/8; i++){
 		int ascii = 0;
 		int value = 1;
 		for (int j = 7; j >= 0; j--) {

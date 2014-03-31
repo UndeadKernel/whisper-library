@@ -370,7 +370,7 @@ namespace whisper_library {
 
 	std::vector<int> PcapWrapper::lastReturnCodes() {
 		std::vector<int> returnCodes = std::vector<int>(m_last_return_codes.size());
-		for (int i = 0; i < m_last_return_codes.size(); ++i) {
+		for (unsigned int i = 0; i < m_last_return_codes.size(); ++i) {
 			returnCodes[i] = m_last_return_codes[i];
 		}
 		return returnCodes;

@@ -43,7 +43,7 @@ struct pcapWrapperFixture {
 
 	void checkReturnCodes(vector<int> return_codes, vector<int> expected_codes, vector<int> required_codes) {
 		bool expected;
-		int i, size;
+		unsigned int i;
 		for (int return_code : return_codes) {
 			if (expected_codes.size() > 0) {
 				expected = false;
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(retrieveAndFreeAdapters_test) {
 		}*/
 }
 	
-	for (int i = 0; i < adapter_addresses.size(); ++i) {
+	for (unsigned int i = 0; i < adapter_addresses.size(); ++i) {
 		BOOST_CHECK_EQUAL_COLLECTIONS(adapter_addresses[i].begin(), adapter_addresses[i].end(), new_adapter_addresses[i].begin(), new_adapter_addresses[i].end());
 	}
 	BOOST_CHECK_EQUAL_COLLECTIONS(adapter_descriptions.begin(), adapter_descriptions.end(), new_adapter_descriptions.begin(), new_adapter_descriptions.end());

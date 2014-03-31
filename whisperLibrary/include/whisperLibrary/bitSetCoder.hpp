@@ -23,7 +23,6 @@
 #ifndef BITSET_CODER
 #define BITSET_CODER
 
-#include "common.hpp"
 #include <string>
 #include <bitset>
 #include <vector>

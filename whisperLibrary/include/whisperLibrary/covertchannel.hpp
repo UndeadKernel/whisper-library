@@ -22,7 +22,6 @@
 #ifndef COVERT_CHANNEL
 #define COVERT_CHANNEL
 
-#include "common.hpp"
 #include "genericpacket.hpp"
 #include <string>
 

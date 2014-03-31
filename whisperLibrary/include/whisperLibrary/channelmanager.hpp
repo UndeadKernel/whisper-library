@@ -23,7 +23,6 @@
 #ifndef CHANNEL_MANAGER
 #define CHANNEL_MANAGER
 
-#include "common.hpp"
 #include <vector>
 #include "../../src/tcppacket.hpp"
 #include <iostream>
@@ -45,7 +44,7 @@ class CovertChannel;
 	It is connected to the network via a SocketConnector.
 	
 */
-class WHISPERAPI ChannelManager {
+class ChannelManager {
 
 public:
 	/** \brief Constructor

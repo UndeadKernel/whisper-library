@@ -20,7 +20,6 @@ set(SOURCES
 	src/udppacketgenerator.cpp
 )
 set(HEADERS
-	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
 	include/whisperLibrary/covertchannel.hpp
 	include/whisperLibrary/tcpheadercovertchannel.hpp

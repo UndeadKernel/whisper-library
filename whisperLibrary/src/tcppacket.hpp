@@ -23,7 +23,6 @@
 #ifndef TCP_PACKET
 #define TCP_PACKET
 
-#include "../include/whisperLibrary/common.hpp"
 #include <vector>
 #include <bitset>
 #include <algorithm>
