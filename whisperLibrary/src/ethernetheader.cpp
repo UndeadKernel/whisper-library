@@ -49,7 +49,7 @@ namespace whisper_library {
 	}
 
 	void EthernetHeader::setEthernetType(unsigned long type) {
-		m_head[12] = (type >> 8);
+		m_head[12] = static_cast<unsigned char>(type >> 8);
 		m_head[13] = type & 0xff;
 	}
 
@@ -84,7 +84,7 @@ namespace whisper_library {
 	}
 
 	unsigned char EthernetHeader::hexToInt(string hex) {
-		return stoul(hex, nullptr, 16);
+		return static_cast<unsigned char>(stoul(hex, nullptr, 16));
 	}
 
 	string EthernetHeader::toMacString(unsigned char* buffer) {

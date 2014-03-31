@@ -22,6 +22,7 @@
 #include <timingcovertchannel.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cmath>
 
 namespace whisper_library {
 	TimingCovertChannel::~TimingCovertChannel() {
@@ -144,6 +145,6 @@ namespace whisper_library {
 		m_threshold_delay_short = (m_delay_long + m_delay_short) / 2;
 		m_threshold_delay_long = (m_delay_long + m_delay_letter) / 2;
 		m_threshold_delay_letter = (m_delay_letter + m_delay_space) / 2;
-		m_timeout = m_delay_space*1.5;
+		m_timeout = static_cast<unsigned int>(round(m_delay_space*1.5));
 	}
 }
