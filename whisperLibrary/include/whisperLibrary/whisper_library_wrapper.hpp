@@ -2,10 +2,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	struct WhisperMessage{
-		char* who;
-		char* message;
-	};
 	void wlMakeChannelManager();
 	void wlDestroyChannelManager();
 	const char* wlListChannels();

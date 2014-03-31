@@ -60,12 +60,6 @@ const char* wlListAdapters(){
 	}
 	return text.c_str();
 }
-WhisperMessage wlGetMessage(){
-	WhisperMessage ret;
-	ret.who = "who";
-	ret.message = "message";
-	return ret;
-}
 
 void wlSetMessageCallback(void(*func_ptr)(const char*, const char*)) {
 	m_channel_manager->setMessageCallback(func_ptr);
