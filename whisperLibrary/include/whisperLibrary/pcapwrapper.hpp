@@ -285,31 +285,20 @@ namespace whisper_library {
 		int	sendPacket(std::string adapter_name, std::vector<bool> packet_data);
 
 	private:
-		/* adapters_data[x][y]
+		/*
+		adapters_data[x][y]
 		x : adapter number
 		[x][ADAPTER_NAME] : adapter/device name (e.g. /dev/eth0)
 		[x][ADAPTER_DESCRIPTION] : adapter description
 		[x][ADAPTER_ADDRESS+] : adapter addresses (NULL if not available)
 		*/
-		std::vector< std::vector<std::string> >	m_adapter_data;
+		std::vector< std::vector<std::string> >	m_adapter_data; ///< Stores for each adapter its name, the description and each address
 
-		/*
-			Contains all open Adapter handles for each adapter, NULL otherwise
-		*/
-		std::vector<pcap_t*> m_adapter_handles;
+		std::vector<pcap_t*> m_adapter_handles; ///< Contains all open Adapter handles for each adapter, NULL otherwise
+		std::vector<bpf_u_int32> m_adapter_netmasks; ///< Contains the netmask for each adapter
+		pcap_if_t* m_adapter_raw_data; ///< Raw adapter data as returned from pcap_findalldevs(...)
 
-		/*
-			Contains the netmask for each adapter
-		*/
-		std::vector<bpf_u_int32> m_adapter_netmasks;
-
-		/*
-			Raw adapter data as returned from pcap_findalldevs(...)
-		*/
-		pcap_if_t* m_adapter_raw_data;
-
-		// Stores the last RETURN_CODE_BUFFER_SIZE method return codes
-		boost::circular_buffer<int>	m_last_return_codes;
+		boost::circular_buffer<int>	m_last_return_codes; ///< Stores the last RETURN_CODE_BUFFER_SIZE method return codes
 
 		/** checkForAdapterId
 			\brief Checks if a given adapter_id exists.
