@@ -8,15 +8,17 @@ extern "C" {
 	};
 	void wlMakeChannelManager();
 	void wlDestroyChannelManager();
-	void wlAddBuddy(const char* who, const char* channel);
-	void wlSetAdapter(const char* adapter);
-	void wlSetOptions(const char* options);
-	char* wlListAdapters();
-	char* wlListChannels();
-	char* wlSelectedAdapter();
-	char* wlSelectedChannel();
+	const char* wlListChannels();
+	unsigned int wChannelCount();
+	void wlSetOptions(const char* ip, const char* options);
+	bool wlOpenConnection(const char* ip, unsigned int channel_id);
+	void wlCloseConnection(const char* ip);
+	unsigned int wlConnectionCount();
 	void wlSendMessage(const char* who, const char* message);
-	void wlGetMessageCallback(void (*func_ptr)(const char*, const char*));
+	void wlSetAdapter(const char* adapter);
+	unsigned int wlAdapterCount();
+	const char* wlListAdapters();
+	void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));
 #ifdef __cplusplus	
 }
 #endif
