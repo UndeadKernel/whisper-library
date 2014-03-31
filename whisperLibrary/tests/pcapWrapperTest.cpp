@@ -20,7 +20,7 @@ struct pcapWrapperFixture {
 		delete network;
 		delete manager;
 	}
-	const int MAXIMUM_TRY_COUNT_SENDING = 25;
+	static const int MAXIMUM_TRY_COUNT_SENDING = 25;
 	whisper_library::PcapWrapper*		wrapper;
 	whisper_library::NetworkConnector*	network;
 	whisper_library::ChannelManager*	manager;
