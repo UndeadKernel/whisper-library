@@ -12,11 +12,13 @@
 #include <debug.h>
 #include <accountopt.h>
 #include <status.h>
+#include <stdbool.h>
 #include "whisperLibrary/whisper_library_wrapper.hpp"
 
 static const char* PLUGIN_ID = "prpl_whisper_library";
 PurpleStatus* m_status = NULL;
 PurpleAccount* m_account = NULL;
+PurplePlugin* m_plugin = NULL;
 
 static gboolean plugin_load(PurplePlugin *plugin) {
 	purple_debug_info(PLUGIN_ID, "plugin_load started\n");
@@ -39,7 +41,8 @@ void wl_login (PurpleAccount* account){
 	purple_debug_info("whisperLibrary", "Trying to log in!\n");
 	GHashTable* options = NULL;
 	options = account->settings;
-	wlSetAdapter((char*)g_hash_table_lookup(options, "selected adapter"));
+	wlSetAdapter(purple_account_get_string(account, "selected adapter", ""));
+	purple_debug_info(PLUGIN_ID, purple_account_get_string(account, "selected adapter", ""));
 	purple_connection_set_state(pc, PURPLE_CONNECTED);
 	purple_debug_info("whisperLibrary", "WhisperLibrary logged in!\n");
 }
@@ -52,6 +55,10 @@ int wl_send_im (PurpleConnection* connection, const char* who, const char* messa
 	purple_debug_info(PLUGIN_ID, message);
 	wlSendMessage(who, message);
 	return 1;
+}
+
+void wl_recieve_im (const char* who, const char* message){
+	
 }
 
 void wl_set_status(PurpleAccount* account, PurpleStatus* status){
@@ -74,21 +81,28 @@ void wl_add_buddy(PurpleConnection* connection, PurpleBuddy* buddy, PurpleGroup*
 	GHashTable* options = NULL;
 	options = m_account->settings;
 	PurpleContact* contact = purple_buddy_get_contact(buddy);
+	bool open = true;
 	if (contact == NULL){
 		 purple_debug_info(PLUGIN_ID, "contact = NULL");
 	}else{
 		purple_blist_add_buddy(buddy, contact, group, NULL);
-		wlAddBuddy(buddy->name, (char*)g_hash_table_lookup(options, "selected channel"));
-		purple_prpl_got_user_status	(m_account, buddy->name, "wl_online"); 
+		open = wlOpenConnection(buddy->name, purple_account_get_int(m_account, "selected channel", 0));
+		purple_prpl_got_user_status	(m_account, buddy->name, "wl_online", NULL, NULL); 
 	}
+	if (open)
+		purple_debug_info(PLUGIN_ID, "Connection open");
+	else
+		purple_debug_info(PLUGIN_ID, "Connection failed");
 }
 
 void actionShowAdapters (PurplePluginAction* action){
 	purple_debug_info("whisperLibrary", wlListAdapters());
+	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Adapter List", wlListAdapters(), NULL, NULL, NULL);
 }
 
 void actionShowChannels (PurplePluginAction* action){
 	purple_debug_info("whisperLibrary", wlListChannels());	
+	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Channel List", wlListChannels(), NULL, NULL, NULL);
 }
 
 void actionSetOptions (PurplePluginAction* action){
@@ -236,20 +250,22 @@ static PurplePluginInfo info = {
 };
 
 static void init_plugin (PurplePlugin *plugin){
+	m_plugin = plugin;
 	PurpleAccountOption *option;
 	PurplePluginInfo *info = plugin->info;
 	PurplePluginProtocolInfo *prpl_info = info->extra_info;
 	
-	option = purple_account_option_string_new("Default adapter", "selected adapter", "Enter your adapter name");
+	option = purple_account_option_string_new("Network Adapter ID", "selected adapter", "Enter your adapter name");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
-	option = purple_account_option_string_new("Default channel", "selected channel", "Enter a covert channel name");
+	option = purple_account_option_int_new("Covert Channel ID", "selected channel", 0);
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 	option = purple_account_option_string_new("Default channel", "channel options", "(Optional) enter covert channel options here and call the 'set channel options' function!");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 	wlMakeChannelManager();
+	wlSetMessageCallback(wl_recieve_im);
 }
 
 PURPLE_INIT_PLUGIN(whisperlibrary, init_plugin, info)
