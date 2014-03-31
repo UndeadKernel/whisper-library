@@ -52,12 +52,13 @@ set(TESTS
 )
 
 # Boost library
-# Use static Libs for Win32 systems.
-if (WIN32)
+# Use static Lis
+
+if(WIN32)
 	set(Boost_USE_STATIC_LIBS ON)
-else (WIN32)
+else(WIN32)
 	set(Boost_USE_STATIC_LIBS OFF)
-endif (WIN32)
+endif(WIN32)
 
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
 find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
@@ -97,27 +98,37 @@ include_directories(
 		${PCAP_INCLUDES}
 )
 
-add_library(whisperLibrary SHARED
+add_library(whisperLibrary STATIC
     ${HEADERS}
     ${SOURCES}
 )
 
-TARGET_LINK_LIBRARIES(whisperLibrary
-	${Boost_LIBRARIES}
-	${PCAP_LIBRARIES}
+if (WIN32)
+	TARGET_LINK_LIBRARIES(
+		whisperLibrary
+		${Boost_LIBRARIES}
+		${PCAP_LIBRARIES}
+	)
+endif (WIN32)
+
+if(UNIX)
+	find_package(Threads)
+	TARGET_LINK_LIBRARIES(
+		whisperLibrary
+		${Boost_LIBRARIES}
+		${PCAP_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
 )
+set_target_properties(whisperLibrary PROPERTIES COMPILE_FLAGS "-fPIC")
+endif(UNIX)
 
 add_executable(tests
     	${TESTS}
-		${HEADERS}
-		${SOURCES}
 )
 
 add_executable(systemtest
 		tests/communicationTest.cpp
 		tests/main_test_suite.cpp
-		${HEADERS}
-		${SOURCES}
 )
 
 add_dependencies(tests
@@ -129,30 +140,10 @@ add_dependencies(systemtest
 
 target_link_libraries(tests
     	whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
 )
 target_link_libraries(systemtest
 		whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
 )
-
-if (UNIX)
-	find_package(Threads)
-	target_link_libraries (
-		systemtest
-		${CMAKE_THREAD_LIBS_INIT}
-	)
-	target_link_libraries (
-		whisperLibrary
-		${CMAKE_THREAD_LIBS_INIT}
-	)
-	target_link_libraries (
-		tests
-		${CMAKE_THREAD_LIBS_INIT}
-	)	
-endif()
 
 #ws2_32
 if (WIN32)
@@ -162,5 +153,8 @@ if (WIN32)
 endif()
 add_definitions(-DWHISPER_BUILD)
 
-install(TARGETS whisperLibrary RUNTIME DESTINATION .
-				LIBRARY DESTINATION .)
+install(TARGETS whisperLibrary 
+	RUNTIME DESTINATION .
+	LIBRARY DESTINATION .
+	ARCHIVE DESTINATION .
+)

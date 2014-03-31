@@ -13,6 +13,7 @@
 #include <accountopt.h>
 #include <status.h>
 #include <stdbool.h>
+#include <time.h>
 #include "whisperLibrary/whisper_library_wrapper.hpp"
 
 static const char* PLUGIN_ID = "prpl_whisper_library";
@@ -58,7 +59,7 @@ int wl_send_im (PurpleConnection* connection, const char* who, const char* messa
 }
 
 void wl_recieve_im (const char* who, const char* message){
-	
+	serv_got_im(purple_account_get_connection(m_account), who, message, PURPLE_MESSAGE_RECV, time(NULL));
 }
 
 void wl_set_status(PurpleAccount* account, PurpleStatus* status){

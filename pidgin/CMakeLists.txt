@@ -39,16 +39,13 @@ add_dependencies(whisperLibraryPidgin
 target_link_libraries(
 	whisperLibraryPidgin
 	whisperLibrary
-	${LIBPURPLE_LIBRARIES}
 	${GLIB_LIBRARIES}
+	${LIBPURPLE_LIBRARIES}
 )
 
 
-	if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-		set_target_properties(whisperLibraryPidgin PROPERTIES COMPILE_FLAGS "-fPIC `pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0`")
-else (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-		set_target_properties(whisperLibraryPidgin PROPERTIES COMPILE_FLAGS "`pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0`")
-	endif (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+set_target_properties(whisperLibraryPidgin PROPERTIES COMPILE_FLAGS "-fPIC `pkg-config --cflags glib-2.0` `pkg-config --libs glib-2.0`")
+
 endif (UNIX)
 
 if (WIN32)
@@ -91,18 +88,21 @@ add_library(whisperLibraryPidgin SHARED
 	${SOURCES}
 )	
 
+
+set(WHISPERSTATIC -Wl, -all -lwhisperLibrary -Wl, -notall)
+
 add_dependencies(whisperLibraryPidgin
-	whisperLibrary
+	${WHISPERSTATIC}
 	${PIDGIN_LIBRARIES}
 )
 
 target_link_libraries(whisperLibraryPidgin
-	whisperLibrary
+	${WHISPERSTATIC}
 	${PIDGIN_LIBRARIES}
 )
 endif (WIN32)
 install(
-	TARGETS whisperLibraryPidgin 
+	TARGETS whisperLibraryPidgin
 	RUNTIME DESTINATION .
 	LIBRARY DESTINATION PidginPlugin
 	ARCHIVE DESTINATION PidginPlugin
