@@ -6,6 +6,11 @@
 
 using namespace std;
 namespace whisper_library {
+/** \brief Represents an ethernet header
+
+This class provides getters and setters for all ethernet header fields (IEEE 802.3 without extensions)
+The content is exported as binary by using 'toVector'.
+*/
 class EthernetHeader {
 public:
 	/** \brief Constructor that initializes the header with 0
