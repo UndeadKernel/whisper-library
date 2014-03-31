@@ -18,9 +18,29 @@ namespace whisper_library {
 		if (m_state == ESTABLISHED) {
 			string http_text;
 			if (!m_server) {
-				http_text = ;
+				http_text = "GET /index.html HTTP/1.1\n"
+							"Host: www.example.com";
 			}
-			return createPacket(false, false, "AB"); // TODO enter data
+			else {
+				http_text = "HTTP / 1.1 200 OK\n"
+							"Date : Mon, 23 May 2005 22 : 38 : 34 GMT\n";
+							"Server : Apache / 1.3.3.7 (Unix)(Red - Hat / Linux)\n"
+							"Last - Modified : Wed, 08 Jan 2003 23 : 11 : 55 GMT\n"
+							"ETag : \"3f80f-1b6-3e1cb03b\"\n"
+							"Content - Type : text / html; charset = UTF - 8\n"
+							"Content - Length: 131\n"
+							"Accept - Ranges : bytes\n"
+							"Connection : close\n\n"
+							"<html>\n"
+							"<head>\n"
+							"<title>An Example Page</title>\n"
+							"</head>\n"
+							"<body>\n"
+							"Hello World, this is a very simple HTML document.\n"
+							"</body>\n"
+							"</html>\n";
+			}
+			return createPacket(false, false, http_text); // TODO enter data
 		}
 		else {
 			return createPacket(false, false, "Test");
