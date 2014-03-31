@@ -118,7 +118,7 @@ void ChannelManager::outputMessage(string ip, string message){
 		(*m_output_stream) << message;
 	}
 	if (m_message_callback != NULL) {
-		m_message_callback(ip.cstr(), message.cstr());
+		m_message_callback(ip.c_str(), message.c_str());
 	}
 }
 
