@@ -11,7 +11,6 @@ public:
 	TcpPacketGenerator(unsigned short port, function<void(TcpPacket)> send, function<void(GenericPacket)> forward);
 	void receivePacket(TcpPacket);
 	TcpPacket nextPacket();
-	void sendConnect();
 
 	unsigned int status();
 
@@ -19,6 +18,7 @@ public:
 	static const unsigned int RECEIVED_SYN = 1;
 	static const unsigned int ESTABLISHED = 2;
 private:
+	void sendConnect();
 	TcpPacket createPacket(bool syn, bool ack, string data);
 	void sendConnectResponse();
 	void sendAcknowledgeResponse();

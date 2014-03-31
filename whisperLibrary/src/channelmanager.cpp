@@ -215,7 +215,6 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 			(ip, new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network,ip, placeholders::_1),
 			bind(&CovertChannel::receiveMessage, channel, placeholders::_1)))
 			);
-		m_generator_mapping.at(ip)->sendConnect();
 	}
 
 	return true;

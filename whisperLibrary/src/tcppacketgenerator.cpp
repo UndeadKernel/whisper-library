@@ -12,6 +12,8 @@ namespace whisper_library {
 	  m_server(false) {
 		m_next_sequence = 0; // TODO randomize
 		m_base_sequence = m_next_sequence;
+
+		sendConnect();
 	}
 
 	TcpPacket TcpPacketGenerator::nextPacket() {
@@ -19,31 +21,15 @@ namespace whisper_library {
 			string http_text;
 			if (!m_server) {
 				http_text = "GET /index.html HTTP/1.1\n"
-							"Host: www.example.com";
+							"Host: www.google.com";
 			}
 			else {
-				http_text = "HTTP / 1.1 200 OK\n"
-							"Date : Mon, 23 May 2005 22 : 38 : 34 GMT\n";
-							"Server : Apache / 1.3.3.7 (Unix)(Red - Hat / Linux)\n"
-							"Last - Modified : Wed, 08 Jan 2003 23 : 11 : 55 GMT\n"
-							"ETag : \"3f80f-1b6-3e1cb03b\"\n"
-							"Content - Type : text / html; charset = UTF - 8\n"
-							"Content - Length: 131\n"
-							"Accept - Ranges : bytes\n"
-							"Connection : close\n\n"
-							"<html>\n"
-							"<head>\n"
-							"<title>An Example Page</title>\n"
-							"</head>\n"
-							"<body>\n"
-							"Hello World, this is a very simple HTML document.\n"
-							"</body>\n"
-							"</html>\n";
+				http_text = "HTTP/1.1 404 Not Found";
 			}
 			return createPacket(false, false, http_text); // TODO enter data
 		}
 		else {
-			return createPacket(false, false, "Test");
+			return createPacket(true, false, "");
 		}
 	}
 
