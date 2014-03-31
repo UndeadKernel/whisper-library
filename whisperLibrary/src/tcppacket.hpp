@@ -186,6 +186,7 @@ public:
     /** \param val Set the data of the packet.
      */
     void setData(vector<bool> val);
+	void setData(string data);
     /** \param val Convert a boolean vector into the packet object.
      */
     void setPacket(vector<bool> val);
