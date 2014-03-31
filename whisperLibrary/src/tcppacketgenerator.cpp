@@ -1,6 +1,7 @@
 #include "tcppacketgenerator.hpp"
 #include <thread>
 #include <iostream>
+#include <random>
 
 namespace whisper_library {
 	TcpPacketGenerator::TcpPacketGenerator(unsigned short port, function<void(TcpPacket)> send, function<void(GenericPacket)> forward)
@@ -10,10 +11,19 @@ namespace whisper_library {
 	  m_state(0),
 	  m_timeout(1000),
 	  m_server(false) {
-		m_next_sequence = 0; // TODO randomize
-		m_base_sequence = m_next_sequence;
+		try {
+			random_device generator;
+			uniform_int_distribution<int> distribution(0, 1000);
+			m_next_sequence = distribution(generator);
+		}
+		catch (exception) {
+			// true random numbers not supported
+			default_random_engine generator;
+			uniform_int_distribution<int> distribution(0, 1000);
+			m_next_sequence = distribution(generator);
+		}
 
-		sendConnect();
+		m_base_sequence = m_next_sequence;
 	}
 
 	TcpPacket TcpPacketGenerator::nextPacket() {
@@ -26,9 +36,10 @@ namespace whisper_library {
 			else {
 				http_text = "HTTP/1.1 404 Not Found";
 			}
-			return createPacket(false, false, http_text); // TODO enter data
+			return createPacket(false, false, http_text);
 		}
 		else {
+			// no connection, send synchronisation packet
 			return createPacket(true, false, "");
 		}
 	}

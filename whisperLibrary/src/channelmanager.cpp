@@ -211,12 +211,11 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 		return false;
 	}
 	if (channel->protocol().compare("tcp") == 0) { //equal
-		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>
-			(ip, new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network,ip, placeholders::_1),
-			bind(&CovertChannel::receiveMessage, channel, placeholders::_1)))
-			);
+		TcpPacketGenerator* generator = new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network, ip, placeholders::_1),
+			bind(&CovertChannel::receiveMessage, channel, placeholders::_1));
+		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>(ip, generator));
+		generator->sendConnect();
 	}
-
 	return true;
 }
 
