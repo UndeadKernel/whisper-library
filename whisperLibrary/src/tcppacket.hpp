@@ -259,14 +259,14 @@ private:
 		\param vec The vector the value will be inserted in
 		\param val The value to be inserted
     */
-    void uIntToVector(uint start, uint end, vector<bool> &vec, unsigned int val);
+	template <class T> void uIntToVector(uint start, uint end, vector<bool> &vec, T val);
 
     /** \brief This function is used to convert a given integer value into a boolean vector.
 		\param val The value to be converted
 		\param size length of returned vector
 		\return A vector of booleans with a binary representation of the value
      */
-    vector<bool> intToBoolVector(int val, uint size);
+	template <class T> vector<bool> intToBoolVector(T val, uint size);
 
     /** 
 		\brief This function uses the one complement addition to add two 16 bit boolean vectors.
