@@ -22,8 +22,15 @@
 #include <timingcovertchannel.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cmath>
 
 namespace whisper_library {
+	TimingCovertChannel::~TimingCovertChannel() {
+		m_mutex_sending.lock();
+		delete m_coder;
+		m_mutex_sending.unlock();
+	}
+
 	string TimingCovertChannel::name() const{
 		return "Timing Covert Channel";
 	}
@@ -36,7 +43,7 @@ namespace whisper_library {
 		return "udp";
 	}
 
-	short TimingCovertChannel::port() const{
+	unsigned short TimingCovertChannel::port() const{
 		return 23;
 	}
 
@@ -50,6 +57,7 @@ namespace whisper_library {
 	}
 
 	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
+		m_mutex_sending.lock();
 		chrono::time_point<chrono::system_clock> sending_time;
 		m_send(m_getPacket(port()));
 		chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
@@ -60,12 +68,14 @@ namespace whisper_library {
 			m_send(packet);
 			start = chrono::system_clock::now();
 		}
+		this_thread::sleep_for(chrono::milliseconds(m_timeout));
+		m_mutex_sending.unlock();
 	}
 
-	void TimingCovertChannel::receiveMessage(GenericPacket& packet){
+	void TimingCovertChannel::receivePacket(GenericPacket& packet){
 		// update timeout point
 		m_timeout_changed = true;	
-		m_timeout_end = chrono::system_clock::now() + chrono::seconds(m_timeout);
+		m_timeout_end = chrono::system_clock::now() + chrono::milliseconds(m_timeout);
 		if (!m_receiving) {
 			// first packet arrived
 			m_receive_start = chrono::system_clock::now();
@@ -135,5 +145,6 @@ namespace whisper_library {
 		m_threshold_delay_short = (m_delay_long + m_delay_short) / 2;
 		m_threshold_delay_long = (m_delay_long + m_delay_letter) / 2;
 		m_threshold_delay_letter = (m_delay_letter + m_delay_space) / 2;
+		m_timeout = static_cast<unsigned int>(round(m_delay_space*1.5));
 	}
 }

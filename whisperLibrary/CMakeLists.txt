@@ -15,13 +15,14 @@ set(SOURCES
 	src/networkconnector.cpp
 	src/ipheaderv4.cpp
 	src/ethernetheader.cpp
+	src/tcppacketgenerator.cpp
+	src/packetlengthcovertchannel.cpp
+	src/lengthcoder.cpp
+	src/udppacketgenerator.cpp
 	src/whisper_library_wrapper.cpp
 )
-
 set(HEADERS
-	include/whisperLibrary/common.hpp
 	include/whisperLibrary/channelmanager.hpp
-	include/whisperLibrary/whisper_library_wrapper.hpp
 	include/whisperLibrary/covertchannel.hpp
 	include/whisperLibrary/tcpheadercovertchannel.hpp
 	include/whisperLibrary/bitSetCoder.hpp
@@ -36,6 +37,10 @@ set(HEADERS
 	src/networkconnector.hpp
 	src/ipheaderv4.hpp
 	src/ethernetheader.hpp
+	src/tcppacketgenerator.hpp
+	include/whisperLibrary/packetlengthcovertchannel.hpp
+	include/whisperLibrary/lengthcoder.hpp
+	src/udppacketgenerator.hpp
 	include/whisperLibrary/whisper_library_wrapper.hpp
 )
 
@@ -47,25 +52,28 @@ set(TESTS
 	tests/morseCoderTest.cpp
 	tests/timingCovertChannelTest.cpp
 	tests/pcapWrapperTest.cpp
-	tests/socketConnectionTest.cpp
+	tests/socketSenderTest.cpp
 	tests/networkConnectorTest.cpp
+	tests/tcpPacketGeneratorTest.cpp
+	tests/packetLengthCovertChannelTest.cpp
+	tests/lengthCoderTest.cpp
+	tests/udpPacketGeneratorTest.cpp
 )
 
 # Boost library
-# Use static Lis
-
-if(WIN32)
+# Use static Libs for Win32 systems.
+if (WIN32)
 	set(Boost_USE_STATIC_LIBS ON)
-else(WIN32)
+else (WIN32)
 	set(Boost_USE_STATIC_LIBS OFF)
-endif(WIN32)
+endif (WIN32)
 
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
-find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework)
+find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework REQUIRED)
+
+add_definitions(-D_SCL_SECURE_NO_WARNINGS)	# disable warning C4996 in MSVC
 
 # Pcap library
-#set(PCAP_LIB_DIR "C:/Libraries/WpdPack_4_1_2/Lib")
-
 if(EXISTS $ENV{PCAP_ROOT})
 	MESSAGE("PCAP_ROOT environment variable set ($ENV{PCAP_ROOT})")
 	find_path(PCAP_INCLUDE_DIR NAMES pcap/pcap.h pcap.h PATHS $ENV{PCAP_ROOT} NO_DEFAULT_PATH PATH_SUFFIXES "Include")
@@ -98,6 +106,15 @@ include_directories(
 		${PCAP_INCLUDES}
 )
 
+add_executable(tests
+    	${TESTS}
+)
+
+add_executable(systemtest
+		tests/communicationTest.cpp
+		tests/main_test_suite.cpp
+)
+
 add_library(whisperLibrary STATIC
     ${HEADERS}
     ${SOURCES}
@@ -111,6 +128,21 @@ if (WIN32)
 	)
 endif (WIN32)
 
+target_link_libraries(tests
+    	whisperLibrary
+)
+
+target_link_libraries(systemtest
+		whisperLibrary
+)
+
+add_dependencies(tests
+    	whisperLibrary
+)
+add_dependencies(systemtest
+		whisperLibrary
+)
+
 if(UNIX)
 	find_package(Threads)
 	TARGET_LINK_LIBRARIES(
@@ -122,39 +154,15 @@ if(UNIX)
 set_target_properties(whisperLibrary PROPERTIES COMPILE_FLAGS "-fPIC")
 endif(UNIX)
 
-add_executable(tests
-    	${TESTS}
-)
-
-add_executable(systemtest
-		tests/communicationTest.cpp
-		tests/main_test_suite.cpp
-)
-
-add_dependencies(tests
-    	whisperLibrary
-)
-add_dependencies(systemtest
-		whisperLibrary
-)
-
-target_link_libraries(tests
-    	whisperLibrary
-)
-target_link_libraries(systemtest
-		whisperLibrary
-)
-
 #ws2_32
 if (WIN32)
-	 target_link_libraries(whisperLibrary ws2_32 Iphlpapi)
-	 target_link_libraries(tests ws2_32 Iphlpapi)
-	 target_link_libraries(systemtest ws2_32 Iphlpapi)
-endif()
+	target_link_libraries(whisperLibrary 
+		ws2_32 
+		Iphlpapi
+	)
+endif(WIN32)
 add_definitions(-DWHISPER_BUILD)
 
 install(TARGETS whisperLibrary 
-	RUNTIME DESTINATION .
-	LIBRARY DESTINATION .
-	ARCHIVE DESTINATION .
-)
+        RUNTIME DESTINATION .
+		ARCHIVE DESTINATION .)

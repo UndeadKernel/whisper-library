@@ -22,6 +22,7 @@
 
 #include <packetlengthcovertchannel.hpp>
 #include <iostream>
+#include <thread>
 
 namespace whisper_library {
 
@@ -43,6 +44,7 @@ namespace whisper_library {
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
 		m_send(m_get_packet(8 + m_baselength + packetLengths.size()));
 		for (unsigned int i = 0; i < packetLengths.size(); i++){
+			this_thread::sleep_for(chrono::milliseconds(10));
 			m_send(m_get_packet(packetLengths[i]));
 		}
 	}
@@ -64,6 +66,7 @@ namespace whisper_library {
 		}
 		if (m_received == m_packetcount){
 			m_output(m_coder->decodeMessage(m_packetlengths));
+			m_packetlengths.clear();
 			m_received = 0;
 			m_packetcount = -1;
 		}

@@ -44,7 +44,7 @@ TcpPacket::TcpPacket(	uint inSourcePort,
     setSourcePort(inSourcePort);
     setDestPort(inDestPort);
     setSequenceNumber(inSequenceNumber);
-    setAcknowlageNumber(inAckNumber);
+    setAcknowledgeNumber(inAckNumber);
     setDataOffset(inDataOffset);
     setWindowSize(inWindowSize);
     setOptions(inOptions);
@@ -82,7 +82,7 @@ ulong TcpPacket::sequenceNumber() const{
     return vectorToULong(32, 63, m_header);
 }
 // header: bits 64-95 
-ulong TcpPacket::acknowlageNumber() const{
+ulong TcpPacket::acknowledgeNumber() const{
     return vectorToULong(64, 95, m_header);
 }
 // header: bits 96-99  
@@ -126,7 +126,7 @@ bool TcpPacket::urgentFlag() const{
     return m_header[106];
 }
 // header: bit 107
-bool TcpPacket::acknowledementFlag() const{
+bool TcpPacket::acknowledgementFlag() const{
     return m_header[107];
 }
 // header: bit 108
@@ -192,7 +192,7 @@ void TcpPacket::setSequenceNumber(ulong val){
     uIntToVector(32,63,m_header,val);
 }
 // header: bits 64-95
-void TcpPacket::setAcknowlageNumber(ulong val){
+void TcpPacket::setAcknowledgeNumber(ulong val){
     uIntToVector(64,95,m_header,val);
 }
 // header: bits 96-99  
@@ -269,6 +269,23 @@ void TcpPacket::setOptions(vector<bool> val){
 void TcpPacket::setData(vector<bool> val){
     m_data = vector<bool>(val);
 }
+void TcpPacket::setData(string data) {
+	vector<bool> binary;
+	for (unsigned int i = 0; i < data.length(); i++) {
+		char byte = data[i];
+		for (unsigned int j = 0; j < 8; j++) {
+			unsigned char bit = byte >> (7 - j);
+			bit = bit & 0x01;
+			if (bit == 0) {
+				binary.push_back(false);
+			}
+			else {
+				binary.push_back(true);
+			}
+		}
+	}
+	setData(binary);
+}
 // packet
 void TcpPacket::setPacket(vector<bool> val){
 	if (val.size() >= 160) {
@@ -292,6 +309,7 @@ void TcpPacket::setPacket(vector<bool> val){
 }
     
 void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
+	setChecksum(0);
     vector<bool> sum;
 	/* 
 		split the tcp packet into 16bit values and add them to 
@@ -341,7 +359,7 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 
     // compute the one complement of the sum and store it as the new checksum
     sum.flip();
-    setChecksum(vectorToULong(0, (sum.size()-1), sum));
+    setChecksum(vectorToULong(0, (-1+sum.size()), sum));
 }
 	
     

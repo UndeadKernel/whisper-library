@@ -8,12 +8,12 @@
 #include <thread>
 #include <atomic>
 
-#include "../include/whisperLibrary/genericpacket.hpp"
+#include <genericpacket.hpp>
 #include "tcppacket.hpp"
 #include "udppacket.hpp"
-#include "../include/whisperLibrary/pcapwrapper.hpp"
+#include <pcapwrapper.hpp>
 #include "socketSender.hpp"
-#include "../include/whisperLibrary/covertchannel.hpp"
+#include <covertchannel.hpp>
 
 #ifdef WIN32
 	#include <iphlpapi.h>
@@ -22,6 +22,11 @@
 using namespace std;
 
 namespace whisper_library {
+	/** \brief NetworkConnector can send Packets to the Network
+	
+		A NetworkConnector is used by the ChannelManager to send packets. It can be configured
+		to use a specific network adapter and listen to packets from specific Ip addresses.
+	*/
 
 class NetworkConnector {
 public:
@@ -61,7 +66,7 @@ public:
 		The listener is started in a seperate thread.
 		Received packets are returned with the callback method set in the constructor.
 		\param ip The destination IP of the connection
-		\param The covert channel that is used for the connection
+		\param channel The covert channel that is used for the connection
 		\return Returns true if the packet listener was started succesfully, otherwise false.
 	*/
 	bool openListener(string ip, CovertChannel* channel);
@@ -117,7 +122,7 @@ private:
 		\param ip The ip to check
 		\return True if the ip is a valid Ipv4 address, otherwise false
 	*/
-	bool validIP(string ip);
+	bool validIPv4(string ip);
 	/** \brief Adds a capture filter for the opened adapter.
 		
 		Only packets with matching ip, port and protocol are received.
@@ -194,9 +199,9 @@ private:
 	string m_adapter; ///< Holds the unique adapter name, that is currently selected
 	atomic<bool> m_adapter_open; ///< True, if a network adapter is open. Otherwise false.
 	map<string, string> m_filter; ///< map, that stores the capture filter rule for every ip. The key is the ip, the capture filter belongs to.
-	function<void(string, GenericPacket)> m_packet_received; ///< Callback method that is called, when a new packet arrived. 
-															 // First parameter is the ip it was sent from, the second is the application layer 
-															 // part of the packet in a generic format
+	function<void(string, GenericPacket)> m_packet_received; /**< Callback method that is called, when a new packet arrived. 
+															 First parameter is the ip it was sent from, the second is the application layer 
+															 part of the packet in a generic format */
 };
 
 }

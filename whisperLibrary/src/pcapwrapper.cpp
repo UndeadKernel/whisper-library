@@ -36,7 +36,7 @@ namespace whisper_library {
 		m_last_return_codes.clear();
 	}
 	
-	bool PcapWrapper::checkForAdapterId(int adapter_id) {
+	inline bool PcapWrapper::checkForAdapterId(int adapter_id) {
 		if (m_adapter_data.empty()) {
 			// unsafe call
 			fprintf(stderr, "Warning: Adapter requested while all adapters are freed. Retrieving adapters...");
@@ -50,7 +50,7 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), true);
 	}
 
-	const char* PcapWrapper::adapterName(int adapter_id) {
+	std::string PcapWrapper::adapterName(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -58,21 +58,21 @@ namespace whisper_library {
 		RETURN_VALUE(RC(NORMAL_EXECUTION), m_adapter_data[adapter_id][ADAPTER_NAME]);
 	}
 
-	std::vector<char*> PcapWrapper::adapterNames() {
+	std::vector<std::string> PcapWrapper::adapterNames() {
 		/* we could use getAdapterName(adapter_id) here, 
 		but constant checking for the adapter_id would be a unnecessary waste of performance */
-		std::vector<char*> ret;
-		for (std::vector<char*> adapter : m_adapter_data) {
+		std::vector<std::string> ret;
+		for (std::vector<std::string> adapter : m_adapter_data) {
 			ret.push_back(adapter[ADAPTER_NAME]);
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	int PcapWrapper::adapterId(const char* value, int key, bool increment_key) {
+	int PcapWrapper::adapterId(std::string value, int key, bool increment_key) {
 		int i, j;
-		for (i = 0; i < static_cast<int>(m_adapter_data.size()); i++) {
-			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; j++) {
-				if (strcmp(m_adapter_data[i][j], value) == 0) {
+		for (i = 0; i < static_cast<int>(m_adapter_data.size()); ++i) {
+			for (j = key; j < static_cast<int>(m_adapter_data[i].size()) && increment_key || j == key; ++j) {
+				if (value.compare(m_adapter_data[i][j]) == 0) {
 					RETURN_VALUE(RC(NORMAL_EXECUTION), i);
 				}
 			}
@@ -80,20 +80,20 @@ namespace whisper_library {
 		RETURN_CODE(RC(ADAPTER_NOT_FOUND));
 	}
 
-	int PcapWrapper::adapterId(const char* adapter_value, int value_type) {
+	int PcapWrapper::adapterId(std::string adapter_value, int value_type) {
 		return adapterId(adapter_value, value_type, (value_type == ADAPTER_ADDRESS ? true : false));
 	}
 
-	std::vector<char*> PcapWrapper::adapterAddresses(int adapter_id) {
-		std::vector<char*> ret;
+	std::vector<std::string> PcapWrapper::adapterAddresses(int adapter_id) {
+		std::vector<std::string> ret;
 		if (!checkForAdapterId(adapter_id)) { return ret; }  // specified adapter not found
-		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); i++) {
+		for (unsigned int i = ADAPTER_ADDRESS; i < (m_adapter_data[adapter_id]).size(); ++i) {
 			ret.push_back(m_adapter_data[adapter_id][i]);
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), ret);
 	}
 
-	const char*	PcapWrapper::adapterDescription(int adapter_id) {
+	std::string	PcapWrapper::adapterDescription(int adapter_id) {
 		if (!checkForAdapterId(adapter_id)) {
 			// specified adapter not found
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), NULL);
@@ -126,9 +126,15 @@ namespace whisper_library {
 			*/
 			if (!adapter->addresses) { continue; }
 
-			std::vector<char*> current_adapter;
+			std::vector<std::string> current_adapter;
 			current_adapter.push_back(adapter->name);					// adapter/device name in the system (for example /dev/eth0)
-			current_adapter.push_back(adapter->description);			// adapter descriptional name (usually the product name of the network card o.s.)
+			if (adapter->description) {
+				current_adapter.push_back(adapter->description);	// adapter descriptional name (usually the product name of the network card o.s.)
+			}
+			else {
+				current_adapter.push_back("");
+			}
+			
 			bpf_u_int32 netmask;
 			bpf_u_int32 ip4_address;
 			if (pcap_lookupnet(adapter->name, &netmask, &ip4_address, error_buffer) < 0) {
@@ -138,9 +144,10 @@ namespace whisper_library {
 
 			DEBUG(1, "Device Name: %s\nDescription: %s\nFlags: #%d\n", adapter->name, adapter->description, adapter->flags);
 			// get adapter addresses
+			char* address_buffer;
+			size_t buffer_size = 0;
 			for (pcap_addr* address = adapter->addresses; address; address = address->next) {
-				char* address_buffer;
-				size_t buffer_size = 0;
+				buffer_size = 0;
 				switch (address->addr->sa_family) {
 					// address families with 32 bit addresses 
 					case AF_INET: {		// UDP, TCP, ...
@@ -169,8 +176,9 @@ namespace whisper_library {
 				// currently only addresses up to 128bit and known to getnameinfo are supported by ipToString
 				ipToString(address->addr, address_buffer, buffer_size);
 				if (address_buffer) {
-					current_adapter.push_back(address_buffer);
+					current_adapter.push_back(std::string(address_buffer));
 				}
+				free(address_buffer);
 			}
 			// Set global adapter_data
 			m_adapter_data.push_back(current_adapter);
@@ -180,38 +188,44 @@ namespace whisper_library {
 
 	int PcapWrapper::openAdapter(int adapter_id, int max_packet_size, bool promiscuous_mode, int timeout) {
 		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
+
 		// open handle
 		char error_buffer[PCAP_ERRBUF_SIZE]; // pcap error buffer
 
 		// resize handles vector as needed
 		if (static_cast<int>(m_adapter_handles.size()) <= adapter_id) {
 			m_adapter_handles.resize(adapter_id + 1);
+		} else if (m_adapter_handles[adapter_id]) {
+			fprintf(stderr, "Warning: Tried to open already open adapter #%d\n", adapter_id);
+			RETURN_CODE(RC(OPEN_ON_OPENED_HANDLE));
 		}
 		// open handle for live capturing
-		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0], max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
+		m_adapter_handles[adapter_id] = pcap_open_live(m_adapter_data[adapter_id][0].c_str(), max_packet_size, (promiscuous_mode ? 1 : 0 ), timeout, error_buffer);
 		if (!m_adapter_handles[adapter_id]) {
-			fprintf(stderr, "Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0], error_buffer);
+			fprintf(stderr, "Error: Failed to open handle on network device #%d (%s)\n%s\n", adapter_id, m_adapter_data[adapter_id][0].c_str(), error_buffer);
 			RETURN_CODE(RC(ERROR_OPENING_HANDLE));
 		}
 		DEBUG(1, "Capturing started on device #%d\n", adapter_id);
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::openAdapter(const char* adapter_name, int max_packet_size, bool promiscuous_mode, int timeout) {
+	int PcapWrapper::openAdapter(std::string adapter_name, int max_packet_size, bool promiscuous_mode, int timeout) {
 		return openAdapter(adapterId(adapter_name, ADAPTER_NAME), max_packet_size, promiscuous_mode, timeout);
 	}
 
-	int PcapWrapper::closeAdapter(const char* adapter_name) {
+	int PcapWrapper::closeAdapter(std::string adapter_name) {
 		return closeAdapter(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
 	int PcapWrapper::closeAdapter(int adapter_id) {
+		if (!checkForAdapterId(adapter_id)) { RETURN_CODE(RC(ADAPTER_NOT_FOUND)); } // specified adapter not found
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id && m_adapter_handles[adapter_id]) {
 			pcap_close(m_adapter_handles[adapter_id]);
 			m_adapter_handles[adapter_id] = NULL;
 			RETURN_CODE(RC(NORMAL_EXECUTION));
 		}
 		// Nothing to close
+		fprintf(stderr, "Warning: Tried to close unopened adapter #%d\n", adapter_id);
 		RETURN_CODE(RC(CLOSE_ON_UNOPENED_HANDLE));
 	}
 
@@ -220,16 +234,9 @@ namespace whisper_library {
 			// nothing to free
 			RETURN_CODE(RC(NORMAL_EXECUTION));
 		}
+		// close (still) open handles
 		for (pcap_t* handle : m_adapter_handles) {
 			if (handle) { pcap_close(handle); }
-		}
-		unsigned int i;
-		for (std::vector<char*> adapter : m_adapter_data) {
-			// i >= 2 := Address strings
-			for (i = 2; i < adapter.size(); i++) {
-				// Free allocated memory
-				free(adapter[i]);
-			}
 		}
 		// clear vector content
 		m_adapter_data.clear();
@@ -242,55 +249,54 @@ namespace whisper_library {
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::applyFilter(int adapter_id, const char* filter) {
-		
+	int PcapWrapper::applyFilter(int adapter_id, std::string filter) {
 		if (!checkForAdapterId(adapter_id)) { return -1; } // specified adapter not found
-		const char*			filter_string = (filter ? filter : ""); // If given filter is NULL, replace with empty(/ANY) filter
 		struct bpf_program	filter_compiled;
 		pcap_t*				handle = NULL;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
-			handle = m_adapter_handles[adapter_id];
+			handle = m_adapter_handles[adapter_id]; // fetch adapter handle
 		}
 		if (!handle) {
 			fprintf(stderr, "Error: applyFilter() called on unopened adapter.\n");
 			RETURN_CODE(RC(ACCESS_ON_UNOPENED_HANDLE));
 		}
+		// get adapter netmask (if set)
 		bpf_u_int32 netmask;
 		if (m_adapter_netmasks.size() > adapter_id && m_adapter_netmasks[adapter_id] != 0) {
 			netmask = m_adapter_netmasks[adapter_id];
 		} else {
 			netmask = PCAP_NETMASK_UNKNOWN;
 		}
-
-		if (pcap_compile(handle, &filter_compiled, filter_string, 1, netmask) < 0) {
+		// compile packet filter
+		if (pcap_compile(handle, &filter_compiled, filter.c_str(), 1, netmask) < 0) {
 			fprintf(stderr, "Error: Failed to compile given filter.\n");
 			RETURN_CODE(RC(ERROR_COMPILING_FILTER));
 		}
+		// set packet filter
 		if (pcap_setfilter(handle, &filter_compiled) < 0) {
 			fprintf(stderr, "Error: Failed to apply the given filter.\n");
 			RETURN_CODE(RC(ERROR_APPLYING_FILTER));
 		}
-		DEBUG(1, "Filter successfully applied.\nFilter: %s\n", filter_string);
+		DEBUG(1, "Filter successfully applied.\nFilter: %s\n", filter.c_str());
 		RETURN_CODE(RC(NORMAL_EXECUTION));
 	}
 
-	int PcapWrapper::applyFilter(const char* adapter_name, const char* filter) {
+	int PcapWrapper::applyFilter(std::string adapter_name, std::string filter) {
 		return applyFilter(adapterId(adapter_name, ADAPTER_NAME), filter);
 	}
 
-	int PcapWrapper::removeFilter(const char* adapter_name) {
-		return applyFilter(adapter_name, NULL);
+	int PcapWrapper::removeFilter(std::string adapter_name) {
+		return applyFilter(adapter_name, "");
 	}
 
 	int PcapWrapper::removeFilter(int adapter_id) {
-		return applyFilter(adapter_id, NULL);
+		return applyFilter(adapter_id, "");
 	}
 
 	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(int adapter_id) {
 		PcapPacket packet = { NULL, NULL };
 		if (!checkForAdapterId(adapter_id)) {
-			// specified adapter not found
-			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), packet);
+			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), packet); // specified adapter not found
 		}
 		/*
 			struct pcap_pkthdr:
@@ -298,9 +304,11 @@ namespace whisper_library {
 				bpf_u_int32		caplen;
 				bpf_u_int32		len;
 		*/
-		struct pcap_pkthdr 	packet_header;
-		const u_char*		packet_data;
-		pcap_t*				handle = NULL;
+		struct pcap_pkthdr*	packet_header;
+		const u_char*		packet_data; 
+		pcap_t*				handle		= NULL;
+		int					iterations	= 0;
+		int					return_code = 0;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
 			handle = m_adapter_handles[adapter_id];
 		}
@@ -311,23 +319,21 @@ namespace whisper_library {
 		/* Note: 
 			packet_data can contain NULL if
 			1. an error occured
-			2. no packets were read from live capture (read timeout)
+			2. no packets were read from live capture (due to read timeout) in 500 tries
 			3. no packet passed the filter
 			Quote from winpcap doc: "Unfortunately, there is no way to determine whether an error occured or not."
 			( http://www.winpcap.org/docs/docs_412/html/group__wpcapfunc.html#gadf60257f650aaf869671e0a163611fc3 )
 		*/
-		packet_data  = pcap_next(handle, &packet_header); // returns pointer to the packet data (pcap header not included)
-		packet.header = packet_header;
-		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header.len);
-		if (packet_data) {
+		while ( (return_code = pcap_next_ex(handle, &packet_header, &packet_data)) == 0 && ++iterations <= 500);
+		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header->len);
+		if (return_code == 1) {
 			packet.payload = packet_data;
-			RETURN_VALUE(RC(NORMAL_EXECUTION), packet);
-		} else {
-			RETURN_VALUE(RC(EMPTY_PACKET_DATA), packet);
+			packet.header = *packet_header;
 		}
+		RETURN_VALUE(RC((return_code == 1 ? NORMAL_EXECUTION : EMPTY_PACKET_DATA)), packet);
 	}
 
-	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(const char* adapter_name) {
+	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(std::string adapter_name) {
 		return retrievePacket(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
@@ -337,23 +343,21 @@ namespace whisper_library {
 		if (packet.payload == NULL) {
 			RETURN_VALUE(RC(EMPTY_PACKET_DATA), bitVector);
 		}
-		unsigned int packet_size	= packet.header.len;
 		const unsigned char* it		= packet.payload;
 		unsigned int i, j;
-		for (i = 0; i < packet_size; i++) {
-			for (j = 0; j < 8; j++) {
+		for (i = 0; i < packet.header.len; ++i, ++it) {
+			for (j = 0; j < 8; ++j) {
 				bitVector.push_back((*it & (1 << j)) != 0);
 			}
-			it++;
 		}
 		RETURN_VALUE(RC(NORMAL_EXECUTION), bitVector);
 	}
 
-	std::vector<bool> PcapWrapper::retrievePacketAsVector(const char* adapter_name) {
+	std::vector<bool> PcapWrapper::retrievePacketAsVector(std::string adapter_name) {
 		return retrievePacketAsVector(adapterId(adapter_name, ADAPTER_NAME));
 	}
 
-	char* PcapWrapper::ipToString(struct sockaddr* socket_address, char* buffer, size_t buffer_length) {
+	inline char* PcapWrapper::ipToString(struct sockaddr* socket_address, char* buffer, size_t buffer_length) {
 		if (!socket_address) { return NULL; }
 		// sockaddr_storage requires Windows XP, Windows Server 2003 or later
 		socklen_t address_length = sizeof(struct sockaddr_storage);
@@ -365,11 +369,15 @@ namespace whisper_library {
 	}
 
 	std::vector<int> PcapWrapper::lastReturnCodes() {
-		std::vector<int> returnCodes = std::vector<int>(20);
-		for (int rc : m_last_return_codes) {
-			returnCodes.push_back(rc);
+		std::vector<int> returnCodes = std::vector<int>(m_last_return_codes.size());
+		for (unsigned int i = 0; i < m_last_return_codes.size(); ++i) {
+			returnCodes[i] = m_last_return_codes[i];
 		}
 		return returnCodes;
+	}
+
+	void PcapWrapper::clearReturnCodes() {
+		m_last_return_codes.clear();
 	}
 
 	int	PcapWrapper::sendPacket(int adapter_id, unsigned char* packet_buffer, int buffer_size) {
@@ -397,7 +405,7 @@ namespace whisper_library {
 	#endif
 	}
 
-	int	PcapWrapper::sendPacket(const char* adapter_name, unsigned char* packet_buffer, int buffer_size) {
+	int	PcapWrapper::sendPacket(std::string adapter_name, unsigned char* packet_buffer, int buffer_size) {
 		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_buffer, buffer_size);
 	}
 
@@ -412,20 +420,20 @@ namespace whisper_library {
 
 		// convert logical values to numerical
 		int i, j, return_code;
-		for (i = 0; i < buffer_size; i++) {
+		for (i = 0; i < buffer_size; ++i) {
 			buffer[i] = 0; // initialize
-			for (j = 0; j < 8; j++) {
+			for (j = 0; j < 8; ++j) {
 				DEBUG(4, "bit index: %d, data index: %d, value: %d\n", j, j + (i * 8), (packet_data[j + (i * 8)] ? 1 : 0));
 				buffer[i] |= (packet_data[j + (i * 8)] ? 1 : 0) << j;
 			}
 			DEBUG(3, "send buffer char #%d content: %u\n\n", i, buffer[i]);
 		}
 		return_code = sendPacket(adapter_id, buffer, buffer_size);
-		free(buffer);
+		free(buffer); // important!
 		RETURN_CODE(return_code);
 	}
 
-	int	PcapWrapper::sendPacket(const char* adapter_name, std::vector<bool> packet_data) {
+	int	PcapWrapper::sendPacket(std::string adapter_name, std::vector<bool> packet_data) {
 		return sendPacket(adapterId(adapter_name, ADAPTER_NAME), packet_data);
 	}
 } 

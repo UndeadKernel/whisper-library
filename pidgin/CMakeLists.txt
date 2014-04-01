@@ -89,15 +89,17 @@ add_library(whisperLibraryPidgin SHARED
 )	
 
 
-set(WHISPERSTATIC -Wl, -all -lwhisperLibrary -Wl, -notall)
+#set(WHISPERSTATIC -Wl, -all -lwhisperLibrary -Wl, -notall)
 
 add_dependencies(whisperLibraryPidgin
-	${WHISPERSTATIC}
+	whisperLibrary
+	#${WHISPERSTATIC}
 	${PIDGIN_LIBRARIES}
 )
 
 target_link_libraries(whisperLibraryPidgin
-	${WHISPERSTATIC}
+	whisperLibrary
+	#${WHISPERSTATIC}
 	${PIDGIN_LIBRARIES}
 )
 endif (WIN32)

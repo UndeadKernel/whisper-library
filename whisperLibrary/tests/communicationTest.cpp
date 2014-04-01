@@ -113,7 +113,7 @@ struct CommunicationFixture {
 	void printCovertChannels() {
 		vector<string> names = channelmanager.getChannelNames();
 		vector<string> infos = channelmanager.getChannelInfos();
-		for (int i = 0; i < names.size(); i++) {
+		for (unsigned int i = 0; i < names.size(); i++) {
 			cout << "[" << i << "] " << names[i] << ": " << infos[i] << endl;
 		}
 	}
@@ -121,7 +121,7 @@ struct CommunicationFixture {
 	void printAdapters() {
 		vector<string> names = channelmanager.networkAdapters();
 		last_adapters = names;
-		for (int i = 0; i < names.size(); i++) {
+		for (unsigned int i = 0; i < names.size(); i++) {
 			cout << "[" << i << "] " << names[i] << ": " << channelmanager.adapterDescription(names[i]) << endl;
 		}
 	}

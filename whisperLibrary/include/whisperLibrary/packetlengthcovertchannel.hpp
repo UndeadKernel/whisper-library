@@ -88,7 +88,7 @@ public:
 	*/
 	void receivePacket(GenericPacket& udp_packet);
 	/**
-	No arguments, empty function
+		No arguments, empty function
 	*/
 	void setArguments(std::string arguments) {};
 	/**

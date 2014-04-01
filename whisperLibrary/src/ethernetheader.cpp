@@ -30,9 +30,9 @@ namespace whisper_library {
 		}
 	}
 
-	void EthernetHeader::setDestinationMAC(unsigned char* mac_bitstring) {
-		if (!mac_bitstring) { return; }
-		memcpy(m_head, mac_bitstring, 6);
+	void EthernetHeader::setDestinationMAC(unsigned char* char_array) {
+		if (!char_array || strlen(reinterpret_cast<const char*>(char_array)) < 6) { return; }
+		memcpy(m_head, char_array, 6);
 	}
 
 	void EthernetHeader::setSourceMAC(string mac) {
@@ -43,13 +43,13 @@ namespace whisper_library {
 		}
 	}
 
-	void EthernetHeader::setSourceMAC(unsigned char* mac_bitstring) {
-		if (!mac_bitstring) { return;  }
-		memcpy(m_head+6, mac_bitstring, 6);
+	void EthernetHeader::setSourceMAC(unsigned char* char_array) {
+		if (!char_array || strlen(reinterpret_cast<const char*>(char_array)) < 6) { return; }
+		memcpy(m_head + 6, char_array, 6);
 	}
 
 	void EthernetHeader::setEthernetType(unsigned long type) {
-		m_head[12] = (type >> 8);
+		m_head[12] = static_cast<unsigned char>(type >> 8);
 		m_head[13] = type & 0xff;
 	}
 
@@ -84,10 +84,13 @@ namespace whisper_library {
 	}
 
 	unsigned char EthernetHeader::hexToInt(string hex) {
-		return stoul(hex, nullptr, 16);
+		return static_cast<unsigned char>(stoul(hex, nullptr, 16));
 	}
 
 	string EthernetHeader::toMacString(unsigned char* buffer) {
+		if (!buffer || strlen(reinterpret_cast<const char*>(buffer)) < 6) {
+			return "";
+		}
 		string mac = intToHex(buffer[0]);
 		for (unsigned int i = 1; i < 6; i++) {
 			mac += ":" + intToHex(buffer[i]);

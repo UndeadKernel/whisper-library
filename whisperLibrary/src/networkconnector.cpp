@@ -36,11 +36,11 @@ namespace whisper_library {
 
 	// Adapter Handling
 	void NetworkConnector::setAdapter(string adapter_name) {
-		if (m_pcap->adapterId(adapter_name.c_str(), m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
+		if (m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
 			m_adapter = adapter_name;
 			vector<string> addresses = adapterAddresses();
 			for (unsigned int i = 0; i < addresses.size(); i++) {
-				if (validIP(addresses[i])) {
+				if (validIPv4(addresses[i])) {
 					m_source_ip = addresses[i];
 				}
 			}
@@ -48,27 +48,15 @@ namespace whisper_library {
 	}
 
 	vector<string> NetworkConnector::adapters() {
-		vector<char *> adapter_list;
-		vector<string> adapter_list_string;
-		adapter_list = m_pcap->adapterNames();
-		for (vector<char*>::iterator it = adapter_list.begin(); it != adapter_list.end(); it++) {
-			adapter_list_string.push_back(*it);
-		}
-		return adapter_list_string;
+		return m_pcap->adapterNames();
 	}
 
 	string NetworkConnector::adapterDescription(string adapter_name) {
-		int adapter_id = m_pcap->adapterId(adapter_name.c_str(), m_pcap->ADAPTER_NAME);
+		int adapter_id = m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME);
 		if (adapter_id < 0) {
 			return "";
 		}
-		const char* description = m_pcap->adapterDescription(adapter_id);
-		if (description == NULL) {
-			return "";
-		}
-		else {
-			return description;
-		}
+		return m_pcap->adapterDescription(adapter_id);
 	}
 
 	unsigned int NetworkConnector::adapterCount() {
@@ -76,30 +64,21 @@ namespace whisper_library {
 	}
 
 	vector<string> NetworkConnector::adapterAddresses() {
-		int adapter_id = m_pcap->adapterId(m_adapter.c_str(), m_pcap->ADAPTER_NAME);
-		vector<string> string_addresses;
-		if (adapter_id < 0) {
-			return string_addresses;
-		}
-		vector<char*> addresses = m_pcap->adapterAddresses(adapter_id);
-		for (vector<char*>::iterator it = addresses.begin(); it != addresses.end(); it++) {
-			string_addresses.push_back(*it);
-		}
-
-		return string_addresses;
+		int adapter_id = m_pcap->adapterId(m_adapter, m_pcap->ADAPTER_NAME);
+		return (adapter_id < 0 ? vector<string>() : m_pcap->adapterAddresses(adapter_id));
 	}
 
 	// Connection
 	bool NetworkConnector::openListener(string ip, CovertChannel* channel) {
-		if (!validIP(ip) || channel == NULL || m_adapter.compare("") == 0) {
+		if (!validIPv4(ip) || channel == NULL || m_adapter.compare("") == 0) {
 			return false;
 		}
 		if (!m_adapter_open) {
-			if (m_pcap->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
+			if (m_pcap->openAdapter(m_adapter, m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 				return false;
 			}
 			#ifdef WIN32
-				if (m_pcap_sender->openAdapter(m_adapter.c_str(), m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
+				if (m_pcap_sender->openAdapter(m_adapter, m_pcap->DEFAULT_MAXPACKETSIZE, true, 1) == -1) {
 					return false;
 				}
 			#endif
@@ -120,20 +99,19 @@ namespace whisper_library {
 			removeFilter(ip);
 			m_connection_count--;
 			if (m_connection_count == 0) {
-				m_pcap->closeAdapter(m_adapter.c_str());
-				#ifdef WIN32
-					m_pcap_sender->closeAdapter(m_adapter.c_str());
-				#endif
 				m_adapter_open = false;
+				m_pcap->closeAdapter(m_adapter);
+				#ifdef WIN32
+					m_pcap_sender->closeAdapter(m_adapter);
+				#endif
 			}
 		}
 	}
 
 	void NetworkConnector::retrievePacket() {
 		vector<bool> packet_data;
-		const char * adapter_c_str = m_adapter.c_str();
 		while (m_adapter_open) {
-			packet_data = m_pcap->retrievePacketAsVector(adapter_c_str);
+			packet_data = m_pcap->retrievePacketAsVector(m_adapter);
 
 			if (!packet_data.empty()) {
 				thread packet_received(bind(&NetworkConnector::packetReceived, this, packet_data));
@@ -142,17 +120,16 @@ namespace whisper_library {
 		}
 	}
 	void NetworkConnector::packetReceived(vector<bool> packet_data) {
-		GenericPacket generic_packet;
-		vector<bool> packet_little_endian;
-		unsigned int length_bit;
 		vector<bool> application_layer;
-		packet_little_endian = switchEndian(packet_data);
+		vector<bool> packet_little_endian = switchEndian(packet_data);
 
 		IpHeaderv4 ip_header(packet_little_endian);
-		length_bit = ip_header.ipHeaderLength() * 32;
+		unsigned int length_bit = ip_header.ipHeaderLength() * 32;
+		unsigned int total_length_bit = ip_header.totalLength() * 8;
 
-		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + length_bit + 112, packet_little_endian.end());
-		generic_packet.setContent(application_layer);
+		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + 112 + length_bit, packet_little_endian.begin() + 112 + total_length_bit); // cut of 14 byte ethernet header (112 bit) and ip header and padding
+		GenericPacket generic_packet;
+		generic_packet.setPacket(application_layer);
 		m_packet_received(ip_header.sourceIpDotted(), generic_packet);
 	}
 
@@ -179,7 +156,7 @@ namespace whisper_library {
 				complete_filter += " or (" + element.second + ")";
 			}
 		}
-		m_pcap->applyFilter(m_adapter.c_str(), complete_filter.c_str());
+		m_pcap->applyFilter(m_adapter, complete_filter);
 	}
 
 	// Sending
@@ -218,11 +195,13 @@ namespace whisper_library {
 			frame.insert(frame.end(), ip_header_bin.begin(), ip_header_bin.end());
 
 			// tcp header+body
+			packet.calculateChecksum(boost::asio::ip::address_v4::from_string(m_source_ip).to_ulong(),
+									 boost::asio::ip::address_v4::from_string(ip).to_ulong(), 0, 6);
 			vector<bool> tcp = packet.packet();
 			frame.insert(frame.end(), tcp.begin(), tcp.end());
 		
 			vector<bool> frame_big_endian = switchEndian(frame);
-			m_pcap_sender->sendPacket(m_adapter.c_str(), frame_big_endian);
+			m_pcap_sender->sendPacket(m_adapter, frame_big_endian);
 		#else
 			// UNIX
 			m_socket->sendTcp(m_source_ip, ip, packet);
@@ -234,10 +213,10 @@ namespace whisper_library {
 	}
 
 	// Utility
-	bool NetworkConnector::validIP(string ip) {
+	bool NetworkConnector::validIPv4(string ip) {
 		boost::system::error_code ec;
-		boost::asio::ip::address::from_string(ip, ec);
-		return (!ec);
+		boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, ec);
+		return (!ec) && address.is_v4();
 	}
 
 	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {

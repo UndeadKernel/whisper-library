@@ -1,3 +1,15 @@
+*.out
+*.snm
+*.gz
+*.toc
+*.aux
+*.len
+*.nav
+*.txt~
+Thumbs.db
+
+/doc/doxygen/output
+
 # Compiled Object files
 *.slo
 *.lo
@@ -11,3 +23,4 @@
 *.lai
 *.la
 *.a
+
