@@ -11,7 +11,7 @@ namespace whisper_library {
 	IpHeaderv4::IpHeaderv4(vector<bool> frame) {
 		m_head = new unsigned char[20];
 
-		int buffer_size = frame.size() / 8;
+		unsigned int buffer_size = frame.size() / 8;
 		unsigned char* packet_buffer = static_cast<unsigned char*>(malloc(buffer_size));
 
 		for (unsigned int i = 0; i < buffer_size; i++) {
@@ -33,7 +33,7 @@ namespace whisper_library {
 		m_head[0] = 5 + (m_head[0] & 0xf0);
 	}
 	void IpHeaderv4::calculateChecksum() {
-		m_head[10] = 0;
+		m_head[10] = 0; // set checksum to 0
 		m_head[11] = 0;
 		unsigned long sum = 0;
 		for (unsigned int i = 0; i < 19; i = i+2) {

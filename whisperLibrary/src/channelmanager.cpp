@@ -21,13 +21,16 @@
 */
 #include <channelmanager.hpp>
 #include <covertchannel.hpp>
-#include <iostream>
+#include "tcpheadercovertchannel.hpp"
+#include "timingcovertchannel.hpp"
+#include "packetlengthcovertchannel.hpp"
+#include "udppacketgenerator.hpp"
 
 using namespace std;
 
 namespace whisper_library {
 
-ChannelManager::ChannelManager():CHANNEL_COUNT(2){
+ChannelManager::ChannelManager():CHANNEL_COUNT(3){
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
 	for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
@@ -158,6 +161,10 @@ UdpPacket ChannelManager::getUdpPacket(unsigned short port) {
 	return packet;
 }
 
+UdpPacket ChannelManager::getUdpPacketWithLength(unsigned short port, int length){
+	return UdpPacketGenerator::generatePacketWithLength(23, length);
+}
+
 
 void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 	CovertChannel* channel;
@@ -193,10 +200,15 @@ CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id)
 			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getTcpPacket, this, ip));
 	}
-	// else
-	return new TimingCovertChannel(output_message,
+	if (channel_id == 1) {
+		return new TimingCovertChannel(output_message,
 			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
 			std::bind(&ChannelManager::getUdpPacket, this, std::placeholders::_1));
+	}
+	// else
+	return new PacketLengthCovertChannel(output_message,
+		std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
+		std::bind(&ChannelManager::getUdpPacketWithLength, this, PacketLengthCovertChannel::PORT, std::placeholders::_1));
 }
 
 // Connection

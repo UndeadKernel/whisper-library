@@ -234,6 +234,7 @@ namespace whisper_library {
 			// nothing to free
 			RETURN_CODE(RC(NORMAL_EXECUTION));
 		}
+		// close (still) open handles
 		for (pcap_t* handle : m_adapter_handles) {
 			if (handle) { pcap_close(handle); }
 		}
@@ -249,28 +250,29 @@ namespace whisper_library {
 	}
 
 	int PcapWrapper::applyFilter(int adapter_id, std::string filter) {
-		
 		if (!checkForAdapterId(adapter_id)) { return -1; } // specified adapter not found
 		struct bpf_program	filter_compiled;
 		pcap_t*				handle = NULL;
 		if (static_cast<int>(m_adapter_handles.size()) > adapter_id) {
-			handle = m_adapter_handles[adapter_id];
+			handle = m_adapter_handles[adapter_id]; // fetch adapter handle
 		}
 		if (!handle) {
 			fprintf(stderr, "Error: applyFilter() called on unopened adapter.\n");
 			RETURN_CODE(RC(ACCESS_ON_UNOPENED_HANDLE));
 		}
+		// get adapter netmask (if set)
 		bpf_u_int32 netmask;
 		if (m_adapter_netmasks.size() > adapter_id && m_adapter_netmasks[adapter_id] != 0) {
 			netmask = m_adapter_netmasks[adapter_id];
 		} else {
 			netmask = PCAP_NETMASK_UNKNOWN;
 		}
-
+		// compile packet filter
 		if (pcap_compile(handle, &filter_compiled, filter.c_str(), 1, netmask) < 0) {
 			fprintf(stderr, "Error: Failed to compile given filter.\n");
 			RETURN_CODE(RC(ERROR_COMPILING_FILTER));
 		}
+		// set packet filter
 		if (pcap_setfilter(handle, &filter_compiled) < 0) {
 			fprintf(stderr, "Error: Failed to apply the given filter.\n");
 			RETURN_CODE(RC(ERROR_APPLYING_FILTER));
@@ -368,7 +370,7 @@ namespace whisper_library {
 
 	std::vector<int> PcapWrapper::lastReturnCodes() {
 		std::vector<int> returnCodes = std::vector<int>(m_last_return_codes.size());
-		for (int i = 0; i < m_last_return_codes.size(); ++i) {
+		for (unsigned int i = 0; i < m_last_return_codes.size(); ++i) {
 			returnCodes[i] = m_last_return_codes[i];
 		}
 		return returnCodes;

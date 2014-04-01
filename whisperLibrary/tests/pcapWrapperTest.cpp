@@ -20,7 +20,7 @@ struct pcapWrapperFixture {
 		delete network;
 		delete manager;
 	}
-	const int MAXIMUM_TRY_COUNT_SENDING = 25;
+	static const int MAXIMUM_TRY_COUNT_SENDING = 25;
 	whisper_library::PcapWrapper*		wrapper;
 	whisper_library::NetworkConnector*	network;
 	whisper_library::ChannelManager*	manager;
@@ -43,7 +43,7 @@ struct pcapWrapperFixture {
 
 	void checkReturnCodes(vector<int> return_codes, vector<int> expected_codes, vector<int> required_codes) {
 		bool expected;
-		int i, size;
+		unsigned int i;
 		for (int return_code : return_codes) {
 			if (expected_codes.size() > 0) {
 				expected = false;
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(retrieveAndFreeAdapters_test) {
 		}*/
 }
 	
-	for (int i = 0; i < adapter_addresses.size(); ++i) {
+	for (unsigned int i = 0; i < adapter_addresses.size(); ++i) {
 		BOOST_CHECK_EQUAL_COLLECTIONS(adapter_addresses[i].begin(), adapter_addresses[i].end(), new_adapter_addresses[i].begin(), new_adapter_addresses[i].end());
 	}
 	BOOST_CHECK_EQUAL_COLLECTIONS(adapter_descriptions.begin(), adapter_descriptions.end(), new_adapter_descriptions.begin(), new_adapter_descriptions.end());
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_CASE(win32SendPacket_test) {
 	whisper_library::PcapWrapper::PcapPacket packet;
 	while (i++ < MAXIMUM_TRY_COUNT_SENDING) {
 		// Wireshark display filter: eth.addr == 6:5:4:3:2:1
-		wrapper->sendPacket(0, packet_buffer, buffer_length);
+		wrapper->sendPacket(data.adapter_info.adapter_id, packet_buffer, buffer_length);
 		packet = wrapper->retrievePacket(data.adapter_info.adapter_id);
 		if (packet.payload != NULL && packet.header.len != 0) {
 			received = true;

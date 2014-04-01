@@ -67,7 +67,7 @@ struct SocketSenderTestFixture {
 
 		application_layer.insert(application_layer.begin(), packet_little_endian.begin() + 112 + length_bit, packet_little_endian.begin() + 112 + total_length_bit); // cut of 14 byte ethernet header (112 bit) and ip header and padding
 		whisper_library::GenericPacket generic_packet;
-		generic_packet.setContent(application_layer);
+		generic_packet.setPacket(application_layer);
 
 		return generic_packet;
 	}
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(sendUdpPacket) {
 	sender->sendUdp(destination_ip, packet);
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::UdpPacket received_udp_packet;
-	received_udp_packet.setPacket(received_packet.content());
+	received_udp_packet.setPacket(received_packet.packet());
 
 	BOOST_CHECK(!received_udp_packet.packet().empty());
 	BOOST_CHECK_EQUAL(received_udp_packet.sourcePort(), packet.sourcePort());
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(sendTcpPacket){
 	sender->sendTcp(source_ip, destination_ip, packet); 
 	whisper_library::GenericPacket received_packet = retrievePacket();
 	whisper_library::TcpPacket received_tcp;
-	received_tcp.setPacket(received_packet.content());
+	received_tcp.setPacket(received_packet.packet());
 	BOOST_CHECK_EQUAL(packet.packet().size(), received_tcp.packet().size());
 	BOOST_CHECK_EQUAL(packet.sourcePort(), received_tcp.sourcePort());
 	BOOST_CHECK_EQUAL(packet.destPort(), received_tcp.destPort());

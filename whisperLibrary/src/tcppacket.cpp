@@ -44,7 +44,7 @@ TcpPacket::TcpPacket(	uint inSourcePort,
     setSourcePort(inSourcePort);
     setDestPort(inDestPort);
     setSequenceNumber(inSequenceNumber);
-    setAcknowlegeNumber(inAckNumber);
+    setAcknowledgeNumber(inAckNumber);
     setDataOffset(inDataOffset);
     setWindowSize(inWindowSize);
     setOptions(inOptions);
@@ -82,7 +82,7 @@ ulong TcpPacket::sequenceNumber() const{
     return vectorToULong(32, 63, m_header);
 }
 // header: bits 64-95 
-ulong TcpPacket::acknowlegeNumber() const{
+ulong TcpPacket::acknowledgeNumber() const{
     return vectorToULong(64, 95, m_header);
 }
 // header: bits 96-99  
@@ -192,7 +192,7 @@ void TcpPacket::setSequenceNumber(ulong val){
     uIntToVector(32,63,m_header,val);
 }
 // header: bits 64-95
-void TcpPacket::setAcknowlegeNumber(ulong val){
+void TcpPacket::setAcknowledgeNumber(ulong val){
     uIntToVector(64,95,m_header,val);
 }
 // header: bits 96-99  
@@ -309,6 +309,7 @@ void TcpPacket::setPacket(vector<bool> val){
 }
     
 void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBits, uint protocol){
+	setChecksum(0);
     vector<bool> sum;
 	/* 
 		split the tcp packet into 16bit values and add them to 
@@ -358,7 +359,7 @@ void TcpPacket::calculateChecksum(ulong sourceIp, ulong destIp, uint reservedBit
 
     // compute the one complement of the sum and store it as the new checksum
     sum.flip();
-    setChecksum(vectorToULong(0, (sum.size()-1), sum));
+    setChecksum(vectorToULong(0, (-1+sum.size()), sum));
 }
 	
     

@@ -27,7 +27,7 @@ struct tcpHeaderCovertChannelFixture {
 
 	void sendPacket(whisper_library::TcpPacket packet) {
 		whisper_library::GenericPacket generic_packet(packet.packet());
-		uut->receiveMessage(generic_packet);
+		uut->receivePacket(generic_packet);
 	}
 };
 
