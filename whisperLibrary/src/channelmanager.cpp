@@ -185,11 +185,11 @@ void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 			return;
 		}
 		TcpPacket tcp_packet;
-		tcp_packet.setPacket(packet.content());
+		tcp_packet.setPacket(packet.packet());
 		generator->receivePacket(tcp_packet);
 	}
 	else {
-		channel->receiveMessage(packet);
+		channel->receivePacket(packet);
 	}
 }
 
@@ -224,7 +224,7 @@ bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
 	}
 	if (channel->protocol().compare("tcp") == 0) { //equal
 		TcpPacketGenerator* generator = new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network, ip, placeholders::_1),
-			bind(&CovertChannel::receiveMessage, channel, placeholders::_1));
+			bind(&CovertChannel::receivePacket, channel, placeholders::_1));
 		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>(ip, generator));
 		generator->sendConnect();
 	}

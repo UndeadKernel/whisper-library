@@ -205,20 +205,6 @@ private:
 	*/
 	CovertChannel* createChannel(string ip, unsigned int channel_id);
 
-<<<<<<< HEAD
-	// hold all available channels, just to pull infos
-	std::vector<CovertChannel*> m_channels;
-	// stream that holds received messages
-	std::ostream* m_output_stream;
-	// stream that displays errors
-	std::ostream* m_error_stream;
-
-	NetworkConnector* m_network;
-	map<string, CovertChannel*> m_ip_mapping;
-	map<string, TcpPacketGenerator*> m_generator_mapping;
-	const unsigned int CHANNEL_COUNT;
-	function<void(string, string)> m_message_callback;
-=======
 	std::vector<CovertChannel*> m_channels; /**< Holds an instance of each available covert channel type.
 											   Used just to pull information from, not for communication. */
 	std::ostream* m_output_stream; ///< Stream that is used to output messages received by a covert channel
@@ -226,13 +212,15 @@ private:
 	NetworkConnector* m_network; ///< Pointer to NetworkConnector that is used to access network functionalities
 	map<string, CovertChannel*> m_ip_mapping; /**< Maps Ipv4 addresses in dotted form to a pointer of the covert 
 											  channel that is used to communicate with that ip */
+	map<string, TcpPacketGenerator*> m_generator_mapping; /**< Maps Ipv4 addresses in dotted form to a 
+														  pointer of the tcp packet generator used for the 
+														  communication to that ip */
 	const unsigned int CHANNEL_COUNT; ///< Number of available covert channels. Needs to be updated if a new channel is added.
 	function<void(string, string)> m_message_callback; /**< Pointer to the function that is called 
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 
 													   the message was received from. The second argument is 
 													   the received message.*/	
->>>>>>> master
 };
 }
 #endif // CHANNEL_MANAGER

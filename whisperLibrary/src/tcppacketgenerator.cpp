@@ -117,7 +117,7 @@ namespace whisper_library {
 				// data packet
 				//forward to covert channel
 				GenericPacket generic_packet;
-				generic_packet.setContent(packet.packet());
+				generic_packet.setPacket(packet.packet());
 				m_forward(generic_packet);
 				// check if packet is new and in order
 				if (packet.sequenceNumber() == m_next_peer_sequence) {
@@ -127,8 +127,8 @@ namespace whisper_library {
 			}
 			else {
 				// Acknowledgement
-				if (packet.acknowlegeNumber() > m_base_sequence) { // accept ack only if it is new
-					m_base_sequence = packet.acknowlegeNumber();
+				if (packet.acknowledgeNumber() > m_base_sequence) { // accept ack only if it is new
+					m_base_sequence = packet.acknowledgeNumber();
 				}
 			}
 		}
