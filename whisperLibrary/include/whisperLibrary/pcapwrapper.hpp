@@ -68,7 +68,11 @@ do { if (DEBUG_LEVEL >= MinLevel) { \
 #endif
 
 namespace whisper_library {
+	/** \brief Used to receive packets and send TCP packets under win32
 		
+		All Functions needed to apply filters, select adapters and send packets are provided.
+	*/
+	
 	class PcapWrapper {
 
 	public:

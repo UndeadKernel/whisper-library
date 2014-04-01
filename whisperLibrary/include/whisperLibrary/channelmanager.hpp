@@ -94,6 +94,7 @@ public:
 	*/
 	UdpPacket getUdpPacket(unsigned short port);
 	/** \brief creates a valid udp packet with given length
+		\param port the port that the udp packet is send to
 		\param length the desired length
 	*/
 	UdpPacket getUdpPacketWithLength(unsigned short port, int length);
@@ -112,6 +113,7 @@ public:
 	/** \brief Writes a message to the selected output stream.
 
 		Change the output stream by calling 'setOutputStream'.
+		\param ip the sender ip of the message
 		\param message the message to be written
 	*/
 	void outputMessage(string ip, string message);
@@ -154,7 +156,7 @@ public:
 
 		There needs to be an open connection to be able to send a message to that ip.
 		\param ip Ipv4 adress that you want to send the message to
-	    \param the message as string
+	    \param message the message as string
 	*/
 	void sendMessage(string ip, string message);
 
@@ -200,15 +202,15 @@ private:
 	*/
 	CovertChannel* createChannel(string ip, unsigned int channel_id);
 
-	std::vector<CovertChannel*> m_channels; /*< Holds an instance of each available covert channel type.
+	std::vector<CovertChannel*> m_channels; /**< Holds an instance of each available covert channel type.
 											   Used just to pull information from, not for communication. */
 	std::ostream* m_output_stream; ///< Stream that is used to output messages received by a covert channel
 	std::ostream* m_error_stream; ///< Stream that is used to output error messages
 	NetworkConnector* m_network; ///< Pointer to NetworkConnector that is used to access network functionalities
-	map<string, CovertChannel*> m_ip_mapping; /*< Maps Ipv4 addresses in dotted form to a pointer of the covert 
+	map<string, CovertChannel*> m_ip_mapping; /**< Maps Ipv4 addresses in dotted form to a pointer of the covert 
 											  channel that is used to communicate with that ip */
 	const unsigned int CHANNEL_COUNT; ///< Number of available covert channels. Needs to be updated if a new channel is added.
-	function<void(string, string)> m_message_callback; /*< Pointer to the function that is called 
+	function<void(string, string)> m_message_callback; /**< Pointer to the function that is called 
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 
 													   the message was received from. The second argument is 

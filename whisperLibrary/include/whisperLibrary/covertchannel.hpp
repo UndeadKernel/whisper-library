@@ -64,7 +64,9 @@ public:
 	*/ 
 	virtual void receivePacket(GenericPacket& packet) = 0;
 	
-		// Arguments that are given to the covert channel
+	/** \brief configures the covert channel
+		\param arguments Arguments that are given to the covert channel
+	*/
 	virtual void setArguments(string arguments) = 0;
 
 	/**
@@ -77,9 +79,11 @@ public:
 		Returns some information about the covert channel
 	*/ 
 	virtual std::string info() const = 0;
-	// Returns the used protocol (e.g. tcp)
+	/** \return the used protocol (e.g. tcp)
+	*/
 	virtual string protocol() const = 0;
-	// Returns the used port
+	/** \return the used port
+	*/
 	virtual unsigned short port() const = 0;
 
 };
