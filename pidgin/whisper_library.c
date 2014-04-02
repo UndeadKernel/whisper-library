@@ -107,15 +107,16 @@ void actionShowChannels (PurplePluginAction* action){
 }
 
 void actionSetOptions (PurplePluginAction* action){
-	
+	// TODO
+	//wlSetOptions()
 }
 
 void actionShowSelectedChannel (PurplePluginAction* action){
-	
+	purple_debug_info("whisperLibrary", purple_account_get_int(m_account, "selected channel", 0));
 }
 
 void actionShowSelectedAdapter (PurplePluginAction* action){
-	
+	purple_debug_info("whisperLibrary",purple_account_get_string(m_account, "selected adapter", ""));
 }
 	
 static GList* listPluginActions (PurplePlugin* plugin, gpointer context){
@@ -137,6 +138,9 @@ static GList* listPluginActions (PurplePlugin* plugin, gpointer context){
 	
 	action = purple_plugin_action_new("Set channel options", actionSetOptions);
 	list = g_list_append(list, action);
+
+	// set adapter
+	wlSetAdapter(purple_account_get_string(m_account, "selected adapter", ""));
 
     /* Once the list is complete, we send it to libpurple. */
     purple_debug_info("whisperLibrary", "Done setting up!\n");

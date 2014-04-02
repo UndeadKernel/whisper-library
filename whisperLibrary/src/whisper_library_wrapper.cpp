@@ -13,11 +13,13 @@ void wlDestroyChannelManager(){
 const char* wlListChannels(){
 	vector<string> names = m_channel_manager->getChannelNames();
 	vector<string> info = m_channel_manager->getChannelInfos();
-	string text = "";
+	string channel_text = "";
 	for (unsigned int i = 0; i < names.size(); i++) {
-		text += "[" + to_string(i) + "]" + names[i] + ": " + info[i] + "\n";
+		channel_text += "[" + to_string(i) + "]" + names[i] + ": " + info[i] + "\n";
 	}
-	return text.c_str();
+	char* cstr = new char[channel_text.length() + 1];
+	std::strcpy(cstr, channel_text.c_str());
+	return cstr;
 }
 
 unsigned int wChannelCount() {
@@ -54,11 +56,14 @@ unsigned int wlAdapterCount() {
 
 const char* wlListAdapters(){
 	vector<string> adapters = m_channel_manager->networkAdapters();
-	string text = "";
+	string adapter_text = "";
+		adapters[0].c_str();
 	for (unsigned int i = 0; i < adapters.size(); i++) {
-		text += "[" + to_string(i) + "] " + adapters[i] + ": " + m_channel_manager->adapterDescription(adapters[i]) + "\n";
+		adapter_text += "[" + to_string(i) + "] " + adapters[i] + ": " + m_channel_manager->adapterDescription(adapters[i]) + "\n";
 	}
-	return text.c_str();
+	char* cstr = new char[adapter_text.length() + 1];
+	std::strcpy(cstr, adapter_text.c_str());
+	return cstr;
 }
 
 void wlSetMessageCallback(void(*func_ptr)(const char*, const char*)) {
