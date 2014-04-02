@@ -134,6 +134,10 @@ namespace whisper_library {
 		}
 	}
 
+	void TimingCovertChannel::setOutput(function<void(string)> output){
+		m_output = output;
+	}
+
 	void TimingCovertChannel::startTimeoutTimer() {
 		// wait until timeout point, repeat if timeout was changed during sleep
 		while (m_timeout_changed) {

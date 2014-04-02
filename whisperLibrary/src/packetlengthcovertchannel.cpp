@@ -21,6 +21,7 @@
 */
 
 #include <packetlengthcovertchannel.hpp>
+#include "udppacketgenerator.hpp"
 #include <iostream>
 #include <thread>
 
@@ -48,10 +49,10 @@ namespace whisper_library {
 
 	void PacketLengthCovertChannel::sendMessage(std::string message){
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
-		m_send(m_get_packet(8 + m_baselength + packetLengths.size()));
+		m_send(UdpPacketGenerator::generatePacketWithLength(PORT, 8 + m_baselength + packetLengths.size()));
 		for (unsigned int i = 0; i < packetLengths.size(); i++){
 			this_thread::sleep_for(chrono::milliseconds(10));
-			m_send(m_get_packet(packetLengths[i]));
+			m_send(UdpPacketGenerator::generatePacketWithLength(PORT, packetLengths[i]));
 		}
 	}
 
@@ -76,6 +77,10 @@ namespace whisper_library {
 			m_received = 0;
 			m_packetcount = -1;
 		}
+	}
+
+	void PacketLengthCovertChannel::setOutput(function<void(string)> output){
+		m_output = output;
 	}
 
 	std::string PacketLengthCovertChannel::name() const {

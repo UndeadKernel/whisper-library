@@ -74,6 +74,10 @@ namespace whisper_library {
 		}
 	}
 
+	void TcpHeaderCovertChannel::setOutput(function<void(string)> output){
+		m_output = output;
+	}
+
 	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
 		vector<bitset<3>> ret_vector;
 		if (message.length() == 0) {

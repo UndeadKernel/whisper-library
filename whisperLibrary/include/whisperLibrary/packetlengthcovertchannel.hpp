@@ -62,7 +62,7 @@ public:
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
-		m_get_packet(get_packet),
+		//m_get_packet(get_packet),
 		m_received(0),
 		m_packetcount(-1),
 		m_baselength(10),
@@ -95,6 +95,8 @@ public:
 		No arguments, empty function
 	*/
 	void setArguments(std::string arguments) {};
+
+	void setOutput(function<void(string)> output);
 	/**
 		returns the name of the covert channel
 	*/
@@ -111,7 +113,7 @@ public:
 private:
 	function<void(string)> m_output;///< function used to return received messages as a string
 	function<void(UdpPacket)> m_send;///< function used to send Udp Packets via the socket
-	function<UdpPacket(int)> m_get_packet;///< function used to retrieve valid udp packets with given length
+	//function<UdpPacket(int)> m_get_packet;///< function used to retrieve valid udp packets with given length
 	std::vector<unsigned int> m_packetlengths;///< holds the packet lengths send or received
 	int m_received;///< counts the received packets
 	int m_packetcount;///< number of packets for the current transmission

@@ -71,7 +71,7 @@ namespace whisper_library {
 
 		// No available arguments - empty function
 		void setArguments(string arguments) {};
-
+		void setOutput(function<void(string)> output);
 		/**
 			Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		*/ 
@@ -111,7 +111,8 @@ namespace whisper_library {
 		*/
 		int m_remaining_packets;
 	
-		BitSetCoder<3> m_coder;///< The encoder/decoder we use, to split messages into bit blocks		
+		BitSetCoder<3> m_coder;///< The encoder/decoder we use, to split messages into bit blocks
+		TcpPacketGenerator m_generator;
 		function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
 		function<void(TcpPacket)> m_send;///< function pointer that is used to send Tcp Packets via the socket
 		function<TcpPacket(void)> m_getPacket;///< function pointer that is used to retrieve valid tcp packets, that are used to hide the data

@@ -99,6 +99,7 @@ public:
 	*/
 	void setArguments(string arguments);
 
+	void setOutput(function<void(string)> output);
 	/** \brief Returns a string with the name of the covert channel "Timing Covert Channel"
 	*/ 
 	string name() const;

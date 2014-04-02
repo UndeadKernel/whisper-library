@@ -63,6 +63,10 @@ public:
 		\param arguments Arguments that are given to the covert channel
 	*/
 	virtual void setArguments(string arguments) = 0;
+	/** \brief sets the output method
+		\param output the method the covert channel uses to output the received messages
+	*/
+	virtual void setOutput(function<void(string)> output) = 0;
 	/** \return name of the covert channel
 	*/ 
 	virtual std::string name() const = 0;	
