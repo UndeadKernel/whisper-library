@@ -73,6 +73,10 @@ public:
 		Deletes this instance of PacketLengthCovertChannel and frees all memory.
 	*/
 	~PacketLengthCovertChannel();
+
+	CovertChannel* instance(function<void(std::string)> output,
+		function<void(UdpPacket)> send,
+		function<UdpPacket(int)> get_packet);
 	/** \brief sends a message
 
 		The message gets encoded as packet lengths and then udp packets with this lengths get

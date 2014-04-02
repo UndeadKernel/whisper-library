@@ -41,6 +41,10 @@ namespace whisper_library {
 		return 8080;
 	}
 
+	CovertChannel* TcpHeaderCovertChannel::instance(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket){
+		return new TcpHeaderCovertChannel(output, send, getPacket);
+	}
+
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets

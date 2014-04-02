@@ -31,6 +31,12 @@ namespace whisper_library {
 		m_mutex_sending.unlock();
 	}
 
+	CovertChannel* TimingCovertChannel::instance(function<void(string)> output,
+		function<void(UdpPacket)> send,
+		function<UdpPacket(unsigned short)> getPacket){
+		return new TimingCovertChannel(output, send, getPacket);
+	}
+
 	string TimingCovertChannel::name() const{
 		return "Timing Covert Channel";
 	}

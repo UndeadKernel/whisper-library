@@ -57,6 +57,7 @@ namespace whisper_library {
 				m_send(send),
 				m_getPacket(getPacket) {};
 
+		CovertChannel* instance(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket);
 		/**
 			SendMessage sends a message of type string through the Tcp Header Covert Channel.
 		*/	

@@ -40,6 +40,12 @@ namespace whisper_library {
 		delete m_coder;
 	}
 
+	CovertChannel* PacketLengthCovertChannel::instance(function<void(std::string)> output,
+		function<void(UdpPacket)> send,
+		function<UdpPacket(int)> get_packet){
+		return new PacketLengthCovertChannel(output, send, get_packet);
+	}
+
 	void PacketLengthCovertChannel::sendMessage(std::string message){
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
 		m_send(m_get_packet(8 + m_baselength + packetLengths.size()));

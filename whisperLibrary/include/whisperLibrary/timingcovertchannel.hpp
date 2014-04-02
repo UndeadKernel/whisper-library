@@ -75,6 +75,9 @@ public:
 	*/
 	~TimingCovertChannel();
 
+	CovertChannel* instance(function<void(string)> output,
+									function<void(UdpPacket)> send,
+									function<UdpPacket(unsigned short)> getPacket);
 	/**
 		Sends a message using the timing channel.
 		\param message Message that is send

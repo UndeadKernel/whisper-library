@@ -35,48 +35,38 @@ namespace whisper_library {
 	interface for a covert channel. You can add CovertChannel objects to the ChannelManager to use them.
 */
 class CovertChannel {
-public:
-
-	
+public:	
 	/** \brief Constructor
 
 		Creates a CovertChannel
 	*/ 
 	CovertChannel() {};
-	
-	
 	/** \brief Destructor
 
 		Virtual destructor so that the destructor of derived classes is called
 	*/ 
 	virtual ~CovertChannel() {};
-	
-	
+	/** \return an instance of this covert channel
+	*/
+	virtual CovertChannel* instance();
 	/** \brief sends a message
 
 		Call this function to send a message using the covert channel.
 	*/ 
-	virtual void sendMessage(std::string message) = 0;
-	
+	virtual void sendMessage(std::string message) = 0;	
 	/** \brief receives a packet
 
 		This function is called, when a new packet arrived. The argument is a reference to this packet.
 	*/ 
-	virtual void receivePacket(GenericPacket& packet) = 0;
-	
+	virtual void receivePacket(GenericPacket& packet) = 0;	
 	/** \brief configures the covert channel
 		\param arguments Arguments that are given to the covert channel
 	*/
 	virtual void setArguments(string arguments) = 0;
-
-	/**
-		Returns the name of the covert channel
+	/** \return name of the covert channel
 	*/ 
-	virtual std::string name() const = 0;
-	
-	
-	/**
-		Returns some information about the covert channel
+	virtual std::string name() const = 0;	
+	/** \return some information about the covert channel
 	*/ 
 	virtual std::string info() const = 0;
 	/** \return the used protocol (e.g. tcp)
@@ -85,7 +75,6 @@ public:
 	/** \return the used port
 	*/
 	virtual unsigned short port() const = 0;
-
 };
 }
 #endif // COVERT_CHANNEL
