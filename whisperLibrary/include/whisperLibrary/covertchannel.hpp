@@ -68,7 +68,7 @@ public:
 	virtual void setOutput(function<void(string)> output) = 0;
 	/** \brief sets the methode used to send packets
 	*/
-	virtual void setSend(function<void(GenericPacket, string)> send) = 0;
+	virtual void setSend(function<void(GenericPacket)> send) = 0;
 	/** \return name of the covert channel
 	*/
 	virtual std::string name() const = 0;	

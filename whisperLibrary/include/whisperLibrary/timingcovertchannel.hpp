@@ -54,7 +54,7 @@ public:
 		\param send function pointer that is called to send a UdpPacket via the socket.
 	*/
 	TimingCovertChannel(function<void(string)> output, 
-						function<void(GenericPacket, string)> send)
+						function<void(GenericPacket)> send)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
@@ -107,7 +107,7 @@ public:
 	void setArguments(string arguments);
 
 	void setOutput(function<void(string)> output);
-	void setSend(function<void(GenericPacket, string)> send);
+	void setSend(function<void(GenericPacket)> send);
 	/** \brief Returns a string with the name of the covert channel "Timing Covert Channel"
 	*/ 
 	string name() const;
@@ -125,7 +125,7 @@ public:
 	unsigned short port() const;
 	/** \return the ID of the covert channel
 	*/
-	std::string id() const;
+	string id() const;
 private:
 	/**
 		Calcules thresholds between the different intervals to compensate for transmitting delays.
@@ -145,7 +145,7 @@ private:
 	MorseCoder* m_coder; ///<MorseCoder is used to encode messages as morse	
 	
 	function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
-	function<void(GenericPacket, string)> m_send;///< function pointer that is used to send Udp Packets via the socket	
+	function<void(GenericPacket)> m_send;///< function pointer that is used to send Udp Packets via the socket	
 	
 	chrono::time_point<chrono::system_clock> m_receive_start; ///< Marks the time the last packet was received to measure inter-packet delays
 	chrono::time_point<chrono::system_clock> m_timeout_end; ///< Marks the time point at which the timeout ends. It is increased each time a packet is received.

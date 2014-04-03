@@ -4,7 +4,7 @@
 #include <random>
 
 namespace whisper_library {
-	TcpPacketGenerator::TcpPacketGenerator(unsigned short port, function<void(GenericPacket, std::string)> send)
+	TcpPacketGenerator::TcpPacketGenerator(unsigned short port, function<void(GenericPacket)> send)
 	: m_send(send),
 	  m_port(port),
 	  m_state(0),
@@ -73,20 +73,20 @@ namespace whisper_library {
 	void TcpPacketGenerator::sendConnect() {
 		GenericPacket packet;
 		packet.setPacket(createPacket(true, false, "").packet());
-		m_send(packet, "tcp");
+		m_send(packet);
 		m_next_sequence++;
 	}
 
 	void TcpPacketGenerator::sendConnectResponse(){
 		GenericPacket packet;
 		packet.setPacket(createPacket(true, true, "").packet());
-		m_send(packet, "tcp");
+		m_send(packet);
 		m_next_sequence++;
 	}
 	void TcpPacketGenerator::sendAcknowledgeResponse() {
 		GenericPacket packet;
 		packet.setPacket(createPacket(false, true, "").packet());
-		m_send(packet, "tcp");
+		m_send(packet);
 	}
 
 	void TcpPacketGenerator::receivePacket(TcpPacket packet) {
@@ -128,7 +128,7 @@ namespace whisper_library {
 					m_next_peer_sequence += (packet.data().size() / 8);
 					GenericPacket packet;
 					packet.setPacket(createPacket(false, true, "").packet());
-					m_send(packet, "tcp");
+					m_send(packet);
 				}
 			}
 			else {

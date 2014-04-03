@@ -50,7 +50,7 @@ namespace whisper_library {
 			\param output a function pointer that is called, when a complete message arrived. Its parameter is this message.
 			\param send a function pointer that is called to send a TcpPacket via the socket.
 		*/
-		TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, std::string)> send);
+		TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket)> send);
 
 		TcpHeaderCovertChannel();
 
@@ -71,7 +71,7 @@ namespace whisper_library {
 		// No available arguments - empty function
 		void setArguments(string arguments) {};
 		void setOutput(function<void(string)> output);
-		void setSend(function<void(GenericPacket, string)> send);
+		void setSend(function<void(GenericPacket)> send);
 		/**
 			Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		*/ 
@@ -117,7 +117,7 @@ namespace whisper_library {
 		TcpPacketGenerator* m_generator_send;///< A TcpPacketGenerator acting as client used for sending messages
 		TcpPacketGenerator* m_generator_receive;///< ///< A TcpPacketGenerator acting as server used for receiving messages
 		function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
-		function<void(GenericPacket, string)> m_send;///< function pointer that is used to send Tcp Packets via the socket
+		function<void(GenericPacket)> m_send;///< function pointer that is used to send Tcp Packets via the socket
 	};
 }
 #endif // TCP_HEADER_COVERT_CHANNEL

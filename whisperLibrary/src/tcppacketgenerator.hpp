@@ -21,7 +21,7 @@ public:
 		\param port Source and destination port used for creating the packets
 		\param send Pointer to a function to send packets over the network
 	*/
-	TcpPacketGenerator(unsigned short port, function<void(GenericPacket, std::string)> send);
+	TcpPacketGenerator(unsigned short port, function<void(GenericPacket)> send);
 	/** \brief Has to be called when a packet arrives
 
 		Interprets an incoming packet. Responds to connect requests and connect acknowledges.
@@ -69,7 +69,7 @@ private:
 	unsigned long m_next_sequence; ///< sequence number used for sending of the next packet
 	unsigned long m_base_sequence; ///< highest sequence number that was acknowledge by the receiver
 	unsigned long m_next_peer_sequence; ///< next expected sequence number by peer
-	function<void(GenericPacket, std::string)> m_send;	///< pointer to a function that is used for sending packets over the network
+	function<void(GenericPacket)> m_send;	///< pointer to a function that is used for sending packets over the network
 	unsigned int m_state; ///< stores the internal connection state code (see constants)
 	unsigned int m_timeout; ///< timeout in milliseconds used for resending of packets (not used yet)
 	bool m_server; ///< true if you are the server after a successful handshake

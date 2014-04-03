@@ -70,13 +70,13 @@ namespace whisper_library {
 		chrono::time_point<chrono::system_clock> sending_time;
 		GenericPacket packet;
 		packet.setPacket(UdpPacketGenerator::generateNextPacket(port()).packet());
-		m_send(packet, protocol());
+		m_send(packet);
 		chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
 		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
 			packet.setPacket(UdpPacketGenerator::generateNextPacket(port()).packet());
 			sending_time = start + chrono::milliseconds(*it);
 			this_thread::sleep_until(sending_time);
-			m_send(packet, protocol());
+			m_send(packet);
 			start = chrono::system_clock::now();
 		}
 		this_thread::sleep_for(chrono::milliseconds(m_timeout));
@@ -143,7 +143,7 @@ namespace whisper_library {
 		m_output = output;
 	}
 
-	void TimingCovertChannel::setSend(function<void(GenericPacket, string)> send){
+	void TimingCovertChannel::setSend(function<void(GenericPacket)> send){
 		m_send = send;
 	}
 

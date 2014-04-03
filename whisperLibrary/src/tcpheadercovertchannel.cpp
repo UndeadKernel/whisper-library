@@ -26,11 +26,11 @@ using namespace std;
 
 namespace whisper_library {
 
-	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, std::string)> send)
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket)> send)
 		: CovertChannel(),
 		m_remaining_packets(0),
 		m_output(output),
-		m_send(send){
+		m_send(send) {
 		m_generator_send = new TcpPacketGenerator(port(), m_send);
 		m_generator_receive = new TcpPacketGenerator(port(), m_send);
 	};
@@ -81,7 +81,7 @@ namespace whisper_library {
 			modifyTcpPacket(packet, bit_blocks[i]);	
 			GenericPacket g_packet;
 			g_packet.setPacket(packet.packet());
-			m_send(g_packet, protocol());
+			m_send(g_packet);
 		}
 	}
 
@@ -111,7 +111,7 @@ namespace whisper_library {
 		m_output = output;
 	}
 
-	void TcpHeaderCovertChannel::setSend(function<void(GenericPacket, string)> send){
+	void TcpHeaderCovertChannel::setSend(function<void(GenericPacket)> send){
 		m_send = send;
 	}
 

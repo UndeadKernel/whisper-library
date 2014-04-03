@@ -167,9 +167,10 @@ void ChannelManager::sendPacket(string ip, GenericPacket packet, string protocol
 
 CovertChannel* ChannelManager::createChannel(string ip, CovertChannel* channel) {
 	function<void(string)> output_message = bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
+	function<void(GenericPacket)> send_message = bind(&ChannelManager::sendPacket, this, ip, placeholders::_1, channel->protocol());
 	CovertChannel* new_channel = channel->instance();
 	new_channel->setOutput(output_message);
-	new_channel->setSend(bind(&ChannelManager::sendPacket,this, ip, placeholders::_1, placeholders::_2));
+	new_channel->setSend(send_message);
 	return new_channel;
 }
 

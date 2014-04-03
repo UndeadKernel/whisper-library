@@ -46,7 +46,7 @@ public:
 		\param send a function the covert channel uses to send udp packets		
 	*/
 	PacketLengthCovertChannel(function<void(std::string)> output,
-		function<void(GenericPacket, std::string)> send)
+		function<void(GenericPacket)> send)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
@@ -96,7 +96,7 @@ public:
 
 		\param send a function-pointer used to send packets
 	*/
-	void setSend(function<void(GenericPacket, std::string)> send);
+	void setSend(function<void(GenericPacket)> send);
 	/** \return The name of the covert channel
 	*/
 	std::string name() const;
@@ -115,7 +115,7 @@ public:
 
 private:
 	std::function<void(std::string)> m_output;///< function used to return received messages as a string
-	std::function<void(GenericPacket, std::string)> m_send;///< function used to send Udp Packets via the socket
+	std::function<void(GenericPacket)> m_send;///< function used to send Udp Packets via the socket
 	std::vector<unsigned int> m_packetlengths;///< holds the packet lengths send or received
 	int m_received;///< counts the received packets
 	int m_packetcount;///< number of packets for the current transmission

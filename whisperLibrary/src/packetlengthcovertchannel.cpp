@@ -59,11 +59,11 @@ namespace whisper_library {
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
 		GenericPacket g_packet;
 		g_packet.setPacket(UdpPacketGenerator::generatePacketWithLength(port(), 8 + m_baselength + packetLengths.size()).packet());
-		m_send(g_packet, protocol());
+		m_send(g_packet);
 		for (unsigned int i = 0; i < packetLengths.size(); i++){
 			this_thread::sleep_for(chrono::milliseconds(10));
 			g_packet.setPacket(UdpPacketGenerator::generatePacketWithLength(port(), packetLengths[i]).packet());
-			m_send(g_packet, protocol());
+			m_send(g_packet);
 		}
 	}
 
@@ -94,7 +94,7 @@ namespace whisper_library {
 		m_output = output;
 	}
 
-	void PacketLengthCovertChannel::setSend(function<void(GenericPacket, string)> send){
+	void PacketLengthCovertChannel::setSend(function<void(GenericPacket)> send){
 		m_send = send;
 	}
 
