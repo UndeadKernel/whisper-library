@@ -211,7 +211,6 @@ private:
 	NetworkConnector* m_network; ///< Pointer to NetworkConnector that is used to access network functionalities
 	map<string, CovertChannel*> m_ip_mapping; /**< Maps Ipv4 addresses in dotted form to a pointer of the covert 
 											  channel that is used to communicate with that ip */
-	unsigned int m_channel_count; ///< Number of available covert channels.
 	function<void(string, string)> m_message_callback; /**< Pointer to the function that is called 
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 

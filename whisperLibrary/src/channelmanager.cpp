@@ -30,7 +30,7 @@ using namespace std;
 
 namespace whisper_library {
 
-	ChannelManager::ChannelManager() :m_channel_count(0) {
+	ChannelManager::ChannelManager() {
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
 	addChannel(new TcpHeaderCovertChannel());
@@ -87,7 +87,7 @@ vector<string> ChannelManager::getChannelIDs(){
 }
 
 unsigned int ChannelManager::channelCount() {
-	return m_channel_count;
+	return m_channels.size();
 }
 
 void ChannelManager::sendMessage(string ip, string message) {
@@ -158,7 +158,7 @@ void ChannelManager::sendPacket(string ip, GenericPacket packet, string protocol
 		tcp_packet.setPacket(packet.packet());
 		m_network->sendTcp(ip, tcp_packet);
 	}
-	else if (protocol.compare("tcp") == 0) {
+	else if (protocol.compare("udp") == 0) {
 		UdpPacket udp_packet;
 		udp_packet.setPacket(packet.packet());
 		m_network->sendUdp(ip, udp_packet);
@@ -179,10 +179,17 @@ bool ChannelManager::openConnection(string ip, string channel_id) {
 		outputErrorMessage("There is a connection to " + ip + " already.");
 		return false;
 	}
-	CovertChannel* channel = m_channels.at(channel_id);
+	CovertChannel* channel;
+	try {
+		channel = m_channels.at(channel_id);
+	}
+	catch (out_of_range) {
+		outputErrorMessage("openConnection failed: Channel id '" + channel_id + "' unknown.");
+		return false;
+	}
 	CovertChannel* new_channel = createChannel(ip, channel);
-	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
-	if (!m_network->openListener(ip, channel)) {
+	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, new_channel));
+	if (!m_network->openListener(ip, new_channel)) {
 		return false;
 	}
 	return true;

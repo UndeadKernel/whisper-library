@@ -39,7 +39,7 @@ struct CommunicationFixture {
 		if (arguments[0].compare("selectCC") == 0) {
 			string id = arguments[1];
 			for (unsigned int i = 0; i < channelmanager.channelCount(); i++){
-				if (channelmanager.getChannelIDs()[i] == id) {
+				if (channelmanager.getChannelIDs()[i].compare(id) == 0) {
 					channel_id = id;
 					return 0;
 				}
@@ -109,10 +109,11 @@ struct CommunicationFixture {
 	}
 
 	void printCovertChannels() {
+		vector<string> ids = channelmanager.getChannelIDs();
 		vector<string> names = channelmanager.getChannelNames();
 		vector<string> infos = channelmanager.getChannelInfos();
 		for (unsigned int i = 0; i < names.size(); i++) {
-			cout << "[" << i << "] " << names[i] << ": " << infos[i] << endl;
+			cout << "[" << ids[i] << "] " << names[i] << ": " << infos[i] << endl << endl;
 		}
 	}
 

@@ -53,7 +53,7 @@ namespace whisper_library {
 	}
 
 	string TimingCovertChannel::id() const{
-		return "timing_chanel";
+		return "timing_channel";
 	}
 
 	void TimingCovertChannel::sendMessage(string message) {
