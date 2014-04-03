@@ -106,15 +106,11 @@ include_directories(
 
 add_executable(tests
     	${TESTS}
-		${HEADERS}
-		${SOURCES}
 )
 
 add_executable(systemtest
 		tests/communicationTest.cpp
 		tests/main_test_suite.cpp
-		${HEADERS}
-		${SOURCES}
 )
 
 add_library(whisperLibrary STATIC
@@ -129,14 +125,10 @@ TARGET_LINK_LIBRARIES(whisperLibrary
 
 target_link_libraries(tests
     	whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
 )
 
 target_link_libraries(systemtest
 		whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
 )
 
 add_dependencies(tests
@@ -163,14 +155,6 @@ endif(UNIX)
 if (WIN32)
 	target_link_libraries(whisperLibrary 
 		ws2_32 
-		Iphlpapi
-	)
-	target_link_libraries(tests 
-		ws2_32 
-		Iphlpapi
-	)
-	target_link_libraries(systemtest 
-		ws2_32
 		Iphlpapi
 	)
 endif(WIN32)
