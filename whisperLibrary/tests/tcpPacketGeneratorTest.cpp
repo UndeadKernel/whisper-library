@@ -31,8 +31,9 @@ BOOST_FIXTURE_TEST_SUITE(tcpPacketGenerator, TcpPacketGeneratorFixture);
 
 BOOST_AUTO_TEST_CASE(tcp_handshake_test) {
 	sender->sendConnect();
-	BOOST_CHECK_EQUAL(sender->status(), whisper_library::TcpPacketGenerator::ESTABLISHED);
-	BOOST_CHECK_EQUAL(receiver->status(), whisper_library::TcpPacketGenerator::ESTABLISHED);
+    unsigned int testcode = whisper_library::TcpPacketGenerator::ESTABLISHED;
+    BOOST_CHECK_EQUAL(sender->status(), testcode);
+    BOOST_CHECK_EQUAL(receiver->status(), testcode);
 
 	whisper_library::TcpPacket packet_first = sender->nextPacket();
 	unsigned long first_sequence = packet_first.sequenceNumber();
