@@ -24,6 +24,7 @@
 #define TCP_HEADER_COVERT_CHANNEL
 
 #include "../../src/tcppacket.hpp"
+#include "../../src/tcppacketgenerator.hpp"
 #include "genericpacket.hpp"
 #include <string>
 #include <vector>
@@ -50,14 +51,13 @@ namespace whisper_library {
 			\param send a function pointer that is called to send a TcpPacket via the socket.
 			\param getPacket a function pointer, that has to return a valid TcpPacket, that is used to insert the data.
 		*/
-		TcpHeaderCovertChannel(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket)
-			: CovertChannel(),
-				m_remaining_packets(0), 
-				m_output(output), 
-				m_send(send),
-				m_getPacket(getPacket) {};
+		TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, std::string)> send);
 
-		CovertChannel* instance(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket);
+		TcpHeaderCovertChannel();
+
+		~TcpHeaderCovertChannel();
+
+		CovertChannel* instance();
 		/**
 			SendMessage sends a message of type string through the Tcp Header Covert Channel.
 		*/	
@@ -72,6 +72,7 @@ namespace whisper_library {
 		// No available arguments - empty function
 		void setArguments(string arguments) {};
 		void setOutput(function<void(string)> output);
+		void setSend(function<void(GenericPacket, string)> send);
 		/**
 			Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		*/ 
@@ -88,6 +89,8 @@ namespace whisper_library {
 
 		// Returns the used port (8080)
 		unsigned short port() const;
+
+		std::string id() const;
 
 	private:
 		/**
@@ -110,12 +113,11 @@ namespace whisper_library {
 			0 means, all packets were received and the channel is ready to receive a new length packet.
 		*/
 		int m_remaining_packets;
-	
 		BitSetCoder<3> m_coder;///< The encoder/decoder we use, to split messages into bit blocks
-		TcpPacketGenerator m_generator;
+		TcpPacketGenerator* m_generator_send;
+		TcpPacketGenerator* m_generator_receive;
 		function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
-		function<void(TcpPacket)> m_send;///< function pointer that is used to send Tcp Packets via the socket
-		function<TcpPacket(void)> m_getPacket;///< function pointer that is used to retrieve valid tcp packets, that are used to hide the data
+		function<void(GenericPacket, string)> m_send;///< function pointer that is used to send Tcp Packets via the socket
 	};
 }
 #endif // TCP_HEADER_COVERT_CHANNEL

@@ -24,6 +24,7 @@
 
 #include "genericpacket.hpp"
 #include <string>
+#include <functional>
 
 
 namespace whisper_library {
@@ -48,7 +49,7 @@ public:
 	virtual ~CovertChannel() {};
 	/** \return an instance of this covert channel
 	*/
-	virtual CovertChannel* instance();
+	virtual CovertChannel* instance() = 0;
 	/** \brief sends a message
 
 		Call this function to send a message using the covert channel.
@@ -67,8 +68,11 @@ public:
 		\param output the method the covert channel uses to output the received messages
 	*/
 	virtual void setOutput(function<void(string)> output) = 0;
+	/** \brief sets the methode used to send packets
+	*/
+	virtual void setSend(function<void(GenericPacket, string)> send) = 0;
 	/** \return name of the covert channel
-	*/ 
+	*/
 	virtual std::string name() const = 0;	
 	/** \return some information about the covert channel
 	*/ 
@@ -79,6 +83,8 @@ public:
 	/** \return the used port
 	*/
 	virtual unsigned short port() const = 0;
+
+	virtual std::string id() const = 0;
 };
 }
 #endif // COVERT_CHANNEL

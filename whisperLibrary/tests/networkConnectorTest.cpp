@@ -15,8 +15,7 @@ struct NetworkConnectorFixture {
 		network = new whisper_library::NetworkConnector(bind(&NetworkConnectorFixture::packetReceived, this, placeholders::_1, placeholders::_2));
 		adapters = network->adapters();
 		channel = new whisper_library::TcpHeaderCovertChannel(bind(&NetworkConnectorFixture::output, this, placeholders::_1),
-															  bind(&NetworkConnectorFixture::send, this, placeholders::_1),
-															  bind(&NetworkConnectorFixture::getPacket, this));
+															  bind(&NetworkConnectorFixture::send, this, placeholders::_1, placeholders::_2));
 		received = false;
 	}
 	~NetworkConnectorFixture() {
@@ -63,8 +62,8 @@ struct NetworkConnectorFixture {
 	}
 
 	void output(string message) {};
-	void send(whisper_library::TcpPacket packet) {};
-	whisper_library::TcpPacket getPacket() { return whisper_library::TcpPacket(); };
+	void send(whisper_library::GenericPacket packet, std::string protocol) {};
+	
 };
 
 BOOST_FIXTURE_TEST_SUITE(networkConnector, NetworkConnectorFixture)

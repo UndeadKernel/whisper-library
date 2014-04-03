@@ -70,6 +70,8 @@ public:
 		\return Returns a vector with descriptions of all covert channels
 	*/
 	vector<string> getChannelInfos();
+
+	vector<string> getChannelIDs();
 	/** \brief Returns the amount of available channels
 		\return Number of available channels
 	*/
@@ -83,24 +85,7 @@ public:
 	*/
 	void setChannelArguments(string ip, string arguments);
 
-	// Callbacks for Covert Channels
-
-	/** 
-	  \brief Creates a basic tcp packet with http content
-	  \param ip destination ip the packet is send to
-	  \return valid tcp packet
-	 */
-	TcpPacket getTcpPacket(string ip);
-	/** \brief Creates a basic udp packet
-		\param port the port that the udp packet is send to
-		\return Returns a valid udp packet
-	*/
-	UdpPacket getUdpPacket(unsigned short port);
-	/** \brief creates a valid udp packet with given length
-		\param port the port that the udp packet is send to
-		\param length the desired length
-	*/
-	UdpPacket getUdpPacketWithLength(unsigned short port, int length);
+	void addChannel(CovertChannel* channel);
 
 	/**
 	* \brief Sets the stream, that the covert channel uses as the output for received messages
@@ -129,6 +114,8 @@ public:
 	*/
 	void packetReceived(string ip, GenericPacket packet);
 
+	void sendPacket(string ip, GenericPacket packet, string protocol);
+
 	// Connection
 	/** \brief Starts a conversation.
 
@@ -137,10 +124,8 @@ public:
 		calling 'sendMessage'.
 		\param ip Ipv4 you want to communicate with
 		\param channel_id id of the channel you want to use, to hide the coversation.
-		                  The id is the index of the channel name in the vector that 
-						  is returned by calling 'getChannelNames'.
 	*/
-	bool openConnection(string ip, unsigned int channel_id);
+	bool openConnection(string ip, string channel_id);
 	/** \brief Stops a conversation
 
 		Closes the covert channel and stops listening for packets of the given ip.
@@ -203,19 +188,16 @@ private:
 		\param channel_id id of the channel, which matches the index in the vector returned by 'getChannelNames'
 		\return Pointer to the created covert channel instance
 	*/
-	CovertChannel* createChannel(string ip, unsigned int channel_id);
+	CovertChannel* createChannel(string ip, CovertChannel* channel);
 
-	std::vector<CovertChannel*> m_channels; /**< Holds an instance of each available covert channel type.
+	map<string, CovertChannel*> m_channels; /**< Holds an instance of each available covert channel type.
 											   Used just to pull information from, not for communication. */
 	std::ostream* m_output_stream; ///< Stream that is used to output messages received by a covert channel
 	std::ostream* m_error_stream; ///< Stream that is used to output error messages
 	NetworkConnector* m_network; ///< Pointer to NetworkConnector that is used to access network functionalities
 	map<string, CovertChannel*> m_ip_mapping; /**< Maps Ipv4 addresses in dotted form to a pointer of the covert 
 											  channel that is used to communicate with that ip */
-	map<string, TcpPacketGenerator*> m_generator_mapping; /**< Maps Ipv4 addresses in dotted form to a 
-														  pointer of the tcp packet generator used for the 
-														  communication to that ip */
-	const unsigned int CHANNEL_COUNT; ///< Number of available covert channels. Needs to be updated if a new channel is added.
+	unsigned int m_channel_count; ///< Number of available covert channels. Needs to be updated if a new channel is added.
 	function<void(string, string)> m_message_callback; /**< Pointer to the function that is called 
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 

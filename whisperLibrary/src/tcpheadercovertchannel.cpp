@@ -25,6 +25,28 @@
 using namespace std;
 
 namespace whisper_library {
+
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, string)> send)
+		: CovertChannel(),
+		m_remaining_packets(0),
+		m_output(output),
+		m_send(send){
+		m_generator_send = new TcpPacketGenerator(port(), m_send);
+		m_generator_receive = new TcpPacketGenerator(port(), m_send);
+	};
+
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel()
+		: CovertChannel(),
+		m_remaining_packets(0){
+		m_generator_send = new TcpPacketGenerator(port(), m_send);
+		m_generator_receive = new TcpPacketGenerator(port(), m_send);
+	};
+
+	TcpHeaderCovertChannel::~TcpHeaderCovertChannel(){
+		delete m_generator_send;
+		delete m_generator_receive;
+	}
+
 	string TcpHeaderCovertChannel::name() const{
 		return "TCP Header Covert Channel";
 	}
@@ -41,42 +63,59 @@ namespace whisper_library {
 		return 8080;
 	}
 
-	CovertChannel* TcpHeaderCovertChannel::instance(function<void(string)> output, function<void(TcpPacket)> send, function<TcpPacket(void)> getPacket){
-		return new TcpHeaderCovertChannel(output, send, getPacket);
+	string TcpHeaderCovertChannel::id() const {
+		return "tcp_header_channel";
+	}
+
+	CovertChannel* TcpHeaderCovertChannel::instance(){
+		return new TcpHeaderCovertChannel();
 	}
 
 	void TcpHeaderCovertChannel::sendMessage(string message) {
+		if (m_generator_send->status() == m_generator_send->NO_CONNECTION){
+			m_generator_send->sendConnect();
+		}
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets
-			whisper_library::TcpPacket packet = m_getPacket();	// get valid tcp packet
-			modifyTcpPacket(packet, bit_blocks[i]);			
-			m_send(packet);
+			TcpPacket packet = m_generator_send->nextPacket();	// get valid tcp packet
+			modifyTcpPacket(packet, bit_blocks[i]);	
+			GenericPacket g_packet;
+			g_packet.setPacket(packet.packet());
+			m_send(g_packet, protocol());
 		}
 	}
 
 	void TcpHeaderCovertChannel::receivePacket(GenericPacket& packet) {
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.packet());
+		m_generator_receive->receivePacket(tcp_packet);
 		bitset<3> data = extractData(tcp_packet);
 		//cout << "received: " << data << endl;
-		if (m_remaining_packets == 0) {					// no message received yet
-			m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
-			return;
-		}
-		// process messages
-		m_data_blocks.push_back(data);
-		m_remaining_packets--;
+		if (m_generator_receive->status() != m_generator_receive->NO_CONNECTION) {
+			if (m_remaining_packets == 0) {					// no message received yet
+				m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
+				return;
+			}
+			// process messages
+			m_data_blocks.push_back(data);
+			m_remaining_packets--;
 
-		if (m_remaining_packets == 0) {				// all packets received
-			string message = m_coder.decodeMessage(m_data_blocks);
-			m_output(message);
-			m_data_blocks.clear();					// ready to receive new message
+			if (m_remaining_packets == 0) {				// all packets received
+				string message = m_coder.decodeMessage(m_data_blocks);
+				m_output(message);
+				m_data_blocks.clear();					// ready to receive new message
+			}
 		}
 	}
 
 	void TcpHeaderCovertChannel::setOutput(function<void(string)> output){
 		m_output = output;
 	}
+
+	void TcpHeaderCovertChannel::setSend(function<void(GenericPacket, string)> send){
+		m_send = send;
+	}
+
 
 	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
 		vector<bitset<3>> ret_vector;

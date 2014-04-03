@@ -22,7 +22,7 @@ public:
 		\param send Pointer to a function to send packets over the network
 		\param forward Function pointer that forwards incoming data packets to a covert channel
 	*/
-	TcpPacketGenerator(unsigned short port, function<void(TcpPacket)> send, function<void(GenericPacket)> forward);
+	TcpPacketGenerator(unsigned short port, function<void(GenericPacket, std::string)> send);
 	/** \brief Has to be called when a packet arrives
 
 		Interprets an incoming packet. Responds to connect requests and connect acknowledges.
@@ -64,14 +64,13 @@ private:
 		\param data data of the returned packet
 		\return valid tcp packet
 	*/
-	TcpPacket createPacket(bool syn, bool ack, string data);
+	TcpPacket createPacket(bool syn, bool ack, std::string data);
 
 	unsigned short m_port; ///< source/destination port used for communication
 	unsigned long m_next_sequence; ///< sequence number used for sending of the next packet
 	unsigned long m_base_sequence; ///< highest sequence number that was acknowledge by the receiver
 	unsigned long m_next_peer_sequence; ///< next expected sequence number by peer
-	function<void(TcpPacket)> m_send;	///< pointer to a function that is used for sending packets over the network
-	function<void(GenericPacket)> m_forward; ///< pointer to a function that is used to forward data packets to a covert channel
+	function<void(GenericPacket, std::string)> m_send;	///< pointer to a function that is used for sending packets over the network
 	unsigned int m_state; ///< stores the internal connection state code (see constants)
 	unsigned int m_timeout; ///< timeout in milliseconds used for resending of packets (not used yet)
 	bool m_server; ///< true if you are the server after a successful handshake

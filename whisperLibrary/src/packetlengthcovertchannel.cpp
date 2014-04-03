@@ -27,32 +27,43 @@
 
 namespace whisper_library {
 
-	const std::string PacketLengthCovertChannel::NAME =
-		"Packet Length Covert Channel";
-	
-	const std::string PacketLengthCovertChannel::INFO =
-		"The Packet Length Covert Channel alters the length of UDP packets to transmit messages";
+	std::string PacketLengthCovertChannel::name() const {
+		return "Packet Length Covert Channel";
+	}
 
-	const std::string PacketLengthCovertChannel::PROTOCOL = "udp";
+	std::string PacketLengthCovertChannel::info() const {
+		return"The Packet Length Covert Channel alters the length of UDP packets to transmit messages";
+	}
 
-	const unsigned short PacketLengthCovertChannel::PORT = 23;
+	std::string PacketLengthCovertChannel::protocol() const {
+		return "udp";
+	}
+
+	unsigned short PacketLengthCovertChannel::port() const {
+		return 23;
+	}
+
+	std::string PacketLengthCovertChannel::id() const {
+		return "packet_length_channel";
+	}
 	
 	PacketLengthCovertChannel::~PacketLengthCovertChannel(){
 		delete m_coder;
 	}
 
-	CovertChannel* PacketLengthCovertChannel::instance(function<void(std::string)> output,
-		function<void(UdpPacket)> send,
-		function<UdpPacket(int)> get_packet){
-		return new PacketLengthCovertChannel(output, send, get_packet);
+	CovertChannel* PacketLengthCovertChannel::instance(){
+		return new PacketLengthCovertChannel();
 	}
 
 	void PacketLengthCovertChannel::sendMessage(std::string message){
 		std::vector<unsigned int> packetLengths = m_coder->encodeMessage(message);
-		m_send(UdpPacketGenerator::generatePacketWithLength(PORT, 8 + m_baselength + packetLengths.size()));
+		GenericPacket g_packet;
+		g_packet.setPacket(UdpPacketGenerator::generatePacketWithLength(port(), 8 + m_baselength + packetLengths.size()).packet());
+		m_send(g_packet, protocol());
 		for (unsigned int i = 0; i < packetLengths.size(); i++){
 			this_thread::sleep_for(chrono::milliseconds(10));
-			m_send(UdpPacketGenerator::generatePacketWithLength(PORT, packetLengths[i]));
+			g_packet.setPacket(UdpPacketGenerator::generatePacketWithLength(port(), packetLengths[i]).packet());
+			m_send(g_packet, protocol());
 		}
 	}
 
@@ -83,19 +94,8 @@ namespace whisper_library {
 		m_output = output;
 	}
 
-	std::string PacketLengthCovertChannel::name() const {
-		return NAME;
+	void PacketLengthCovertChannel::setSend(function<void(GenericPacket, string)> send){
+		m_send = send;
 	}
 
-	std::string PacketLengthCovertChannel::info() const {
-		return INFO;
-	}
-
-	std::string PacketLengthCovertChannel::protocol() const {
-		return PROTOCOL;
-	}
-	
-	unsigned short PacketLengthCovertChannel::port() const {
-		return PORT;
-	}
 }

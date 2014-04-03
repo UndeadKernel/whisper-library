@@ -4,9 +4,8 @@
 #include <random>
 
 namespace whisper_library {
-	TcpPacketGenerator::TcpPacketGenerator(unsigned short port, function<void(TcpPacket)> send, function<void(GenericPacket)> forward)
+	TcpPacketGenerator::TcpPacketGenerator(unsigned short port, function<void(GenericPacket, std::string)> send)
 	: m_send(send),
-	  m_forward(forward),
 	  m_port(port),
 	  m_state(0),
 	  m_timeout(1000),
@@ -72,16 +71,22 @@ namespace whisper_library {
 	}
 
 	void TcpPacketGenerator::sendConnect() {
-		m_send(createPacket(true, false, ""));
+		GenericPacket packet;
+		packet.setPacket(createPacket(true, false, "").packet());
+		m_send(packet, "tcp");
 		m_next_sequence++;
 	}
 
 	void TcpPacketGenerator::sendConnectResponse(){
-		m_send(createPacket(true, true, ""));
+		GenericPacket packet;
+		packet.setPacket(createPacket(true, true, "").packet());
+		m_send(packet, "tcp");
 		m_next_sequence++;
 	}
 	void TcpPacketGenerator::sendAcknowledgeResponse() {
-		m_send(createPacket(false, true, ""));
+		GenericPacket packet;
+		packet.setPacket(createPacket(false, true, "").packet());
+		m_send(packet, "tcp");
 	}
 
 	void TcpPacketGenerator::receivePacket(TcpPacket packet) {
@@ -118,11 +123,12 @@ namespace whisper_library {
 				//forward to covert channel
 				GenericPacket generic_packet;
 				generic_packet.setPacket(packet.packet());
-				m_forward(generic_packet);
 				// check if packet is new and in order
 				if (packet.sequenceNumber() == m_next_peer_sequence) {
 					m_next_peer_sequence += (packet.data().size() / 8);
-					m_send(createPacket(false, true, ""));
+					GenericPacket packet;
+					packet.setPacket(createPacket(false, true, "").packet());
+					m_send(packet, "tcp");
 				}
 			}
 			else {

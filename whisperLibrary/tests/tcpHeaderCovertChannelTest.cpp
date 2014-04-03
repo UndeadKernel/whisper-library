@@ -6,8 +6,7 @@
 struct tcpHeaderCovertChannelFixture {
 	tcpHeaderCovertChannelFixture() {
 		uut = new whisper_library::TcpHeaderCovertChannel(std::bind(&tcpHeaderCovertChannelFixture::outputMessage, this, std::placeholders::_1),
-			std::bind(&tcpHeaderCovertChannelFixture::sendPacket, this, std::placeholders::_1),
-			std::bind(&tcpHeaderCovertChannelFixture::getPacket, this));
+			std::bind(&tcpHeaderCovertChannelFixture::sendPacket, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	~tcpHeaderCovertChannelFixture() {
 		delete uut;
@@ -16,18 +15,12 @@ struct tcpHeaderCovertChannelFixture {
 	std::string test_message;
 	std::stringstream output_stream;
 
-	whisper_library::TcpPacket getPacket() {
-		return whisper_library::TcpPacket();
-	}
-
-
 	void outputMessage(std::string message){
 		output_stream << message;
 	}
 
-	void sendPacket(whisper_library::TcpPacket packet) {
-		whisper_library::GenericPacket generic_packet(packet.packet());
-		uut->receivePacket(generic_packet);
+	void sendPacket(whisper_library::GenericPacket packet, std::string protocol) {
+		uut->receivePacket(packet);
 	}
 };
 

@@ -6,8 +6,7 @@
 struct timingCovertChannelFixture {
 	timingCovertChannelFixture() {
 		uut = new whisper_library::TimingCovertChannel(std::bind(&timingCovertChannelFixture::outputMessage, this, std::placeholders::_1),
-			std::bind(&timingCovertChannelFixture::sendPacket, this, std::placeholders::_1),
-			std::bind(&timingCovertChannelFixture::getPacket, this, std::placeholders::_1));
+			std::bind(&timingCovertChannelFixture::sendPacket, this, std::placeholders::_1, std::placeholders::_2));
 		uut->setArguments("-set_timings 10 30 50 70");
 	}
 	~timingCovertChannelFixture() {
@@ -26,9 +25,8 @@ struct timingCovertChannelFixture {
 		received_message << message;
 	}
 
-	void sendPacket(whisper_library::UdpPacket packet) {
-		whisper_library::GenericPacket generic_packet;
-		uut->receivePacket(generic_packet);
+	void sendPacket(whisper_library::GenericPacket packet, std::string protocol) {
+		uut->receivePacket(packet);
 	}
 };
 

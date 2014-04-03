@@ -20,6 +20,7 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include <timingcovertchannel.hpp>
+#include "udppacketgenerator.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cmath>
@@ -31,10 +32,8 @@ namespace whisper_library {
 		m_mutex_sending.unlock();
 	}
 
-	CovertChannel* TimingCovertChannel::instance(function<void(string)> output,
-		function<void(UdpPacket)> send,
-		function<UdpPacket(unsigned short)> getPacket){
-		return new TimingCovertChannel(output, send, getPacket);
+	CovertChannel* TimingCovertChannel::instance(){
+		return new TimingCovertChannel();
 	}
 
 	string TimingCovertChannel::name() const{
@@ -53,6 +52,10 @@ namespace whisper_library {
 		return 23;
 	}
 
+	string TimingCovertChannel::id() const{
+		return "timing_chanel";
+	}
+
 	void TimingCovertChannel::sendMessage(string message) {
 		if (message.empty()) {
 			return;
@@ -65,13 +68,15 @@ namespace whisper_library {
 	void TimingCovertChannel::sendDelays(vector<unsigned int> delays) {
 		m_mutex_sending.lock();
 		chrono::time_point<chrono::system_clock> sending_time;
-		m_send(m_getPacket(port()));
+		GenericPacket packet;
+		packet.setPacket(UdpPacketGenerator::generateNextPacket(port()).packet());
+		m_send(packet, protocol());
 		chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
 		for (vector<unsigned int>::iterator it = delays.begin(); it != delays.end(); it++) {
-			UdpPacket packet = m_getPacket(port());
+			packet.setPacket(UdpPacketGenerator::generateNextPacket(port()).packet());
 			sending_time = start + chrono::milliseconds(*it);
 			this_thread::sleep_until(sending_time);
-			m_send(packet);
+			m_send(packet, protocol());
 			start = chrono::system_clock::now();
 		}
 		this_thread::sleep_for(chrono::milliseconds(m_timeout));
@@ -137,6 +142,11 @@ namespace whisper_library {
 	void TimingCovertChannel::setOutput(function<void(string)> output){
 		m_output = output;
 	}
+
+	void TimingCovertChannel::setSend(function<void(GenericPacket, string)> send){
+		m_send = send;
+	}
+
 
 	void TimingCovertChannel::startTimeoutTimer() {
 		// wait until timeout point, repeat if timeout was changed during sleep

@@ -30,29 +30,20 @@ using namespace std;
 
 namespace whisper_library {
 
-ChannelManager::ChannelManager():CHANNEL_COUNT(3){
+	ChannelManager::ChannelManager() :m_channel_count(0) {
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
-	for (unsigned int i = 0; i < CHANNEL_COUNT; i++) {
-		m_channels.push_back(createChannel("", i));
-	}
+	
 }
 ChannelManager::~ChannelManager() {
 	// clean up open connections
 	for (map<string, CovertChannel*>::iterator it = m_ip_mapping.begin(); it != m_ip_mapping.end(); it++) {
-		pair<string, CovertChannel*> element = *it;
-		delete element.second;
-	}
-	// clean up generators
-	for (map<string, TcpPacketGenerator*>::iterator it = m_generator_mapping.begin(); it != m_generator_mapping.end(); it++) {
-		pair<string, TcpPacketGenerator*> element = *it;
-		delete element.second;
+		delete it->second;
 	}
 	// clean up m_channels
-	for (unsigned int i = 0; i < m_channels.size(); i++) {
-		delete m_channels[i];
+	for (map<string, CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); it++) {
+		delete it->second;
 	}
-
 	delete m_network;
 }
 
@@ -71,22 +62,30 @@ void ChannelManager::outputErrorMessage(string message) {
 
 vector<string> ChannelManager::getChannelInfos() {
 	vector<string> string_vector;
-	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
-		string_vector.push_back((*it)->info());
+	for (map<string, CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back(it->second->info());
 	}
 	return string_vector;
 }
 
 vector<string> ChannelManager::getChannelNames() {
 	vector<string> string_vector;
-	for (vector<CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
-		string_vector.push_back((*it)->name());
+	for (map<string, CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back(it->second->name());
+	}
+	return string_vector;
+}
+
+vector<string> ChannelManager::getChannelIDs(){
+	vector<string> string_vector;
+	for (map<string, CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
+		string_vector.push_back(it->first);
 	}
 	return string_vector;
 }
 
 unsigned int ChannelManager::channelCount() {
-	return CHANNEL_COUNT;
+	return m_channel_count;
 }
 
 void ChannelManager::sendMessage(string ip, string message) {
@@ -115,8 +114,12 @@ void ChannelManager::setChannelArguments(string ip, string arguments) {
 	}
 }
 
+void ChannelManager::addChannel(CovertChannel* channel) {
+	m_channels.insert(pair<string, CovertChannel*>(channel->id(), channel));
+}
 
-// Callbacks for Covert Channels
+
+
 void ChannelManager::setOutputStream(std::ostream* stream) {
 	m_output_stream = stream;
 }
@@ -134,37 +137,6 @@ void ChannelManager::setMessageCallback(function<void(string, string)> message_c
 	m_message_callback = message_callback;
 }
 
-TcpPacket ChannelManager::getTcpPacket(string ip) {
-	TcpPacketGenerator* generator;
-	try {
-		generator = m_generator_mapping.at(ip);
-	}
-	catch (out_of_range) {
-		outputErrorMessage("Error: No tcp generator found for " + ip + " .");
-		TcpPacket empty_packet;
-		return empty_packet;
-	}
-	return generator->nextPacket();
-}
-
-UdpPacket ChannelManager::getUdpPacket(unsigned short port) {
-	whisper_library::UdpPacket packet;
-	packet.setSourcePort(port);
-	packet.setDestinationPort(port);
-	packet.setLength(11);
-	packet.setChecksum(0);
-	std::vector<char> data;
-	data.push_back('A');
-	data.push_back('B');
-	data.push_back('C');
-	packet.setData(data);
-	return packet;
-}
-
-UdpPacket ChannelManager::getUdpPacketWithLength(unsigned short port, int length){
-	return UdpPacketGenerator::generatePacketWithLength(23, length);
-}
-
 
 void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 	CovertChannel* channel;
@@ -174,59 +146,42 @@ void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 	catch (out_of_range) {
 		outputErrorMessage("Error: No connection to " + ip);
 		return;
-	}
-	if (channel->protocol().compare("tcp") == 0) {
-		TcpPacketGenerator* generator;
-		try {
-			generator = m_generator_mapping.at(ip);
-		}
-		catch (out_of_range) {
-			outputErrorMessage("Error: No tcp generator found for " + ip + " .");
-			return;
-		}
+	}	
+		channel->receivePacket(packet);
+}
+
+void ChannelManager::sendPacket(string ip, GenericPacket packet, string protocol){
+	if (protocol.compare("tcp") == 0){
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.packet());
-		generator->receivePacket(tcp_packet);
+		m_network->sendTcp(ip, tcp_packet);
 	}
-	else {
-		channel->receivePacket(packet);
+	else if (protocol.compare("tcp") == 0) {
+		UdpPacket udp_packet;
+		udp_packet.setPacket(packet.packet());
+		m_network->sendUdp(ip, udp_packet);
 	}
 }
 
-CovertChannel* ChannelManager::createChannel(string ip, unsigned int channel_id) {
-	function<void(string)> output_message = std::bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
-	if (channel_id == 0) {
-		return new TcpHeaderCovertChannel(output_message,
-			std::bind(&NetworkConnector::sendTcp, m_network, ip, std::placeholders::_1),
-			std::bind(&ChannelManager::getTcpPacket, this, ip));
-	}
-	if (channel_id == 1) {
-		return new TimingCovertChannel(output_message,
-			std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
-			std::bind(&ChannelManager::getUdpPacket, this, std::placeholders::_1));
-	}
-	// else
-	return new PacketLengthCovertChannel(output_message,
-		std::bind(&NetworkConnector::sendUdp, m_network, ip, std::placeholders::_1),
-		std::bind(&ChannelManager::getUdpPacketWithLength, this, PacketLengthCovertChannel::PORT, std::placeholders::_1));
+CovertChannel* ChannelManager::createChannel(string ip, CovertChannel* channel) {
+	function<void(string)> output_message = bind(&ChannelManager::outputMessage, this, ip, std::placeholders::_1);
+	CovertChannel* new_channel = channel->instance();
+	new_channel->setOutput(output_message);
+	new_channel->setSend(bind(&ChannelManager::sendPacket,this, ip, placeholders::_1, placeholders::_2));
+	return new_channel;
 }
 
 // Connection
-bool ChannelManager::openConnection(string ip, unsigned int channel_id) {
+bool ChannelManager::openConnection(string ip, string channel_id) {
 	if (connection(ip)) {
 		outputErrorMessage("There is a connection to " + ip + " already.");
 		return false;
 	}
-	CovertChannel* channel = createChannel(ip, channel_id);
+	CovertChannel* channel = m_channels.at(channel_id);
+	CovertChannel* new_channel = createChannel(ip, channel);
 	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, channel));
 	if (!m_network->openListener(ip, channel)) {
 		return false;
-	}
-	if (channel->protocol().compare("tcp") == 0) { //equal
-		TcpPacketGenerator* generator = new TcpPacketGenerator(channel->port(), bind(&NetworkConnector::sendTcp, m_network, ip, placeholders::_1),
-			bind(&CovertChannel::receivePacket, channel, placeholders::_1));
-		m_generator_mapping.insert(pair<string, TcpPacketGenerator*>(ip, generator));
-		generator->sendConnect();
 	}
 	return true;
 }
@@ -241,11 +196,6 @@ void ChannelManager::closeConnection(string ip) {
 		return;
 	}
 	m_network->closeListener(ip);
-	if (channel->protocol().compare("tcp") == 0) { //equal
-		TcpPacketGenerator* generator = m_generator_mapping.at(ip);
-		delete generator;
-		m_generator_mapping.erase(ip);
-	}
 	delete channel;
 	m_ip_mapping.erase(ip);
 }
