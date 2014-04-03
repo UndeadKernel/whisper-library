@@ -24,3 +24,9 @@ Thumbs.db
 *.la
 *.a
 
+
+/doc/code-review
+
+/doc/presentation
+
+/doc/qadoc
