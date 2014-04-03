@@ -37,9 +37,7 @@ namespace whisper_library {
 */
 class CovertChannel {
 public:	
-	/** \brief Constructor
-
-		Creates a CovertChannel
+	/** \brief Creates a CovertChannel	
 	*/ 
 	CovertChannel() {};
 	/** \brief Destructor
@@ -83,7 +81,8 @@ public:
 	/** \return the used port
 	*/
 	virtual unsigned short port() const = 0;
-
+	/** \return the ID of the covert channel
+	*/
 	virtual std::string id() const = 0;
 };
 }

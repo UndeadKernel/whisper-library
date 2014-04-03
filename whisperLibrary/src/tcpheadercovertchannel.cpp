@@ -26,7 +26,7 @@ using namespace std;
 
 namespace whisper_library {
 
-	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, string)> send)
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, std::string)> send)
 		: CovertChannel(),
 		m_remaining_packets(0),
 		m_output(output),
@@ -90,7 +90,6 @@ namespace whisper_library {
 		tcp_packet.setPacket(packet.packet());
 		m_generator_receive->receivePacket(tcp_packet);
 		bitset<3> data = extractData(tcp_packet);
-		//cout << "received: " << data << endl;
 		if (m_generator_receive->status() != m_generator_receive->NO_CONNECTION) {
 			if (m_remaining_packets == 0) {					// no message received yet
 				m_remaining_packets = data.to_ulong() + 1;	// save length from first packet

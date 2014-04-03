@@ -52,7 +52,6 @@ public:
 		\param output function pointer that is called, when a complete message arrived. 
 			   Its parameter is this message.
 		\param send function pointer that is called to send a UdpPacket via the socket.
-		\param getPacket function pointer, that has to return a valid UdpPacket. The argument is the used port.
 	*/
 	TimingCovertChannel(function<void(string)> output, 
 						function<void(GenericPacket, string)> send)
@@ -124,7 +123,8 @@ public:
 	/** \brief	Returns the used port (23)
 	*/
 	unsigned short port() const;
-
+	/** \return the ID of the covert channel
+	*/
 	std::string id() const;
 private:
 	/**

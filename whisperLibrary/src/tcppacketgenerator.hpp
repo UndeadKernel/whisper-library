@@ -20,7 +20,6 @@ public:
 		Sends a connect request to peer.
 		\param port Source and destination port used for creating the packets
 		\param send Pointer to a function to send packets over the network
-		\param forward Function pointer that forwards incoming data packets to a covert channel
 	*/
 	TcpPacketGenerator(unsigned short port, function<void(GenericPacket, std::string)> send);
 	/** \brief Has to be called when a packet arrives

@@ -49,7 +49,6 @@ namespace whisper_library {
 
 			\param output a function pointer that is called, when a complete message arrived. Its parameter is this message.
 			\param send a function pointer that is called to send a TcpPacket via the socket.
-			\param getPacket a function pointer, that has to return a valid TcpPacket, that is used to insert the data.
 		*/
 		TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket, std::string)> send);
 
@@ -89,7 +88,8 @@ namespace whisper_library {
 
 		// Returns the used port (8080)
 		unsigned short port() const;
-
+		/** \return the ID of the covert channel
+		*/
 		std::string id() const;
 
 	private:
@@ -114,8 +114,8 @@ namespace whisper_library {
 		*/
 		int m_remaining_packets;
 		BitSetCoder<3> m_coder;///< The encoder/decoder we use, to split messages into bit blocks
-		TcpPacketGenerator* m_generator_send;
-		TcpPacketGenerator* m_generator_receive;
+		TcpPacketGenerator* m_generator_send;///< A TcpPacketGenerator acting as client used for sending messages
+		TcpPacketGenerator* m_generator_receive;///< ///< A TcpPacketGenerator acting as server used for receiving messages
 		function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
 		function<void(GenericPacket, string)> m_send;///< function pointer that is used to send Tcp Packets via the socket
 	};

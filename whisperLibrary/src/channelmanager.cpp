@@ -33,7 +33,9 @@ namespace whisper_library {
 	ChannelManager::ChannelManager() :m_channel_count(0) {
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
-	
+	addChannel(new TcpHeaderCovertChannel());
+	addChannel(new TimingCovertChannel());
+	addChannel(new PacketLengthCovertChannel());	
 }
 ChannelManager::~ChannelManager() {
 	// clean up open connections

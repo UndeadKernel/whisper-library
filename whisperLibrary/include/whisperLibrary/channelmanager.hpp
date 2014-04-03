@@ -67,10 +67,13 @@ public:
 	/** \brief Returns a list with descriptions of all available covert channels
 
 		The order matches the name list retrieved by calling 'getChannelNames'.
-		\return Returns a vector with descriptions of all covert channels
+		\return A vector with descriptions of all covert channels
 	*/
 	vector<string> getChannelInfos();
+	/** \brief Returns a list with IDs of the available covert channels
 
+		\return A vector<string> with channel IDs
+	*/
 	vector<string> getChannelIDs();
 	/** \brief Returns the amount of available channels
 		\return Number of available channels
@@ -84,7 +87,12 @@ public:
 		\param arguments argument string that is given to the channel
 	*/
 	void setChannelArguments(string ip, string arguments);
-
+	/**	\brief adds an CovertChannel to the available Channels (m_channels)
+		
+		\param channel an Instance of the Covert Channel you want to add. Can be
+						created with the default constructor and is only used for information
+						and Channel creation by calling CovertChannel::instance()
+	*/
 	void addChannel(CovertChannel* channel);
 
 	/**
@@ -113,7 +121,14 @@ public:
 		\param packet the packet that was received
 	*/
 	void packetReceived(string ip, GenericPacket packet);
-
+	/** \brief sends a packet to m_network
+	
+		Interprets the given GenericPacket as an packet of the protocol and sends it
+		to the given ip.
+		\param ip the receivers IP
+		\param packet the packet to send
+		\param protocol the protocol used to send the packet
+	*/
 	void sendPacket(string ip, GenericPacket packet, string protocol);
 
 	// Connection
@@ -182,10 +197,9 @@ private:
 	void outputErrorMessage(string message);
 	/** \brief Covert channel factory
 
-		Creates a covert channel instance and returns a pointer to the object. Add an entry to this function
-		if you want to add your own covert channel. Don't forget to update the constant 'CHANNEL_COUNT'.
+		Creates a covert channel instance and returns a pointer to the object.
 		\param ip Ipv4 address you want to communicate with using the created channel
-		\param channel_id id of the channel, which matches the index in the vector returned by 'getChannelNames'
+		\param channel instance of the CovertChannel you want to create
 		\return Pointer to the created covert channel instance
 	*/
 	CovertChannel* createChannel(string ip, CovertChannel* channel);
@@ -197,7 +211,7 @@ private:
 	NetworkConnector* m_network; ///< Pointer to NetworkConnector that is used to access network functionalities
 	map<string, CovertChannel*> m_ip_mapping; /**< Maps Ipv4 addresses in dotted form to a pointer of the covert 
 											  channel that is used to communicate with that ip */
-	unsigned int m_channel_count; ///< Number of available covert channels. Needs to be updated if a new channel is added.
+	unsigned int m_channel_count; ///< Number of available covert channels.
 	function<void(string, string)> m_message_callback; /**< Pointer to the function that is called 
 													   when a covert channel receives a message. 
 													   The first argument is the ip(v4) in dotted form, 

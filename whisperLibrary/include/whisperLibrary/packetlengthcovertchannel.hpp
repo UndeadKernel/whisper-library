@@ -43,10 +43,7 @@ public:
 		function pointers. It than can be use to send and receive messages.
 		\param output a function the covert channel calls with the message he received as 
 					an argument
-		\param send a function the covert channel uses to send udp packets
-		\param get_packet a function the covert channel uses to get udp packets with a
-						certain length
-		
+		\param send a function the covert channel uses to send udp packets		
 	*/
 	PacketLengthCovertChannel(function<void(std::string)> output,
 		function<void(GenericPacket, std::string)> send)
@@ -90,10 +87,16 @@ public:
 		No arguments, empty function
 	*/
 	void setArguments(std::string arguments) {};
+	/** \brief sets the function used to output received messages
 
+		\param output a function-pointer used to output messages
+	*/
 	void setOutput(function<void(std::string)> output);
-	void setSend(function<void(GenericPacket, std::string)> send);
+	/** \brief sets the function used to send packets
 
+		\param send a function-pointer used to send packets
+	*/
+	void setSend(function<void(GenericPacket, std::string)> send);
 	/** \return The name of the covert channel
 	*/
 	std::string name() const;
@@ -106,7 +109,8 @@ public:
 	/** \return Port that packets are send to
 	*/
     unsigned short port() const;
-
+	/** \return the ID of the covert channel
+	*/
 	std::string id() const;
 
 private:
