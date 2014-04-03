@@ -49,7 +49,6 @@ ChannelManager::~ChannelManager() {
 	delete m_network;
 }
 
-
 void ChannelManager::setErrorStream(std::ostream* stream) {
 	m_error_stream = stream;
 }
@@ -61,7 +60,6 @@ void ChannelManager::outputErrorMessage(string message) {
 }
 
 // Covert Channels
-
 vector<string> ChannelManager::getChannelInfos() {
 	vector<string> string_vector;
 	for (map<string, CovertChannel*>::iterator it = m_channels.begin(); it != m_channels.end(); ++it) {
@@ -188,11 +186,12 @@ bool ChannelManager::openConnection(string ip, string channel_id) {
 		outputErrorMessage("openConnection failed: Channel id '" + channel_id + "' unknown.");
 		return false;
 	}
-	CovertChannel* new_channel = createChannel(ip, channel);
-	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, new_channel));
-	if (!m_network->openListener(ip, new_channel)) {
+	if (!m_network->openListener(ip, channel)) {
 		return false;
 	}
+	CovertChannel* new_channel = createChannel(ip, channel);
+	m_ip_mapping.insert(pair<string, CovertChannel*>(ip, new_channel));
+	new_channel->initialize();
 	return true;
 }
 
@@ -225,7 +224,7 @@ bool ChannelManager::connection(string ip) {
 }
 
 // Adapter handling
-void ChannelManager::setAdapter(string name) {
+bool ChannelManager::setAdapter(string name) {
 	return m_network->setAdapter(name);
 }
 
@@ -239,7 +238,7 @@ string ChannelManager::adapterDescription(string adapter_name) {
 	return m_network->adapterDescription(adapter_name);
 }
 vector<string> ChannelManager::adapterAddresses() {
-	return m_network->adapterAddresses();
+	return m_network->adapterAddresses(m_network->currentAdapter());
 }
 
 }

@@ -105,6 +105,10 @@ public:
 		\param arguments string that is parsed for channel arguments
 	*/
 	void setArguments(string arguments);
+	/**
+		No initialisation needed, empty function
+	*/
+	void initialize() {};
 
 	void setOutput(function<void(string)> output);
 	void setSend(function<void(GenericPacket)> send);

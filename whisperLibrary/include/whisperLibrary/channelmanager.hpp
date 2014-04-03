@@ -168,8 +168,9 @@ public:
 			   and receive messages.
 		\param name unique name of the adapter. A list of adapters can be
 		retrieved by calling 'networkAdapters'.
+		\return true if setting the adapter was successful
 	*/
-	void setAdapter(string name);
+	bool setAdapter(string name);
 	/** \brief Returns the number of available network adapters.
 	*/
 	unsigned int adapterCount();

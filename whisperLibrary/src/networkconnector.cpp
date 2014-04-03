@@ -35,16 +35,23 @@ namespace whisper_library {
 	}
 
 	// Adapter Handling
-	void NetworkConnector::setAdapter(string adapter_name) {
-		if (m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME) != -2 && !m_adapter_open) {
-			m_adapter = adapter_name;
-			vector<string> addresses = adapterAddresses();
-			for (unsigned int i = 0; i < addresses.size(); i++) {
-				if (validIPv4(addresses[i])) {
-					m_source_ip = addresses[i];
-				}
+	bool NetworkConnector::setAdapter(string adapter_name) {
+		if (m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME) == -2 || m_adapter_open) {
+			return false;
+		}
+		vector<string> addresses = adapterAddresses(adapter_name);
+		for (unsigned int i = 0; i < addresses.size(); i++) {
+			if (validIPv4(addresses[i])) {
+				m_adapter = adapter_name;
+				m_source_ip = addresses[i];
+				return true;
 			}
 		}
+		return false;
+	}
+
+	string NetworkConnector::currentAdapter() {
+		return m_adapter;
 	}
 
 	vector<string> NetworkConnector::adapters() {
@@ -63,8 +70,8 @@ namespace whisper_library {
 		return m_pcap->adapterCount();
 	}
 
-	vector<string> NetworkConnector::adapterAddresses() {
-		int adapter_id = m_pcap->adapterId(m_adapter, m_pcap->ADAPTER_NAME);
+	vector<string> NetworkConnector::adapterAddresses(string adapter_name) {
+		int adapter_id = m_pcap->adapterId(adapter_name, m_pcap->ADAPTER_NAME);
 		return (adapter_id < 0 ? vector<string>() : m_pcap->adapterAddresses(adapter_id));
 	}
 
@@ -162,9 +169,6 @@ namespace whisper_library {
 	// Sending
 	void NetworkConnector::sendTcp(string ip, TcpPacket packet) {
 		#ifdef WIN32
-			if (!m_adapter_open) {
-				return;
-			}
 			// WIN32
 			vector<bool> frame;
 			// ethernet header
@@ -216,7 +220,7 @@ namespace whisper_library {
 	bool NetworkConnector::validIPv4(string ip) {
 		boost::system::error_code ec;
 		boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, ec);
-		return (!ec) && address.is_v4();
+		return (!ec) && address.is_v4() && ip.compare("0.0.0.0") != 0; // no error, ipv4 and not 0.0.0.0
 	}
 
 	vector<bool> NetworkConnector::switchEndian(vector<bool> binary) {

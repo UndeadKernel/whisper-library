@@ -6,8 +6,8 @@
 struct PacketLengthCovertChannelFixture {
 	PacketLengthCovertChannelFixture(){
 		m_channel = new whisper_library::PacketLengthCovertChannel(
-			std::bind(&PacketLengthCovertChannelFixture::output,this,std::placeholders::_1),
-			std::bind(&PacketLengthCovertChannelFixture::send, this, std::placeholders::_1, std::placeholders::_2));
+			std::bind(&PacketLengthCovertChannelFixture::output, this, std::placeholders::_1),
+			std::bind(&PacketLengthCovertChannelFixture::send, this, std::placeholders::_1));
 	}
 
 	~PacketLengthCovertChannelFixture(){
@@ -18,12 +18,8 @@ struct PacketLengthCovertChannelFixture {
 		m_received = message;
 	}
 
-	void send(whisper_library::GenericPacket packet, std::string protocol){
+	void send(whisper_library::GenericPacket packet){
 		m_channel->receivePacket(packet);
-	}
-
-	whisper_library::UdpPacket getUdpPacket(int length){
-		 return whisper_library::UdpPacketGenerator::generatePacketWithLength(23,length);	
 	}
 
 	std::string m_received;

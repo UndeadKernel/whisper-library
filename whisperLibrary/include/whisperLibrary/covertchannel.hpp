@@ -45,6 +45,9 @@ public:
 		Virtual destructor so that the destructor of derived classes is called
 	*/ 
 	virtual ~CovertChannel() {};
+	/** \brief Initializes the covert channel. Is called after construction
+	*/
+	virtual void initialize() = 0;
 	/** \return an instance of this covert channel
 	*/
 	virtual CovertChannel* instance() = 0;

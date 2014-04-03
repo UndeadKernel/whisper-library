@@ -38,8 +38,8 @@ namespace whisper_library {
 			return createPacket(false, false, http_text);
 		}
 		else {
-			// no connection, send synchronisation packet
-			return createPacket(true, false, "");
+			// no connection, send empty packet
+			return createPacket(false, false, "");
 		}
 	}
 
@@ -71,25 +71,19 @@ namespace whisper_library {
 	}
 
 	void TcpPacketGenerator::sendConnect() {
-		GenericPacket packet;
-		packet.setPacket(createPacket(true, false, "").packet());
-		m_send(packet);
+		send(createPacket(true, false, ""));
 		m_next_sequence++;
 	}
 
 	void TcpPacketGenerator::sendConnectResponse(){
-		GenericPacket packet;
-		packet.setPacket(createPacket(true, true, "").packet());
-		m_send(packet);
+		send(createPacket(true, true, ""));
 		m_next_sequence++;
 	}
 	void TcpPacketGenerator::sendAcknowledgeResponse() {
-		GenericPacket packet;
-		packet.setPacket(createPacket(false, true, "").packet());
-		m_send(packet);
+		send(createPacket(false, true, ""));
 	}
 
-	void TcpPacketGenerator::receivePacket(TcpPacket packet) {
+	bool TcpPacketGenerator::receivePacket(TcpPacket packet) {
 		if (m_state == NO_CONNECTION) {
 			if (packet.synchronisationFlag() && !packet.acknowledgementFlag()) {
 				// we are listener, peer wants to connect
@@ -97,7 +91,8 @@ namespace whisper_library {
 				m_next_peer_sequence = packet.sequenceNumber() + 1;
 				m_state = RECEIVED_SYN;
 				sendConnectResponse();
-				return;
+				// don't forward
+				return false;
 			}
 			if (packet.synchronisationFlag() && packet.acknowledgementFlag()) {
 				// we are sender, reponse of peer to connect request
@@ -107,37 +102,54 @@ namespace whisper_library {
 				// TODO wait for connect-procedure to end
 				sendAcknowledgeResponse();
 				m_base_sequence = m_next_sequence;
-				return;
+				// don't forward
+				return false;
 			}
+			// unknown packet
+			return false;
 		}
 		if (m_state == RECEIVED_SYN) {
 			if (!packet.synchronisationFlag() && packet.acknowledgementFlag()) {
 				m_base_sequence = m_next_sequence;
 				m_state = ESTABLISHED;
 			}
-			return;
+			// don't forward
+			return false;
 		}
 		if (m_state == ESTABLISHED){
 			if (!packet.acknowledgementFlag()) {
 				// data packet
-				//forward to covert channel
-				GenericPacket generic_packet;
-				generic_packet.setPacket(packet.packet());
 				// check if packet is new and in order
 				if (packet.sequenceNumber() == m_next_peer_sequence) {
 					m_next_peer_sequence += (packet.data().size() / 8);
-					GenericPacket packet;
-					packet.setPacket(createPacket(false, true, "").packet());
-					m_send(packet);
+					send(createPacket(false, true, ""));
 				}
+				//forward to covert channel
+				return true;
 			}
 			else {
 				// Acknowledgement
 				if (packet.acknowledgeNumber() > m_base_sequence) { // accept ack only if it is new
 					m_base_sequence = packet.acknowledgeNumber();
 				}
+				// don't forward
+				return false;
 			}
 		}
+		//invalid state
+		return false;
+	}
+
+	void TcpPacketGenerator::setSend(function<void(GenericPacket)> send) {
+		if (send != NULL) {
+			m_send = send;
+		}
+	}
+
+	void TcpPacketGenerator::send(TcpPacket packet) {
+		GenericPacket generic_packet;
+		generic_packet.setPacket(packet.packet());
+		m_send(generic_packet);
 	}
 
 	unsigned int TcpPacketGenerator::status() {

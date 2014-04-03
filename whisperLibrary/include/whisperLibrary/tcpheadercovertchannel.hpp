@@ -72,6 +72,8 @@ namespace whisper_library {
 		void setArguments(string arguments) {};
 		void setOutput(function<void(string)> output);
 		void setSend(function<void(GenericPacket)> send);
+
+		void initialize();
 		/**
 			Returns a string with the name of the covert channel "TCP Header Covert Channel"
 		*/ 
@@ -114,8 +116,7 @@ namespace whisper_library {
 		*/
 		int m_remaining_packets;
 		BitSetCoder<3> m_coder;///< The encoder/decoder we use, to split messages into bit blocks
-		TcpPacketGenerator* m_generator_send;///< A TcpPacketGenerator acting as client used for sending messages
-		TcpPacketGenerator* m_generator_receive;///< ///< A TcpPacketGenerator acting as server used for receiving messages
+		TcpPacketGenerator* m_generator;///< A TcpPacketGenerator acting as client used for sending messages
 		function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
 		function<void(GenericPacket)> m_send;///< function pointer that is used to send Tcp Packets via the socket
 	};

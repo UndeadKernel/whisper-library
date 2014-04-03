@@ -29,7 +29,7 @@ public:
 
 		\param packet Tcp packet that was received
 	*/
-	void receivePacket(TcpPacket packet);
+	bool receivePacket(TcpPacket packet);
 	/** \brief Sends a connect request (syn=1).
 
 		Use this at the start of a conversation to initiate a handshake
@@ -46,11 +46,13 @@ public:
 	/** \brief Returns the status code of the current connection state
 	*/
 	unsigned int status();
+	void setSend(function<void(GenericPacket)> send);
 
 	static const unsigned int NO_CONNECTION = 0; ///< No connection established
 	static const unsigned int RECEIVED_SYN = 1; ///< Connection request received by peer
 	static const unsigned int ESTABLISHED = 2; ///< Handshake successful and connection established
 private:
+	void send(TcpPacket packet);
 	/** \brief Acknowledges a connect request (syn=1, ack=1)
 	*/
 	void sendConnectResponse();

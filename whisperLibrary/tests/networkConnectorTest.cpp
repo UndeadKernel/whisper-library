@@ -15,7 +15,7 @@ struct NetworkConnectorFixture {
 		network = new whisper_library::NetworkConnector(bind(&NetworkConnectorFixture::packetReceived, this, placeholders::_1, placeholders::_2));
 		adapters = network->adapters();
 		channel = new whisper_library::TcpHeaderCovertChannel(bind(&NetworkConnectorFixture::output, this, placeholders::_1),
-															  bind(&NetworkConnectorFixture::send, this, placeholders::_1, placeholders::_2));
+															  bind(&NetworkConnectorFixture::send, this, placeholders::_1));
 		received = false;
 	}
 	~NetworkConnectorFixture() {
@@ -40,7 +40,7 @@ struct NetworkConnectorFixture {
 	}
 
 	string getSourceAddress() {
-		vector<string> addresses = network->adapterAddresses();
+		vector<string> addresses = network->adapterAddresses(network->currentAdapter());
 		for (unsigned int i = 0; i < addresses.size(); i++) {
 			if (validIPv4(addresses[i])) {
 				return addresses[i];
@@ -50,11 +50,12 @@ struct NetworkConnectorFixture {
 	}
 	unsigned int findSendAdapter() {
 		for (unsigned int i = 0; i < network->adapterCount(); i++) {
-			network->setAdapter(adapters[i]);
-			vector<string> addresses = network->adapterAddresses();
-			for (unsigned j = 0; j < addresses.size(); j++) {
-				if (validIPv4(addresses[j])) {
-					return i;
+			if (network->setAdapter(adapters[i])) {
+				vector<string> addresses = network->adapterAddresses(network->currentAdapter());
+				for (unsigned j = 0; j < addresses.size(); j++) {
+					if (validIPv4(addresses[j])) {
+						return i;
+					}
 				}
 			}
 		}
@@ -62,7 +63,7 @@ struct NetworkConnectorFixture {
 	}
 
 	void output(string message) {};
-	void send(whisper_library::GenericPacket packet, std::string protocol) {};
+	void send(whisper_library::GenericPacket packet) {};
 	
 };
 

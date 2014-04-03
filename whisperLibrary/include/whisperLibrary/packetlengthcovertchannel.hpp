@@ -87,6 +87,10 @@ public:
 		No arguments, empty function
 	*/
 	void setArguments(std::string arguments) {};
+	/**
+		No initialisation needed, empty function
+	*/
+	void initialize() {};
 	/** \brief sets the function used to output received messages
 
 		\param output a function-pointer used to output messages
