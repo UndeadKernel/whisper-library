@@ -58,7 +58,6 @@ unsigned int wlAdapterCount() {
 const char* wlListAdapters(){
 	vector<string> adapters = m_channel_manager->networkAdapters();
 	string adapter_text = "";
-		adapters[0].c_str();
 	for (unsigned int i = 0; i < adapters.size(); i++) {
 		adapter_text += "[" + to_string(i) + "] " + adapters[i] + ": " + m_channel_manager->adapterDescription(adapters[i]) + "\n";
 	}

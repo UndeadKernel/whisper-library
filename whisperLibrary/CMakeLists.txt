@@ -68,6 +68,10 @@ else (WIN32)
 	set(Boost_USE_STATIC_LIBS OFF)
 endif (WIN32)
 
+if (UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC") 
+endif (UNIX)
+
 add_definitions(-DBOOST_ALL_NO_LIB)         # Disable auto-linking in MSVC.
 find_package(Boost 1.55.0 QUIET COMPONENTS filesystem system date_time regex unit_test_framework REQUIRED)
 
