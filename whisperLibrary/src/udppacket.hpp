@@ -37,7 +37,7 @@ namespace whisper_library {
 	data payload. It can be used to store and access all fields and it offers
 	a stream operator to write it in  std::ostream.
 */
-class UdpPacket {
+class UdpPacket : public GenericPacket {
 public:
 	/** \brief Creates an empty UdpPacket.	
 	*/

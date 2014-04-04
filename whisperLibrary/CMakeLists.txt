@@ -19,7 +19,7 @@ set(SOURCES
 	src/packetlengthcovertchannel.cpp
 	src/lengthcoder.cpp
 	src/udppacketgenerator.cpp
-	src/whisper_library_wrapper.cpp
+		src/whisper_library_wrapper.cpp
 )
 set(HEADERS
 	include/whisperLibrary/channelmanager.hpp
@@ -120,13 +120,10 @@ add_library(whisperLibrary STATIC
     ${SOURCES}
 )
 
-if (WIN32)
-	TARGET_LINK_LIBRARIES(
-		whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
-	)
-endif (WIN32)
+TARGET_LINK_LIBRARIES(whisperLibrary
+	${Boost_LIBRARIES}
+	${PCAP_LIBRARIES}
+)
 
 target_link_libraries(tests
     	whisperLibrary
@@ -143,15 +140,17 @@ add_dependencies(systemtest
 		whisperLibrary
 )
 
-if(UNIX)
+if (UNIX)
 	find_package(Threads)
-	TARGET_LINK_LIBRARIES(
-		whisperLibrary
-		${Boost_LIBRARIES}
-		${PCAP_LIBRARIES}
+	target_link_libraries(systemtest
 		${CMAKE_THREAD_LIBS_INIT}
-)
-set_target_properties(whisperLibrary PROPERTIES COMPILE_FLAGS "-fPIC")
+	)
+	target_link_libraries(whisperLibrary
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+	target_link_libraries(tests
+		${CMAKE_THREAD_LIBS_INIT}
+	)	
 endif(UNIX)
 
 #ws2_32

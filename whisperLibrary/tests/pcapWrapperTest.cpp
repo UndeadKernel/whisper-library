@@ -3,6 +3,7 @@
 #include "pcapwrapper.hpp"
 #include "channelmanager.hpp"
 #include "../src/networkconnector.hpp"
+#include "../src/udppacketgenerator.hpp"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <boost/asio.hpp>
@@ -153,7 +154,6 @@ BOOST_AUTO_TEST_CASE(basicConstruction_test) {
 	vector<int> return_codes				  = test_wrapper.lastReturnCodes();
 	checkReturnCodes(return_codes, vector<int>{wrapper->NORMAL_EXECUTION}, vector<int>());
 	// clean up
-	test_wrapper.~PcapWrapper();
 }
 
 BOOST_AUTO_TEST_CASE(retrieveAndFreeAdapters_test) {
@@ -213,7 +213,6 @@ BOOST_AUTO_TEST_CASE(retrieveAndFreeAdapters_test) {
 	BOOST_CHECK_EQUAL_COLLECTIONS(adapter_descriptions.begin(), adapter_descriptions.end(), new_adapter_descriptions.begin(), new_adapter_descriptions.end());
 
 	// clean up
-	test_wrapper.~PcapWrapper();
 }
 
 BOOST_AUTO_TEST_CASE(opencloseAdapter_test) {
@@ -266,7 +265,7 @@ BOOST_AUTO_TEST_CASE(applyFilter_test) {
 	bool received = false;
 	whisper_library::PcapWrapper::PcapPacket packet;
 	while (i++ < MAXIMUM_TRY_COUNT_SENDING) {
-		network->sendUdp(data.destination_ipv4, manager->getUdpPacket(8081));
+		network->sendUdp(data.destination_ipv4, whisper_library::UdpPacketGenerator::generateNextPacket(8081));
 		packet = wrapper->retrievePacket(active_id);
 		if (packet.payload != NULL && packet.header.len != 0) {
 			received = true;
@@ -289,7 +288,7 @@ BOOST_AUTO_TEST_CASE(receivePacket_test) {
 	bool received = false;
 	whisper_library::PcapWrapper::PcapPacket packet;
 	while (i++ < MAXIMUM_TRY_COUNT_SENDING) {
-		network->sendUdp(data.destination_ipv4, manager->getUdpPacket(8081));
+		network->sendUdp(data.destination_ipv4, whisper_library::UdpPacketGenerator::generateNextPacket(8081));
 		packet = wrapper->retrievePacket(data.adapter_info.adapter_id);
 		if (packet.payload != NULL && packet.header.len != 0) {
 			received = true;

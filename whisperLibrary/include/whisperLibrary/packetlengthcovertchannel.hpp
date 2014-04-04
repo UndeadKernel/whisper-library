@@ -37,32 +37,26 @@ namespace whisper_library {
 	*/
 class PacketLengthCovertChannel : public CovertChannel {
 public:
-	static const std::string NAME;///< The name of the covert channel
-
-	static const std::string INFO;///< Some information about the covert channel
-
-	static const std::string PROTOCOL; ///< Protocol used by this covert channel
-
-	static const unsigned short PORT; ///< Port that packets are send to
-
 	/** \brief Creates an PacketLengthCovertChannel
 
 		Creates a new PacketLengthCovertChannel. An PacketLengthCovertChannel needs three
 		function pointers. It than can be use to send and receive messages.
 		\param output a function the covert channel calls with the message he received as 
 					an argument
-		\param send a function the covert channel uses to send udp packets
-		\param get_packet a function the covert channel uses to get udp packets with a
-						certain length
-		
+		\param send a function the covert channel uses to send udp packets		
 	*/
 	PacketLengthCovertChannel(function<void(std::string)> output,
-		function<void(UdpPacket)> send,
-		function<UdpPacket(int)> get_packet)
+		function<void(GenericPacket)> send)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
-		m_get_packet(get_packet),
+		m_received(0),
+		m_packetcount(-1),
+		m_baselength(10),
+		m_coder(new LengthCoder(m_baselength)){};
+
+	PacketLengthCovertChannel()
+		: CovertChannel(),
 		m_received(0),
 		m_packetcount(-1),
 		m_baselength(10),
@@ -73,6 +67,8 @@ public:
 		Deletes this instance of PacketLengthCovertChannel and frees all memory.
 	*/
 	~PacketLengthCovertChannel();
+
+	CovertChannel* instance();
 	/** \brief sends a message
 
 		The message gets encoded as packet lengths and then udp packets with this lengths get
@@ -92,22 +88,38 @@ public:
 	*/
 	void setArguments(std::string arguments) {};
 	/**
-		returns the name of the covert channel
+		No initialisation needed, empty function
+	*/
+	void initialize() {};
+	/** \brief sets the function used to output received messages
+
+		\param output a function-pointer used to output messages
+	*/
+	void setOutput(function<void(std::string)> output);
+	/** \brief sets the function used to send packets
+
+		\param send a function-pointer used to send packets
+	*/
+	void setSend(function<void(GenericPacket)> send);
+	/** \return The name of the covert channel
 	*/
 	std::string name() const;
-	/**
-		returns a description of the covert channel
+	/** \return Some information about the covert channel
 	*/
 	std::string info() const;
-
+	/** \return Protocol used by this covert channel
+	*/
 	std::string protocol() const;
-
+	/** \return Port that packets are send to
+	*/
     unsigned short port() const;
+	/** \return the ID of the covert channel
+	*/
+	std::string id() const;
 
 private:
-	function<void(string)> m_output;///< function used to return received messages as a string
-	function<void(UdpPacket)> m_send;///< function used to send Udp Packets via the socket
-	function<UdpPacket(int)> m_get_packet;///< function used to retrieve valid udp packets with given length
+	std::function<void(std::string)> m_output;///< function used to return received messages as a string
+	std::function<void(GenericPacket)> m_send;///< function used to send Udp Packets via the socket
 	std::vector<unsigned int> m_packetlengths;///< holds the packet lengths send or received
 	int m_received;///< counts the received packets
 	int m_packetcount;///< number of packets for the current transmission

@@ -52,15 +52,24 @@ public:
 		\param output function pointer that is called, when a complete message arrived. 
 			   Its parameter is this message.
 		\param send function pointer that is called to send a UdpPacket via the socket.
-		\param getPacket function pointer, that has to return a valid UdpPacket. The argument is the used port.
 	*/
 	TimingCovertChannel(function<void(string)> output, 
-						function<void(UdpPacket)> send, 
-						function<UdpPacket(unsigned short)> getPacket)
+						function<void(GenericPacket)> send)
 		: CovertChannel(),
 		m_output(output),
 		m_send(send),
-		m_getPacket(getPacket),
+		m_receiving(false)
+	{
+		m_delay_short = 100;
+		m_delay_long = 300;
+		m_delay_letter = 500;
+		m_delay_space = 700;
+		calculateTresholds();
+		m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
+	};
+
+	TimingCovertChannel()
+		: CovertChannel(),
 		m_receiving(false)
 	{
 		m_delay_short = 100;
@@ -75,6 +84,7 @@ public:
 	*/
 	~TimingCovertChannel();
 
+	CovertChannel* instance();
 	/**
 		Sends a message using the timing channel.
 		\param message Message that is send
@@ -95,7 +105,13 @@ public:
 		\param arguments string that is parsed for channel arguments
 	*/
 	void setArguments(string arguments);
+	/**
+		No initialisation needed, empty function
+	*/
+	void initialize() {};
 
+	void setOutput(function<void(string)> output);
+	void setSend(function<void(GenericPacket)> send);
 	/** \brief Returns a string with the name of the covert channel "Timing Covert Channel"
 	*/ 
 	string name() const;
@@ -111,6 +127,9 @@ public:
 	/** \brief	Returns the used port (23)
 	*/
 	unsigned short port() const;
+	/** \return the ID of the covert channel
+	*/
+	string id() const;
 private:
 	/**
 		Calcules thresholds between the different intervals to compensate for transmitting delays.
@@ -130,8 +149,7 @@ private:
 	MorseCoder* m_coder; ///<MorseCoder is used to encode messages as morse	
 	
 	function<void(string)> m_output;///< callback function pointer that is used to return received messages as a string	
-	function<void(UdpPacket)> m_send;///< function pointer that is used to send Udp Packets via the socket	
-	function<UdpPacket(unsigned short)> m_getPacket;///< function pointer that is used to retrieve valid udp packets, that are send with delay
+	function<void(GenericPacket)> m_send;///< function pointer that is used to send Udp Packets via the socket	
 	
 	chrono::time_point<chrono::system_clock> m_receive_start; ///< Marks the time the last packet was received to measure inter-packet delays
 	chrono::time_point<chrono::system_clock> m_timeout_end; ///< Marks the time point at which the timeout ends. It is increased each time a packet is received.

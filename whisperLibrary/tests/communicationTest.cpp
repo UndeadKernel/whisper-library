@@ -10,12 +10,12 @@ struct CommunicationFixture {
 		channelmanager.setErrorStream(&cout);
 		channelmanager.setOutputStream(&cout);
 		destination_ip = "";
-		channel_id = 0;
+		channel_id = channelmanager.getChannelIDs()[0];
 	}
 	whisper_library::ChannelManager channelmanager;
 	vector<string> last_adapters;
 	string destination_ip;
-	unsigned int channel_id;
+	string channel_id;
 
 	int processCommand(string command) {
 		vector<string> arguments;
@@ -37,16 +37,14 @@ struct CommunicationFixture {
 			return 0;
 		}
 		if (arguments[0].compare("selectCC") == 0) {
-			int index = 0;
-			try {
-				index = boost::lexical_cast<int>(arguments[1]);
+			string id = arguments[1];
+			for (unsigned int i = 0; i < channelmanager.channelCount(); i++){
+				if (channelmanager.getChannelIDs()[i].compare(id) == 0) {
+					channel_id = id;
+					return 0;
+				}
 			}
-			catch (boost::bad_lexical_cast e) {
-				cout << "Parameter was not a number" << endl;
-				return 0;
-			}
-
-			channel_id = index;
+			cout << "Selected channel not found" << endl;
 			return 0;
 		}
 		if (arguments[0].compare("displayAdapters") == 0) {
@@ -111,10 +109,11 @@ struct CommunicationFixture {
 	}
 
 	void printCovertChannels() {
+		vector<string> ids = channelmanager.getChannelIDs();
 		vector<string> names = channelmanager.getChannelNames();
 		vector<string> infos = channelmanager.getChannelInfos();
 		for (unsigned int i = 0; i < names.size(); i++) {
-			cout << "[" << i << "] " << names[i] << ": " << infos[i] << endl;
+			cout << "[" << ids[i] << "] " << names[i] << ": " << infos[i] << endl << endl;
 		}
 	}
 

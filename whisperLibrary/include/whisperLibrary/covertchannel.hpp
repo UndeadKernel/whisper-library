@@ -24,6 +24,7 @@
 
 #include "genericpacket.hpp"
 #include <string>
+#include <functional>
 
 
 namespace whisper_library {
@@ -35,48 +36,46 @@ namespace whisper_library {
 	interface for a covert channel. You can add CovertChannel objects to the ChannelManager to use them.
 */
 class CovertChannel {
-public:
-
-	
-	/** \brief Constructor
-
-		Creates a CovertChannel
+public:	
+	/** \brief Creates a CovertChannel	
 	*/ 
 	CovertChannel() {};
-	
-	
 	/** \brief Destructor
 
 		Virtual destructor so that the destructor of derived classes is called
 	*/ 
 	virtual ~CovertChannel() {};
-	
-	
+	/** \brief Initializes the covert channel. Is called after construction
+	*/
+	virtual void initialize() = 0;
+	/** \return an instance of this covert channel
+	*/
+	virtual CovertChannel* instance() = 0;
 	/** \brief sends a message
 
 		Call this function to send a message using the covert channel.
 	*/ 
-	virtual void sendMessage(std::string message) = 0;
-	
+	virtual void sendMessage(std::string message) = 0;	
 	/** \brief receives a packet
 
 		This function is called, when a new packet arrived. The argument is a reference to this packet.
 	*/ 
-	virtual void receivePacket(GenericPacket& packet) = 0;
-	
+	virtual void receivePacket(GenericPacket& packet) = 0;	
 	/** \brief configures the covert channel
 		\param arguments Arguments that are given to the covert channel
 	*/
 	virtual void setArguments(string arguments) = 0;
-
-	/**
-		Returns the name of the covert channel
-	*/ 
-	virtual std::string name() const = 0;
-	
-	
-	/**
-		Returns some information about the covert channel
+	/** \brief sets the output method
+		\param output the method the covert channel uses to output the received messages
+	*/
+	virtual void setOutput(function<void(string)> output) = 0;
+	/** \brief sets the methode used to send packets
+	*/
+	virtual void setSend(function<void(GenericPacket)> send) = 0;
+	/** \return name of the covert channel
+	*/
+	virtual std::string name() const = 0;	
+	/** \return some information about the covert channel
 	*/ 
 	virtual std::string info() const = 0;
 	/** \return the used protocol (e.g. tcp)
@@ -85,7 +84,9 @@ public:
 	/** \return the used port
 	*/
 	virtual unsigned short port() const = 0;
-
+	/** \return the ID of the covert channel
+	*/
+	virtual std::string id() const = 0;
 };
 }
 #endif // COVERT_CHANNEL

@@ -12,7 +12,7 @@ extern "C" {
 	const char* wlListChannels();
 	unsigned int wChannelCount();
 	void wlSetOptions(const char* ip, const char* options);
-	bool wlOpenConnection(const char* ip, unsigned int channel_id);
+	bool wlOpenConnection(const char* ip, const char* channel_id);
 	void wlCloseConnection(const char* ip);
 	unsigned int wlConnectionCount();
 	void wlSendMessage(const char* who, const char* message);

@@ -87,7 +87,7 @@ void wl_add_buddy(PurpleConnection* connection, PurpleBuddy* buddy, PurpleGroup*
 		 purple_debug_info(PLUGIN_ID, "contact = NULL");
 	}else{
 		purple_blist_add_buddy(buddy, contact, group, NULL);
-		open = wlOpenConnection(buddy->name, purple_account_get_int(m_account, "selected channel", 0));
+		open = wlOpenConnection(buddy->name, purple_account_get_string(m_account, "selected channel", ""));
 		purple_prpl_got_user_status	(m_account, buddy->name, "wl_online", NULL, NULL); 
 	}
 	if (open)
@@ -112,7 +112,7 @@ void actionSetOptions (PurplePluginAction* action){
 }
 
 void actionShowSelectedChannel (PurplePluginAction* action){
-	purple_debug_info("whisperLibrary", purple_account_get_int(m_account, "selected channel", 0));
+	purple_debug_info("whisperLibrary", purple_account_get_string(m_account, "selected channel", ""));
 }
 
 void actionShowSelectedAdapter (PurplePluginAction* action){
@@ -263,10 +263,10 @@ static void init_plugin (PurplePlugin *plugin){
 	option = purple_account_option_string_new("Network Adapter ID", "selected adapter", "Enter your adapter name");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
-	option = purple_account_option_int_new("Covert Channel ID", "selected channel", 0);
+	option = purple_account_option_string_new("Covert Channel ID", "selected channel", "tcp_header_channel");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
-	option = purple_account_option_string_new("Default channel", "channel options", "(Optional) enter covert channel options here and call the 'set channel options' function!");
+	option = purple_account_option_string_new("Channel options", "channel options", "(Optional) enter covert channel options here and call the 'set channel options' function!");
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 	wlMakeChannelManager();

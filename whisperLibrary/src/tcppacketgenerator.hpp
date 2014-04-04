@@ -20,9 +20,8 @@ public:
 		Sends a connect request to peer.
 		\param port Source and destination port used for creating the packets
 		\param send Pointer to a function to send packets over the network
-		\param forward Function pointer that forwards incoming data packets to a covert channel
 	*/
-	TcpPacketGenerator(unsigned short port, function<void(TcpPacket)> send, function<void(GenericPacket)> forward);
+	TcpPacketGenerator(unsigned short port, function<void(GenericPacket)> send);
 	/** \brief Has to be called when a packet arrives
 
 		Interprets an incoming packet. Responds to connect requests and connect acknowledges.
@@ -30,7 +29,7 @@ public:
 
 		\param packet Tcp packet that was received
 	*/
-	void receivePacket(TcpPacket packet);
+	bool receivePacket(TcpPacket packet);
 	/** \brief Sends a connect request (syn=1).
 
 		Use this at the start of a conversation to initiate a handshake
@@ -47,11 +46,13 @@ public:
 	/** \brief Returns the status code of the current connection state
 	*/
 	unsigned int status();
+	void setSend(function<void(GenericPacket)> send);
 
 	static const unsigned int NO_CONNECTION = 0; ///< No connection established
 	static const unsigned int RECEIVED_SYN = 1; ///< Connection request received by peer
 	static const unsigned int ESTABLISHED = 2; ///< Handshake successful and connection established
 private:
+	void send(TcpPacket packet);
 	/** \brief Acknowledges a connect request (syn=1, ack=1)
 	*/
 	void sendConnectResponse();
@@ -64,14 +65,13 @@ private:
 		\param data data of the returned packet
 		\return valid tcp packet
 	*/
-	TcpPacket createPacket(bool syn, bool ack, string data);
+	TcpPacket createPacket(bool syn, bool ack, std::string data);
 
 	unsigned short m_port; ///< source/destination port used for communication
 	unsigned long m_next_sequence; ///< sequence number used for sending of the next packet
 	unsigned long m_base_sequence; ///< highest sequence number that was acknowledge by the receiver
 	unsigned long m_next_peer_sequence; ///< next expected sequence number by peer
-	function<void(TcpPacket)> m_send;	///< pointer to a function that is used for sending packets over the network
-	function<void(GenericPacket)> m_forward; ///< pointer to a function that is used to forward data packets to a covert channel
+	function<void(GenericPacket)> m_send;	///< pointer to a function that is used for sending packets over the network
 	unsigned int m_state; ///< stores the internal connection state code (see constants)
 	unsigned int m_timeout; ///< timeout in milliseconds used for resending of packets (not used yet)
 	bool m_server; ///< true if you are the server after a successful handshake

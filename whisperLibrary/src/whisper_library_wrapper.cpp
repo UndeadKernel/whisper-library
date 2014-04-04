@@ -11,11 +11,12 @@ void wlDestroyChannelManager(){
 }
 
 const char* wlListChannels(){
+	vector<string> ids = m_channel_manager->getChannelIDs();
 	vector<string> names = m_channel_manager->getChannelNames();
 	vector<string> info = m_channel_manager->getChannelInfos();
 	string channel_text = "";
 	for (unsigned int i = 0; i < names.size(); i++) {
-		channel_text += "[" + to_string(i) + "]" + names[i] + ": " + info[i] + "\n";
+		channel_text += "[" + ids[i] + "]" + names[i] + ": " + info[i] + "\n\n";
 	}
 	char* cstr = new char[channel_text.length() + 1];
 	std::strcpy(cstr, channel_text.c_str());
@@ -30,7 +31,7 @@ void wlSetOptions(const char* ip, const char* options) {
 	m_channel_manager->setChannelArguments(ip, options);
 }
 
-bool wlOpenConnection(const char* ip, unsigned int channel_id) {
+bool wlOpenConnection(const char* ip, const char* channel_id) {
 	return m_channel_manager->openConnection(ip, channel_id);
 }
 
@@ -66,6 +67,13 @@ const char* wlListAdapters(){
 	return cstr;
 }
 
+void(*m_callback)(const char*, const char*);
+
+void messageCallback(string ip, string message) {
+	m_callback(ip.c_str(), message.c_str());
+}
+
 void wlSetMessageCallback(void(*func_ptr)(const char*, const char*)) {
-	m_channel_manager->setMessageCallback(func_ptr);
+	m_callback = func_ptr;
+	m_channel_manager->setMessageCallback(&messageCallback);
 }

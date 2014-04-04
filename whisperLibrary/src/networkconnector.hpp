@@ -95,8 +95,12 @@ public:
 		The unique names of the adapters can be retrieved by calling 'adapters'.
 
 		\param adapter_name Unique name of the adapter
+		\return true if the adapter name exists and owns a valid ipv4 address, otherwise false
 	*/
-	void setAdapter(string adapter_name);
+	bool setAdapter(string adapter_name);
+	/** \brief Returns the currently selected adapter name
+	*/
+	string currentAdapter();
 	/** \brief Returns the description of a given network adapter.
 		
 		Returns the description of a given network adapter. 
@@ -105,10 +109,11 @@ public:
 		\return Description of the adapter. Is empty ("") if the adapter_name wasn't found or the description is NULL.
 	*/
 	string adapterDescription(string adapter_name);
-	/** \brief Returns a vector with all network addesses of the currently selected adapter.
+	/** \brief Returns a vector with all network addesses of an adapter
+		\param adapter_name Unique name of the adapter
 		\return Vector of network addresses of the currently selected adapter
 	*/
-	vector<string> adapterAddresses();
+	vector<string> adapterAddresses(string adapter_name);
 
 private:
 	/** \brief Loop that retrieves packets from the selected network adapter.

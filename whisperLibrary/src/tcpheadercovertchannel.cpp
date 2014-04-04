@@ -25,6 +25,25 @@
 using namespace std;
 
 namespace whisper_library {
+
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel(function<void(string)> output, function<void(GenericPacket)> send)
+		: CovertChannel(),
+		m_remaining_packets(0),
+		m_output(output),
+		m_send(send) {
+		m_generator = new TcpPacketGenerator(port(), m_send);
+	};
+
+	TcpHeaderCovertChannel::TcpHeaderCovertChannel()
+		: CovertChannel(),
+		m_remaining_packets(0),
+		m_generator(NULL) {
+	};
+
+	TcpHeaderCovertChannel::~TcpHeaderCovertChannel(){
+		delete m_generator;
+	}
+
 	string TcpHeaderCovertChannel::name() const{
 		return "TCP Header Covert Channel";
 	}
@@ -41,20 +60,37 @@ namespace whisper_library {
 		return 8080;
 	}
 
+	string TcpHeaderCovertChannel::id() const {
+		return "tcp_header_channel";
+	}
+
+	CovertChannel* TcpHeaderCovertChannel::instance(){
+		return new TcpHeaderCovertChannel();
+	}
+
+	void TcpHeaderCovertChannel::initialize() {
+		if (m_generator != NULL) {
+			m_generator->sendConnect();
+		}
+	}
+
 	void TcpHeaderCovertChannel::sendMessage(string message) {
 		vector<bitset<3>> bit_blocks = encodeMessageWithLength(message);
 		for (uint i = 0; i < bit_blocks.size(); ++i) {			//iterate through blocks and modify packets
-			whisper_library::TcpPacket packet = m_getPacket();	// get valid tcp packet
-			modifyTcpPacket(packet, bit_blocks[i]);			
-			m_send(packet);
+			TcpPacket packet = m_generator->nextPacket();	// get valid tcp packet
+			modifyTcpPacket(packet, bit_blocks[i]);	
+			GenericPacket g_packet;
+			g_packet.setPacket(packet.packet());
+			m_send(g_packet);
 		}
 	}
 
 	void TcpHeaderCovertChannel::receivePacket(GenericPacket& packet) {
 		TcpPacket tcp_packet;
 		tcp_packet.setPacket(packet.packet());
+		bool data_packet = m_generator->receivePacket(tcp_packet);
+		if (!data_packet) {return;}
 		bitset<3> data = extractData(tcp_packet);
-		//cout << "received: " << data << endl;
 		if (m_remaining_packets == 0) {					// no message received yet
 			m_remaining_packets = data.to_ulong() + 1;	// save length from first packet
 			return;
@@ -68,7 +104,19 @@ namespace whisper_library {
 			m_output(message);
 			m_data_blocks.clear();					// ready to receive new message
 		}
+}
+
+	void TcpHeaderCovertChannel::setOutput(function<void(string)> output){
+		m_output = output;
 	}
+
+	void TcpHeaderCovertChannel::setSend(function<void(GenericPacket)> send){
+		m_send = send;
+		if (m_generator == NULL) {
+			m_generator = new TcpPacketGenerator(port(), send);
+		}
+	}
+
 
 	vector<bitset<3>> TcpHeaderCovertChannel::encodeMessageWithLength(string message) {
 		vector<bitset<3>> ret_vector;
