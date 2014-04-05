@@ -47,8 +47,8 @@ void wlSendMessage(const char* ip, const char* message){
 	m_channel_manager->sendMessage(ip, message);
 }
 
-void wlSetAdapter(const char* adapter){
-	m_channel_manager->setAdapter(adapter);
+bool wlSetAdapter(const char* adapter){
+	return m_channel_manager->setAdapter(adapter);
 }
 
 unsigned int wlAdapterCount() {
@@ -66,7 +66,7 @@ const char* wlListAdapters(){
 	return cstr;
 }
 
-void(*m_callback)(const char*, const char*);
+void (*m_callback)(const char*, const char*);
 
 void messageCallback(string ip, string message) {
 	m_callback(ip.c_str(), message.c_str());

@@ -217,6 +217,7 @@ private:
 													   The first argument is the ip(v4) in dotted form, 
 													   the message was received from. The second argument is 
 													   the received message.*/	
+	function<void(const char*, const char*)> m_message_callback_cstr;
 };
 }
 #endif // CHANNEL_MANAGER

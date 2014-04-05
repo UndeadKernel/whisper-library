@@ -16,7 +16,7 @@ extern "C" {
 	void wlCloseConnection(const char* ip);
 	unsigned int wlConnectionCount();
 	void wlSendMessage(const char* who, const char* message);
-	void wlSetAdapter(const char* adapter);
+	bool wlSetAdapter(const char* adapter);
 	unsigned int wlAdapterCount();
 	const char* wlListAdapters();
 	void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));

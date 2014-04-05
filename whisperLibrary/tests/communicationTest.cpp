@@ -180,9 +180,6 @@ BOOST_AUTO_TEST_CASE(basic_communication) {
 			cout << "chat ended." << endl;
 		}
 	}
-
-
-
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -30,7 +30,9 @@ using namespace std;
 
 namespace whisper_library {
 
-	ChannelManager::ChannelManager() {
+ChannelManager::ChannelManager() {
+	m_output_stream = NULL;
+	m_error_stream = NULL;
 	m_network = new NetworkConnector(bind(&ChannelManager::packetReceived, this, placeholders::_1, placeholders::_2));
 	// create a list of all available channels to display names and descriptions
 	addChannel(new TcpHeaderCovertChannel());
@@ -128,7 +130,7 @@ void ChannelManager::outputMessage(string ip, string message){
 	if (m_output_stream != NULL) {
 		(*m_output_stream) << message;
 	}
-	if (m_message_callback != NULL) {
+	if (m_message_callback) {
 		m_message_callback(ip, message);
 	}
 }
@@ -136,7 +138,6 @@ void ChannelManager::outputMessage(string ip, string message){
 void ChannelManager::setMessageCallback(function<void(string, string)> message_callback) {
 	m_message_callback = message_callback;
 }
-
 
 void ChannelManager::packetReceived(string ip, GenericPacket packet) {
 	CovertChannel* channel;

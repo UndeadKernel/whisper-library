@@ -58,7 +58,7 @@ int wl_send_im (PurpleConnection* connection, const char* who, const char* messa
 	return 1;
 }
 
-void wl_recieve_im (const char* who, const char* message){
+void wl_receive_im (const char* who, const char* message){
 	serv_got_im(purple_account_get_connection(m_account), who, message, PURPLE_MESSAGE_RECV, time(NULL));
 }
 
@@ -110,14 +110,6 @@ void actionSetOptions (PurplePluginAction* action){
 	// TODO
 	//wlSetOptions()
 }
-
-void actionShowSelectedChannel (PurplePluginAction* action){
-	purple_debug_info("whisperLibrary", purple_account_get_string(m_account, "selected channel", ""));
-}
-
-void actionShowSelectedAdapter (PurplePluginAction* action){
-	purple_debug_info("whisperLibrary",purple_account_get_string(m_account, "selected adapter", ""));
-}
 	
 static GList* listPluginActions (PurplePlugin* plugin, gpointer context){
 	purple_debug_info("whisperLibrary", "Setting up plugin actions!\n");
@@ -127,20 +119,17 @@ static GList* listPluginActions (PurplePlugin* plugin, gpointer context){
     action = purple_plugin_action_new("Show available covert channels", actionShowChannels);
     list = g_list_append(list, action);
     
-    action = purple_plugin_action_new("Show currently selected covert channel", actionShowSelectedChannel);
-	list = g_list_append(list, action);
-    
     action = purple_plugin_action_new("Show available adapters", actionShowAdapters);
-	list = g_list_append(list, action);
-	
-	action = purple_plugin_action_new("Show currently selected adapter", actionShowSelectedAdapter);
 	list = g_list_append(list, action);
 	
 	action = purple_plugin_action_new("Set channel options", actionSetOptions);
 	list = g_list_append(list, action);
 
 	// set adapter
-	wlSetAdapter(purple_account_get_string(m_account, "selected adapter", ""));
+	bool success = wlSetAdapter(purple_account_get_string(m_account, "selected adapter", ""));
+	if (!success) {
+		purple_debug_info("whisperLibrary", "Setting adapter failed: wrong name or no ipv4 address.");
+	}
 
     /* Once the list is complete, we send it to libpurple. */
     purple_debug_info("whisperLibrary", "Done setting up!\n");
@@ -270,7 +259,8 @@ static void init_plugin (PurplePlugin *plugin){
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
 	wlMakeChannelManager();
-	wlSetMessageCallback(wl_recieve_im);
+	purple_debug_info("whisperLibrary", "message callback set");
+	wlSetMessageCallback(&wl_receive_im);
 }
 
 PURPLE_INIT_PLUGIN(whisperlibrary, init_plugin, info)
