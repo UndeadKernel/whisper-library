@@ -32,6 +32,16 @@ static const char* wl_list_icon (PurpleAccount* account, PurpleBuddy* buddy){
 
 void wl_close (PurpleConnection* connection){
 	purple_debug_info(PLUGIN_ID, "close called\n");
+    GSList* buddy_list = NULL;
+    buddy_list = purple_find_buddies (m_account, NULL);
+    while (buddy_list != NULL){
+        wlCloseConnection((char*)buddy_list->data);
+        buddy_list = buddy_list->next;
+    }
+    wlDestroyChannelManager();
+    purple_account_disconnect(m_account);
+    purple_connection_set_state(purple_account_get_connection(m_account), PURPLE_DISCONNECTED);
+    m_account = NULL;
 }
 
 
@@ -44,6 +54,7 @@ void wl_login (PurpleAccount* account){
 	options = account->settings;
 	wlSetAdapter(purple_account_get_string(account, "selected adapter", ""));
 	purple_debug_info(PLUGIN_ID, purple_account_get_string(account, "selected adapter", ""));
+    purple_account_connect(account);
 	purple_connection_set_state(pc, PURPLE_CONNECTED);
 	purple_debug_info("whisperLibrary", "WhisperLibrary logged in!\n");
 }
