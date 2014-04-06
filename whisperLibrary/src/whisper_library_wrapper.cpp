@@ -10,17 +10,39 @@ void wlDestroyChannelManager(){
 	delete m_channel_manager;
 }
 
-const char* wlListChannels(){
+ChannelList* wlListChannels(){
 	vector<string> ids = m_channel_manager->getChannelIDs();
 	vector<string> names = m_channel_manager->getChannelNames();
-	vector<string> info = m_channel_manager->getChannelInfos();
-	string channel_text = "";
-	for (unsigned int i = 0; i < names.size(); i++) {
-		channel_text += "[" + ids[i] + "]" + names[i] + ": " + info[i] + "\n\n";
+	vector<string> infos = m_channel_manager->getChannelInfos();
+	
+	ChannelList* first = new ChannelList;
+	first->id = new char[ids[0].length() + 1];
+	std::strcpy(first->id, ids[0].c_str());
+
+	first->name = new char[names[0].length() + 1];
+	std::strcpy(first->name, names[0].c_str());
+
+	first->info = new char[infos[0].length() + 1];
+	std::strcpy(first->info, infos[0].c_str());
+
+	ChannelList** current = &(first->next);
+	for (unsigned int i = 1; i < ids.size(); i++) {
+		(*current) = new ChannelList;
+		(*current)->next = NULL;
+
+		(*current)->id = new char[ids[i].length() + 1];
+		std::strcpy((*current)->id, ids[i].c_str());
+
+		(*current)->name = new char[names[i].length() + 1];
+		std::strcpy((*current)->name, names[0].c_str());
+
+		(*current)->info = new char[infos[i].length() + 1];
+		std::strcpy((*current)->info, infos[i].c_str());
+
+		current = &((*current)->next);
 	}
-	char* cstr = new char[channel_text.length() + 1];
-	std::strcpy(cstr, channel_text.c_str());
-	return cstr;
+
+	return first;
 }
 
 unsigned int wChannelCount() {
@@ -55,15 +77,32 @@ unsigned int wlAdapterCount() {
 	return m_channel_manager->adapterCount();
 }
 
-const char* wlListAdapters(){
+AdapterList* wlListAdapters(){
 	vector<string> adapters = m_channel_manager->networkAdapters();
-	string adapter_text = "";
-	for (unsigned int i = 0; i < adapters.size(); i++) {
-		adapter_text += "[" + to_string(i) + "] " + adapters[i] + ": " + m_channel_manager->adapterDescription(adapters[i]) + "\n";
+	AdapterList* first = new AdapterList;
+	first->name = new char[adapters[0].length() + 1];
+	std::strcpy(first->name, adapters[0].c_str());
+
+	string description = m_channel_manager->adapterDescription(adapters[0]);
+	first->description = new char[description.length() + 1];
+	std::strcpy(first->description, description.c_str());
+
+	AdapterList** current = &(first->next);
+	for (unsigned int i = 1; i < adapters.size(); i++) {
+		(*current) = new AdapterList;
+		(*current)->next = NULL;
+
+		(*current)->name = new char[adapters[i].length() + 1];
+		std::strcpy((*current)->name, adapters[i].c_str());
+
+		description = m_channel_manager->adapterDescription(adapters[i]);
+		(*current)->description = new char[description.length() + 1];
+		std::strcpy((*current)->description, description.c_str());
+
+		current = &((*current)->next);
 	}
-	char* cstr = new char[adapter_text.length() + 1];
-	std::strcpy(cstr, adapter_text.c_str());
-	return cstr;
+
+	return first;
 }
 
 void (*m_callback)(const char*, const char*);

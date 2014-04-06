@@ -32,16 +32,14 @@ static const char* wl_list_icon (PurpleAccount* account, PurpleBuddy* buddy){
 
 void wl_close (PurpleConnection* connection){
 	purple_debug_info(PLUGIN_ID, "close called\n");
-    GSList* buddy_list = NULL;
-    buddy_list = purple_find_buddies (m_account, NULL);
+    GSList* buddy_list = purple_find_buddies(m_account, NULL);
     while (buddy_list != NULL){
         wlCloseConnection((char*)buddy_list->data);
         buddy_list = buddy_list->next;
-    }
+    } 
     wlDestroyChannelManager();
-    purple_account_disconnect(m_account);
     purple_connection_set_state(purple_account_get_connection(m_account), PURPLE_DISCONNECTED);
-    m_account = NULL;
+    m_account = NULL; 
 }
 
 
@@ -107,14 +105,61 @@ void wl_add_buddy(PurpleConnection* connection, PurpleBuddy* buddy, PurpleGroup*
 		purple_debug_info(PLUGIN_ID, "Connection failed");
 }
 
+char* addString(char** head, char* tail) {
+	size_t message_length = strlen(*head) + strlen(tail) +1;
+	(*head) = (char*)realloc(*head, message_length);
+	strncat(*head, tail, message_length);
+	return *head;
+}
+
 void actionShowAdapters (PurplePluginAction* action){
-	purple_debug_info("whisperLibrary", wlListAdapters());
-	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Adapter List", wlListAdapters(), NULL, NULL, NULL);
+	char* legend = "[Device name]: [Description]\n\n";
+	size_t message_length = strlen(legend) + 1;
+	char* message = (char*)malloc(message_length);
+	strncpy(message, legend, message_length); 
+
+	AdapterList* adapter_list = wlListAdapters();
+	while (adapter_list != NULL) {
+		addString(&message, adapter_list->name);
+		free(adapter_list->name);
+		addString(&message, ": ");
+		addString(&message, adapter_list->description);
+		free(adapter_list->description);
+		addString(&message, "\n\n");
+		AdapterList* to_free = adapter_list;
+		adapter_list = adapter_list->next;
+		free(to_free);
+	}  
+	purple_debug_info("whisperLibrary", message);
+	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Adapter List", message, NULL, NULL, NULL);
+	free(message); 
 }
 
 void actionShowChannels (PurplePluginAction* action){
-	purple_debug_info("whisperLibrary", wlListChannels());	
-	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Channel List", wlListChannels(), NULL, NULL, NULL);
+	char* legend = "[channel id] [channel name]: [channel info]\n\n";
+	size_t message_length = strlen(legend) + 1;
+	char* message = (char*)malloc(message_length);
+	strncpy(message, legend, message_length);
+
+	ChannelList* channel_list = wlListChannels();
+	while (channel_list != NULL) {
+		addString(&message, "[");
+		addString(&message, channel_list->id);
+		free(channel_list->id);
+		addString(&message, "] ");
+		addString(&message, channel_list->name);
+		free(channel_list->name);
+		addString(&message, ": ");
+		addString(&message, channel_list->info);
+		free(channel_list->info);
+		addString(&message, "\n\n");
+
+		ChannelList* to_free = channel_list;
+		channel_list = channel_list->next;
+		free(to_free);
+	}
+	purple_debug_info("whisperLibrary", message);
+	purple_notify_message(m_plugin, PURPLE_NOTIFY_MSG_INFO, "Channel List", message, NULL, NULL, NULL);
 }
 
 void actionSetOptions (PurplePluginAction* action){

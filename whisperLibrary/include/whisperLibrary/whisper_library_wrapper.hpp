@@ -1,15 +1,24 @@
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 	#include <stdbool.h>
-	struct WhisperMessage{
-		char* who;
-		char* message;
-	};
+
+	typedef struct AdapterList {
+		char* name;
+		char* description;
+		struct AdapterList* next;
+	} AdapterList;
+
+	typedef struct ChannelList {
+		char* id;
+		char* name;
+		char* info;
+		struct ChannelList* next;
+	} ChannelList;
+
 	void wlMakeChannelManager();
 	void wlDestroyChannelManager();
-	const char* wlListChannels();
+	ChannelList* wlListChannels();
 	unsigned int wChannelCount();
 	void wlSetOptions(const char* ip, const char* options);
 	bool wlOpenConnection(const char* ip, const char* channel_id);
@@ -18,7 +27,7 @@ extern "C" {
 	void wlSendMessage(const char* who, const char* message);
 	bool wlSetAdapter(const char* adapter);
 	unsigned int wlAdapterCount();
-	const char* wlListAdapters();
+	AdapterList* wlListAdapters();
 	void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));
 #ifdef __cplusplus	
 }
