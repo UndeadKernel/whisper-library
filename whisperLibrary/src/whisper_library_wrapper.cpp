@@ -73,6 +73,13 @@ bool wlSetAdapter(const char* adapter){
 	return m_channel_manager->setAdapter(adapter);
 }
 
+char* wlFindAdapter() {
+	string adapter = m_channel_manager->findValidAdapter();
+	char* adapter_cstr = new char[adapter.length() + 1];
+	std::strcpy(adapter_cstr, adapter.c_str());
+	return adapter_cstr;
+}
+
 unsigned int wlAdapterCount() {
 	return m_channel_manager->adapterCount();
 }

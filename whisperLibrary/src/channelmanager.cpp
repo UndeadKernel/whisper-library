@@ -229,6 +229,10 @@ bool ChannelManager::setAdapter(string name) {
 	return m_network->setAdapter(name);
 }
 
+string ChannelManager::findValidAdapter() {
+	return m_network->findValidAdapter();
+}
+
 unsigned int ChannelManager::adapterCount() {
 	return m_network->adapterCount();
 }

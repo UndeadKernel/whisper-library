@@ -134,9 +134,6 @@ namespace whisper_library {
 			delete m_coder;
 			m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 		}
-		else {
-			cerr << "Couldn't parse argument string" << endl;
-		}
 	}
 
 	void TimingCovertChannel::setOutput(function<void(string)> output){

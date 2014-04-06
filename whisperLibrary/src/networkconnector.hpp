@@ -98,6 +98,10 @@ public:
 		\return true if the adapter name exists and owns a valid ipv4 address, otherwise false
 	*/
 	bool setAdapter(string adapter_name);
+	/** \brief Looks for an adapter with an ipv4 address
+		\return adapter name with a valid ip
+	*/
+	string findValidAdapter();
 	/** \brief Returns the currently selected adapter name
 	*/
 	string currentAdapter();

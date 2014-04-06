@@ -28,6 +28,7 @@ extern "C" {
 	bool wlSetAdapter(const char* adapter);
 	unsigned int wlAdapterCount();
 	AdapterList* wlListAdapters();
+	char* wlFindAdapter();
 	void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));
 #ifdef __cplusplus	
 }

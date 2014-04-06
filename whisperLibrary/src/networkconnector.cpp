@@ -50,6 +50,20 @@ namespace whisper_library {
 		return false;
 	}
 
+	string NetworkConnector::findValidAdapter() {
+		vector<string> adapters = this->adapters();
+
+		for (unsigned int i = 0; i < adapters.size(); i++) {
+			vector<string> addresses = adapterAddresses(adapters[i]);
+			for (unsigned int j = 0; j < addresses.size(); j++) {
+				if (validIPv4(addresses[j])) {
+					return adapters[i];
+				}
+			}
+		}
+		return "";
+	}
+
 	string NetworkConnector::currentAdapter() {
 		return m_adapter;
 	}

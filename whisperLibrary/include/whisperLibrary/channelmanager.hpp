@@ -171,6 +171,10 @@ public:
 		\return true if setting the adapter was successful
 	*/
 	bool setAdapter(string name);
+	/** \brief Looks for a valid network adapter
+		\return unique adapter name or empty string if nothing was found
+	*/
+	string findValidAdapter();
 	/** \brief Returns the number of available network adapters.
 	*/
 	unsigned int adapterCount();
