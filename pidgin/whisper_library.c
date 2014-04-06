@@ -39,7 +39,7 @@ void wl_close (PurpleConnection* connection){
         wlCloseConnection(name);
         buddy_list = buddy_list->next;
     } 
-    wlDestroyChannelManager();
+   // wlDestroyChannelManager();
     purple_connection_set_state(purple_account_get_connection(m_account), PURPLE_DISCONNECTED);
     m_account = NULL; 
 }
@@ -175,8 +175,12 @@ void actionShowChannels (PurplePluginAction* action){
 }
 
 void actionSetOptions (PurplePluginAction* action){
-	// TODO
-	//wlSetOptions()
+	GSList* buddy_list = purple_find_buddies(m_account, NULL);
+	while (buddy_list != NULL){
+		char* name = purple_buddy_get_name((PurpleBuddy*)buddy_list->data);
+		wlSetOptions(name, purple_account_get_string(m_account, "channel options", ""));
+		buddy_list = buddy_list->next;
+	}
 }
 	
 static GList* listPluginActions (PurplePlugin* plugin, gpointer context){
@@ -306,6 +310,7 @@ static PurplePluginInfo info = {
 };
 
 static void init_plugin (PurplePlugin *plugin){
+	purple_debug_info(PLUGIN_ID, "init called\n");
 	m_plugin = plugin;
 	PurpleAccountOption *option;
 	PurplePluginInfo *info = plugin->info;
