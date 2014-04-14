@@ -30,20 +30,30 @@ static const char* wl_list_icon (PurpleAccount* account, PurpleBuddy* buddy){
 	return "facebook";
 }
 
-void wl_close (PurpleConnection* connection){
-	purple_debug_info(PLUGIN_ID, "close called\n");
-    GSList* buddy_list = purple_find_buddies(m_account, NULL);
-    while (buddy_list != NULL){
-		char* name = purple_buddy_get_name((PurpleBuddy*)buddy_list->data);
-		purple_debug_info(PLUGIN_ID, name);
-        wlCloseConnection(name);
-        buddy_list = buddy_list->next;
-    } 
-   // wlDestroyChannelManager();
-    purple_connection_set_state(purple_account_get_connection(m_account), PURPLE_DISCONNECTED);
-    m_account = NULL; 
+int wl_send_im(PurpleConnection* connection, const char* who, const char* message, PurpleMessageFlags flags){
+	purple_debug_info(PLUGIN_ID, "send_im called\n");
+	purple_debug_info(PLUGIN_ID, "sending message to: ");
+	purple_debug_info(PLUGIN_ID, who);
+	purple_debug_info(PLUGIN_ID, "message text: ");
+	purple_debug_info(PLUGIN_ID, message);
+	wlSendMessage(who, message);
+	return 1;
 }
 
+gboolean wl_receive_im(){
+	Message* container = wlPullMessage();
+	if (container == NULL) {
+		return TRUE;
+	}
+	purple_debug_info("whisperLibrary", "message received\n");
+	serv_got_im(purple_account_get_connection(m_account), container->who, container->message, PURPLE_MESSAGE_RECV, time(NULL));
+	free(container->who);
+	free(container->message);
+	free(container);
+	return TRUE;
+}
+
+guint m_timeout_id;
 
 void wl_login (PurpleAccount* account){
 	purple_debug_info(PLUGIN_ID, "login called\n");
@@ -51,6 +61,7 @@ void wl_login (PurpleAccount* account){
 	PurpleConnection* pc = purple_account_get_connection(account);
 	purple_debug_info("whisperLibrary", "Trying to log in!\n");
 
+	wlMakeChannelManager();
 	wlSetAdapter(purple_account_get_string(account, "selected adapter", ""));
 
 	purple_debug_info(PLUGIN_ID, purple_account_get_string(account, "selected adapter", ""));
@@ -69,21 +80,23 @@ void wl_login (PurpleAccount* account){
 			purple_debug_info(PLUGIN_ID, "Connection failed\n");
 		buddy_list = buddy_list->next;
 	}
+	m_timeout_id = purple_timeout_add(1000, wl_receive_im, NULL);
 	purple_debug_info("whisperLibrary", "WhisperLibrary logged in!\n"); 
 }
 
-int wl_send_im (PurpleConnection* connection, const char* who, const char* message, PurpleMessageFlags flags){
-	purple_debug_info(PLUGIN_ID, "send_im called\n");
-	purple_debug_info(PLUGIN_ID, "sending message to: ");
-	purple_debug_info(PLUGIN_ID, who);
-	purple_debug_info(PLUGIN_ID, "message text: ");
-	purple_debug_info(PLUGIN_ID, message);
-	wlSendMessage(who, message);
-	return 1;
-}
-
-void wl_receive_im (const char* who, const char* message){
-	serv_got_im(purple_account_get_connection(m_account), who, message, PURPLE_MESSAGE_RECV, time(NULL));
+void wl_close(PurpleConnection* connection){
+	purple_debug_info(PLUGIN_ID, "close called\n");
+	purple_timeout_remove(m_timeout_id);
+	GSList* buddy_list = purple_find_buddies(m_account, NULL);
+	while (buddy_list != NULL){
+		char* name = purple_buddy_get_name((PurpleBuddy*)buddy_list->data);
+		purple_debug_info(PLUGIN_ID, name);
+		wlCloseConnection(name);
+		buddy_list = buddy_list->next;
+	}
+	wlDestroyChannelManager();
+	purple_connection_set_state(purple_account_get_connection(m_account), PURPLE_DISCONNECTED);
+	m_account = NULL;
 }
 
 void wl_set_status(PurpleAccount* account, PurpleStatus* status){
@@ -316,24 +329,33 @@ static void init_plugin (PurplePlugin *plugin){
 	PurplePluginInfo *info = plugin->info;
 	PurplePluginProtocolInfo *prpl_info = info->extra_info;
 
+	// create options
 	wlMakeChannelManager();
-	wlSetMessageCallback(&wl_receive_im);
 	
 	char* adapter = wlFindAdapter();
 	option = purple_account_option_string_new("Network Adapter ID", "selected adapter", adapter);
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
 	
-	ChannelList* channel_list = wlListChannels(); //TODO free channel_list
+	ChannelList* channel_list = wlListChannels();
 	if (channel_list != NULL) {
 		option = purple_account_option_string_new("Covert Channel ID", "selected channel", channel_list->id);
 	}
 	else {
 		option = purple_account_option_string_new("Covert Channel ID", "selected channel", "no channels found");
 	}
-	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
-	
+	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);	
 	option = purple_account_option_string_new("Channel options", "channel options", "(Optional) enter covert channel options here and call the 'set channel options' function!");
+	while (channel_list != NULL) {
+		free(channel_list->id);
+		free(channel_list->name);
+		free(channel_list->info);
+		ChannelList* to_free = channel_list;
+		channel_list = channel_list->next;
+		free(to_free);
+	} 
 	prpl_info->protocol_options = g_list_append(prpl_info->protocol_options, option);
+
+	wlDestroyChannelManager();
 }
 
 PURPLE_INIT_PLUGIN(whisperlibrary, init_plugin, info)

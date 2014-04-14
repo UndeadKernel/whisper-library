@@ -3,6 +3,11 @@ extern "C" {
 #endif
 	#include <stdbool.h>
 
+	typedef struct Message {
+		char* who;
+		char* message;
+	} Message;
+
 	typedef struct AdapterList {
 		char* name;
 		char* description;
@@ -29,7 +34,9 @@ extern "C" {
 	unsigned int wlAdapterCount();
 	AdapterList* wlListAdapters();
 	char* wlFindAdapter();
-	void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));
+	//void wlSetMessageCallback(void (*func_ptr)(const char*, const char*));
+	Message* wlPullMessage();
+
 #ifdef __cplusplus	
 }
 #endif

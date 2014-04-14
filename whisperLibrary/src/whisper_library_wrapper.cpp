@@ -3,8 +3,21 @@
 
 whisper_library::ChannelManager* m_channel_manager = NULL;
 
+vector<std::pair<string, string>> message_buffer;
+
+void messageCallback(string ip, string message) {
+	/*	char* ip_cstr = new char[ip.length() + 1];
+	memcpy(ip_cstr, ip.c_str(),ip.length()+1);
+	char* message_cstr = new char[message.length() + 1];
+	memcpy(message_cstr, message.c_str(), message.length()+1);
+
+	m_callback(ip_cstr, message_cstr); */
+	message_buffer.push_back(std::pair<string, string>(ip, message));
+}
+
 void wlMakeChannelManager(){
 	m_channel_manager = new whisper_library::ChannelManager();
+	m_channel_manager->setMessageCallback(&messageCallback);
 }
 void wlDestroyChannelManager(){
 	delete m_channel_manager;
@@ -114,11 +127,23 @@ AdapterList* wlListAdapters(){
 
 void (*m_callback)(const char*, const char*);
 
-void messageCallback(string ip, string message) {
-	m_callback(ip.c_str(), message.c_str());
-}
-
 void wlSetMessageCallback(void(*func_ptr)(const char*, const char*)) {
 	m_callback = func_ptr;
 	m_channel_manager->setMessageCallback(&messageCallback);
+}
+
+Message* wlPullMessage() {
+	try {
+		pair<string, string> message = message_buffer.at(0);
+		Message* container = new Message;
+		container->who = new char[message.first.length() + 1];
+		memcpy(container->who, message.first.c_str(), message.first.length() + 1);
+		container->message = new char[message.second.length() + 1];
+		memcpy(container->message, message.second.c_str(), message.second.length() + 1);
+		message_buffer.erase(message_buffer.begin());
+		return container;
+	}
+	catch (out_of_range) {
+		return NULL;
+	}
 }
