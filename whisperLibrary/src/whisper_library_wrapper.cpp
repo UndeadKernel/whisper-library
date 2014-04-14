@@ -6,12 +6,6 @@ whisper_library::ChannelManager* m_channel_manager = NULL;
 vector<std::pair<string, string>> message_buffer;
 
 void messageCallback(string ip, string message) {
-	/*	char* ip_cstr = new char[ip.length() + 1];
-	memcpy(ip_cstr, ip.c_str(),ip.length()+1);
-	char* message_cstr = new char[message.length() + 1];
-	memcpy(message_cstr, message.c_str(), message.length()+1);
-
-	m_callback(ip_cstr, message_cstr); */
 	message_buffer.push_back(std::pair<string, string>(ip, message));
 }
 
@@ -123,13 +117,6 @@ AdapterList* wlListAdapters(){
 	}
 
 	return first;
-}
-
-void (*m_callback)(const char*, const char*);
-
-void wlSetMessageCallback(void(*func_ptr)(const char*, const char*)) {
-	m_callback = func_ptr;
-	m_channel_manager->setMessageCallback(&messageCallback);
 }
 
 Message* wlPullMessage() {
