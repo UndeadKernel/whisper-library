@@ -1,6 +1,6 @@
 #include "ethernetheader.hpp"
 #include <sstream>
-#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace whisper_library {
 	EthernetHeader::EthernetHeader() {
@@ -22,12 +22,9 @@ namespace whisper_library {
 	unsigned long EthernetHeader::ethernetType() {
 		return (m_head[12] << 8) + m_head[13];
 	}
+
 	void EthernetHeader::setDestinationMAC(string mac) {
-		vector<string> parts;
-		boost::split(parts, mac, boost::is_any_of(":"), boost::token_compress_on);
-		for (unsigned int i = 0; i < 6; i++) {
-			m_head[i] = hexToInt("0x"+parts[i]);
-		}
+		setMAC(mac, 0);
 	}
 
 	void EthernetHeader::setDestinationMAC(unsigned char* char_array) {
@@ -36,16 +33,23 @@ namespace whisper_library {
 	}
 
 	void EthernetHeader::setSourceMAC(string mac) {
-		vector<string> parts;
-		boost::split(parts, mac, boost::is_any_of(":"), boost::token_compress_on);
-		for (unsigned int i = 0; i < 6; i++) {
-			m_head[i+6] = hexToInt("0x" + parts[i]);
-		}
+		setMAC(mac, 6);
 	}
+
 
 	void EthernetHeader::setSourceMAC(unsigned char* char_array) {
 		if (!char_array || strlen(reinterpret_cast<const char*>(char_array)) < 6) { return; }
 		memcpy(m_head + 6, char_array, 6);
+	}
+
+	void EthernetHeader::setMAC(string mac, unsigned int data_offset) {
+		unsigned int i = 0;
+		boost::char_separator<char> delimiter(":");
+		boost::tokenizer<boost::char_separator<char> > tokens(mac, delimiter);
+		for (string s : tokens) {
+			m_head[i + data_offset] = hexToInt("0x" + s);
+			if (++i >= 6) break;
+		}
 	}
 
 	void EthernetHeader::setEthernetType(unsigned long type) {

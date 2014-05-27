@@ -124,7 +124,7 @@ namespace whisper_library {
 
 	void TimingCovertChannel::setArguments(string arguments) {
 		vector<string> parts;
-		boost::split(parts, arguments, boost::is_any_of(" "), boost::token_compress_on);
+		boost::split(parts, arguments, boost::is_space(), boost::token_compress_on);
 		if (parts[0].compare("-set_timings") == 0 && parts.size() == 5) {
 			m_delay_short = boost::lexical_cast<unsigned int>(parts[1]);
 			m_delay_long = boost::lexical_cast<unsigned int>(parts[2]);

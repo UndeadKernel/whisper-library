@@ -1,12 +1,13 @@
-#include <channelmanager.hpp>
+#include <iostream>
 #include <thread>
-#include "pcapwrapper.hpp"
-#include "channelmanager.hpp"
+
+#include <pcapwrapper.hpp>
+#include <channelmanager.hpp>
 #include "../src/networkconnector.hpp"
 #include "../src/udppacketgenerator.hpp"
 #include <boost/test/unit_test.hpp>
-#include <iostream>
 #include <boost/asio.hpp>
+
 
 using namespace std;
 

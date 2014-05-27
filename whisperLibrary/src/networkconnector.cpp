@@ -237,6 +237,16 @@ namespace whisper_library {
 
 // Win32 only
 #ifdef WIN32
+	/* Placeholder Macro
+	 Future distinction between different windows versions
+	( GetAdaptersAddresses only available in wlibs from Vista and newer;
+	use GetAdapterInfo for older systems )
+	*/
+	#if (NTDDI_VERSION >= NTDDI_VISTA)
+	#elif (NTDDI_VERSION >= NTDDI_WINXP)
+	#else
+	#endif
+
 	NetworkConnector::AdapterInfo NetworkConnector::win32GetAdapterInfo() {
 		AdapterInfo values = { 0, NULL };
 		if (m_adapter.empty()) { return values; }

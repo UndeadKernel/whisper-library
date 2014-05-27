@@ -1,12 +1,15 @@
-#include <boost/test/unit_test.hpp>
-#include "../src/networkconnector.hpp"
-#include <genericpacket.hpp>
 #include <iostream>
 #include <functional>
 #include <vector>
+
+#include <genericpacket.hpp>
+#include <tcpheadercovertchannel.hpp>
+#include "../src/networkconnector.hpp"
 #include "../src/ethernetheader.hpp"
-#include "../include/whisperLibrary/tcpheadercovertchannel.hpp"
+
+#include <boost/test/unit_test.hpp>
 #include <boost/asio.hpp>
+
 
 using namespace std;
 

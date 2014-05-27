@@ -1,5 +1,6 @@
-#include <boost/test/unit_test.hpp>
 #include "../src/tcppacketgenerator.hpp"
+#include <boost/test/unit_test.hpp>
+
 struct TcpPacketGeneratorFixture {
 	TcpPacketGeneratorFixture() {
 		sender = new whisper_library::TcpPacketGenerator(8080, std::bind(&TcpPacketGeneratorFixture::sendToReceiver, this, placeholders::_1));

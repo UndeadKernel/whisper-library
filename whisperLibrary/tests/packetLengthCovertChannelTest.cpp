@@ -1,7 +1,7 @@
-#include <boost/test/unit_test.hpp>
-#include "packetlengthcovertchannel.hpp"
+#include <packetlengthcovertchannel.hpp>
 #include "../../src/udppacket.hpp"
 #include "../../src/udppacketgenerator.hpp"
+#include <boost/test/unit_test.hpp>
 
 struct PacketLengthCovertChannelFixture {
 	PacketLengthCovertChannelFixture(){

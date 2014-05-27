@@ -1,11 +1,13 @@
+#include <thread>
+
+#include <pcapwrapper.hpp>
+#include <genericpacket.hpp>
 #include "../src/socketSender.hpp"
-#include "../include/whisperLibrary/pcapwrapper.hpp"
 #include "../src/tcppacket.hpp"
 #include "../src/udppacket.hpp"
 #include "../src/ipheaderv4.hpp"
-#include "../include/whisperLibrary/genericpacket.hpp"
+
 #include <boost/test/unit_test.hpp>
-#include <thread>
 #include <boost/asio.hpp>
 
 struct SocketSenderTestFixture {

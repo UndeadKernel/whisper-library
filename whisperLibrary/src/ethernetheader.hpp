@@ -63,6 +63,11 @@ public:
 	*/
 	string toString();
 private:
+	/** \brief Sets either the source or destination mac address depending on the data_offset
+	\param mac address in the format: ff:ff:ff:ff:ff:ff (hexadecimal, bytes seperated by :)
+	\param data_offset Offset from m_head[0] in bytes
+	*/
+	void setMAC(string mac, unsigned int data_offset);
 	/** \brief Converts an integer to hexadecimal
 		\param i Integer you want to convert
 		\return String representing the integer as hex

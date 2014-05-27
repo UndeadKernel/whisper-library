@@ -1,7 +1,7 @@
-#include <tcpheadercovertchannel.hpp>
-#include <genericpacket.hpp>
-#include <boost/test/unit_test.hpp>
 #include <string>
+#include <genericpacket.hpp>
+#include <tcpheadercovertchannel.hpp>
+#include <boost/test/unit_test.hpp>
 
 struct tcpHeaderCovertChannelFixture {
 	tcpHeaderCovertChannelFixture() {

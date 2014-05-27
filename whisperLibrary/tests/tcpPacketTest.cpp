@@ -1,10 +1,10 @@
 #include "../src/tcppacket.hpp"
-#include <boost/test/unit_test.hpp>
 
 #include <string>
 #include <vector>
 #include <bitset>
 #include <iostream>
+#include <boost/test/unit_test.hpp>
 
 using namespace std;
 

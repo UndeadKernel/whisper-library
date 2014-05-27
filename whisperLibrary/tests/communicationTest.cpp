@@ -1,6 +1,5 @@
-#include <channelmanager.hpp>
 #include <thread>
-
+#include <channelmanager.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -19,7 +18,7 @@ struct CommunicationFixture {
 
 	int processCommand(string command) {
 		vector<string> arguments;
-		boost::split(arguments, command, boost::is_any_of(" "), boost::token_compress_on);
+		boost::split(arguments, command, boost::is_space(), boost::token_compress_on);
 		if (arguments.size() > 2) {
 			cout << "Too many arguments." << endl;
 			return 0;
@@ -86,7 +85,7 @@ struct CommunicationFixture {
 			return 1;
 		}
 		vector<string> arguments;
-		boost::split(arguments, message, boost::is_any_of(" "), boost::token_compress_on);
+		boost::split(arguments, message, boost::is_space(), boost::token_compress_on);
 		if (arguments[0].compare("argument") == 0) {
 			if (arguments.size() < 2) {
 				cout << "Not enough arguments" << endl;

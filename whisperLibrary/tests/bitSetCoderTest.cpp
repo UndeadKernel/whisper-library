@@ -1,9 +1,8 @@
-#include "bitSetCoder.hpp"
+#include <string>
+#include <vector>
+#include <bitset>
+#include <bitSetCoder.hpp>
 #include <boost/test/unit_test.hpp>
-
-#include<string>
-#include<vector>
-#include<bitset>
 
 using namespace std;
 

@@ -22,7 +22,7 @@
 
 #include "socketSender.hpp"
 #include <boost/array.hpp>
-#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include "rawSocketProtocol.hpp"
@@ -99,14 +99,16 @@ std::string SocketSender::packetToString(vector<bool> packet_data){
 }
 
 ulong SocketSender::ipToUlong(string ip) {
-	vector<string> parts;
-	boost::split(parts, ip, boost::is_any_of("."), boost::token_compress_on);
+	boost::char_separator<char> delimiter(".");
+	typedef boost::tokenizer< boost::char_separator<char> > tokenizer_type;
+	tokenizer_type tokens(ip, delimiter);
 	ulong ulong_ip = 0;
 	try {
-		ulong_ip += boost::lexical_cast<unsigned int>(parts[3]);
-		ulong_ip += boost::lexical_cast<unsigned int>(parts[2]) << 8;
-		ulong_ip += boost::lexical_cast<unsigned int>(parts[1]) << 16;
-		ulong_ip += boost::lexical_cast<unsigned int>(parts[0]) << 24;
+		unsigned int shift = 24;
+		for (tokenizer_type::iterator iterator = tokens.begin(); iterator != tokens.end() && shift >= 0; ++iterator) {
+			ulong_ip += (boost::lexical_cast<unsigned int>(*iterator) << shift);
+			shift -= 8;
+		}
 	}
 	catch (boost::bad_lexical_cast e) {
 		cout << "Error: " << e.what() << endl;

@@ -1,6 +1,6 @@
+#include <chrono>
 #include <timingcovertchannel.hpp>
 #include <boost/test/unit_test.hpp>
-#include <chrono>
 #include <boost/algorithm/string.hpp>
 
 struct timingCovertChannelFixture {

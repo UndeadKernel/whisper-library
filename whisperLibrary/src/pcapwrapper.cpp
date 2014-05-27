@@ -325,7 +325,7 @@ namespace whisper_library {
 			( http://www.winpcap.org/docs/docs_412/html/group__wpcapfunc.html#gadf60257f650aaf869671e0a163611fc3 )
 		*/
 		while ( (return_code = pcap_next_ex(handle, &packet_header, &packet_data)) == 0 && ++iterations <= 500);
-		DEBUG(3, "Packet data: %u - length: %d\n", (packet_data ? reinterpret_cast<const unsigned int*>(packet_data) : 0), packet_header->len);
+		DEBUG(3, "Packet length: %d\n", packet_header->len);
 		if (return_code == 1) {
 			packet.payload = packet_data;
 			packet.header = *packet_header;

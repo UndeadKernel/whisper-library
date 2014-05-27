@@ -21,7 +21,7 @@
 */
 
 #include <morseCoder.hpp>
-#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace whisper_library {
 	MorseCoder::MorseCoder(unsigned int delay_short, unsigned int delay_long, unsigned int delay_letter, unsigned int delay_space) :
@@ -85,11 +85,12 @@ namespace whisper_library {
 
 	vector<unsigned int> MorseCoder::encodeMessage(string message) {
 		// split message into words
-		vector<string> words;
-		boost::split(words, message, boost::is_any_of(" "), boost::token_compress_on);
+		boost::char_separator<char> delimiter(" ");
+		typedef boost::tokenizer< boost::char_separator<char> > tokenizer_type;
+		tokenizer_type words(message, delimiter);
 
 		vector<unsigned int> delays;
-		for (vector<string>::iterator it = words.begin(); it != words.end(); it++) {
+		for (tokenizer_type::iterator it = words.begin(); it != words.end(); it++) {
 			string word = (*it);
 			// encode and push word
 			for (unsigned int i = 0; i < word.length(); i++) {

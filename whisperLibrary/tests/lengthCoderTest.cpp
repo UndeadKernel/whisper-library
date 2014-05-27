@@ -1,5 +1,5 @@
+#include <lengthcoder.hpp>
 #include <boost/test/unit_test.hpp>
-#include "lengthcoder.hpp"
 
 struct LengthCoderFixture {
 	LengthCoderFixture(){

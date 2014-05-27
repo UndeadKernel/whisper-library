@@ -85,7 +85,7 @@ vector<string> ChannelManager::getChannelIDs(){
 }
 
 unsigned int ChannelManager::channelCount() {
-	return m_channels.size();
+	return static_cast<unsigned int>(m_channels.size());
 }
 
 void ChannelManager::sendMessage(string ip, string message) {
@@ -210,7 +210,7 @@ void ChannelManager::closeConnection(string ip) {
 }
 
 unsigned int ChannelManager::connectionCount() {
-	return m_ip_mapping.size();
+	return static_cast<unsigned int>(m_ip_mapping.size());
 }
 
 bool ChannelManager::connection(string ip) {
