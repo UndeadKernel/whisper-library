@@ -24,6 +24,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cmath>
+#include <iostream>
 
 namespace whisper_library {
 	TimingCovertChannel::~TimingCovertChannel() {
@@ -135,7 +136,7 @@ namespace whisper_library {
 			m_coder = new MorseCoder(m_delay_short, m_delay_long, m_delay_letter, m_delay_space);
 		}
 		else {
-			cerr << "Couldn't parse argument string" << endl;
+			std::cerr << "Couldn't parse argument string" << endl;
 		}
 	}
 

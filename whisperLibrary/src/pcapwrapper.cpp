@@ -294,7 +294,7 @@ namespace whisper_library {
 	}
 
 	PcapWrapper::PcapPacket PcapWrapper::retrievePacket(int adapter_id) {
-		PcapPacket packet = { NULL, NULL };
+		PcapPacket packet = { {}, nullptr };
 		if (!checkForAdapterId(adapter_id)) {
 			RETURN_VALUE(RC(ADAPTER_NOT_FOUND), packet); // specified adapter not found
 		}
